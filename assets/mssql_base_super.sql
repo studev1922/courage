@@ -17,7 +17,7 @@ GO
    ------------------------------ USER AND AUTHORIZATIONS ------------------------------
    - CRM
    ├──[#TABLES]
-   │  ├──[USER]: user is primary
+   │  ├──[ACCOUNT]: user is primary
    │  ├──[UIMAGE]: user's images | one-many
    │  │
    │  ├──[UACCESS]: access for user
@@ -29,18 +29,17 @@ GO
    │  └──[US_UR]: user has multiple roles | one-many
    │
    └──[#PROCEDURES]
-
-
+      └──[pr_login]: login by (@username or @email) and @password
 */
 -- ---------------------------------------------------------------------------------------------------- #TABLES
--- Drop [USER] table if already exist then create new [USER] table
-IF OBJECT_ID('USER', 'U') IS NOT NULL DROP TABLE [USER]
+-- Drop [ACCOUNT] table if already exist then create new [ACCOUNT] table
+IF OBJECT_ID('USER', 'U') IS NOT NULL DROP TABLE [ACCOUNT]
 GO
-CREATE TABLE [USER] (
+CREATE TABLE [ACCOUNT] (
    [uid] bigint identity primary key,
    [username] varchar(20) null unique, -- username for login
    [email] varchar(50) unique not null, -- email for contact
-   [password] binary(70) not null, -- size of PWDENCRYPT = 70
+   [password] varchar(70) not null, -- size of PWDENCRYPT = 70
    [fullname] nvarchar(50) not null
 );
 GO
@@ -50,7 +49,7 @@ IF OBJECT_ID('UIMAGE', 'U') IS NOT NULL DROP TABLE [UIMAGE]
 GO
 CREATE TABLE [UIMAGE] (
    [u_id] bigint foreign key references
-   [USER]([uid]) on delete cascade not null,
+   [ACCOUNT]([uid]) on delete cascade not null,
    [image] varchar(100) unique not null,
    primary key([u_id], [image])
 );
@@ -90,7 +89,7 @@ GO
 IF OBJECT_ID('US_UA', 'U') IS NOT NULL DROP TABLE [US_UA]
 GO
 CREATE TABLE [US_UA] ( -- USER ACCESS
-   [u_id] bigint foreign key references [USER]([uid]) on delete cascade not null,
+   [u_id] bigint foreign key references [ACCOUNT]([uid]) on delete cascade not null,
    [ua_id] tinyint foreign key references [UACCESS]([uaid]) not null,
    primary key ([u_id])
 );
@@ -100,7 +99,7 @@ GO
 IF OBJECT_ID('US_UP', 'U') IS NOT NULL DROP TABLE [US_UP]
 GO
 CREATE TABLE [US_UP] ( -- USER PLATFORMS
-   [u_id] bigint foreign key references [USER]([uid]) on delete cascade not null,
+   [u_id] bigint foreign key references [ACCOUNT]([uid]) on delete cascade not null,
    [up_id] tinyint foreign key references [UPLATFORM]([upid]) not null,
    primary key ([u_id], [up_id])
 );
@@ -110,41 +109,8 @@ GO
 IF OBJECT_ID('US_UR', 'U') IS NOT NULL DROP TABLE [US_UR]
 GO
 CREATE TABLE [US_UR] ( -- USER ROLES (authorization)
-   [u_id] bigint foreign key references [USER]([uid]) on delete cascade not null,
+   [u_id] bigint foreign key references [ACCOUNT]([uid]) on delete cascade not null,
    [ur_id] tinyint foreign key references [ROLES]([urid]) not null,
    primary key ([u_id], [ur_id])
 );
-GO
-
-
-
-
-
--- ---------------------------------------------------------------------------------------------------- #PROCEDURES
--- Create procedure login >>> login by (username or email) and password
-IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_login') DROP PROC pr_login
-GO
-CREATE PROCEDURE pr_login
-   @username varchar(256), @password varchar(256)
-AS
-BEGIN
-   DECLARE @meserror nvarchar(256);
-   DECLARE @ua_id tinyint;
-
-   IF @username is null OR LEN(@password) = 0 RAISERROR('username is empty',15,1);
-   IF @password is null OR LEN(@password) = 0 RAISERROR('password is empty',15,1);
-
-   SELECT u.* INTO #USER FROM [USER] u
-   WHERE (username = @username OR email = @username) AND PWDCOMPARE(@password, password) = 1;
-
-   -- default active is null or access id = 0
-   IF EXISTS(SELECT username FROM #USER) BEGIN
-      SET @ua_id = (SELECT a.[ua_id] FROM [US_UA] a JOIN [#USER] b ON a.u_id=b.uid);
-      IF (@ua_id = 0 OR @ua_id IS NULL) SELECT * FROM #USER;
-      ELSE RAISERROR('This account is not activated yet!!!', 15,1);
-   END ELSE BEGIN
-      SET @meserror = CONCAT ('username:', @username, ' and password:', @password, ' is incorrect');
-      RAISERROR(@meserror, 12,1);
-   END
-END
 GO

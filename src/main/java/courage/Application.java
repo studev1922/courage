@@ -1,13 +1,13 @@
-package courage.courage;
+package courage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CourageApplication {
+public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CourageApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
-
+	
 }
