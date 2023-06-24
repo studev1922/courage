@@ -1,4 +1,4 @@
-package courage.controllers.api;
+package courage.controllers.rest;
 
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;

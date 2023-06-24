@@ -1,0 +1,13 @@
+<h1>Detail account</h1>
+<form action="" th:object="${entity}" enctype="multipart/form-data" class="form-control">
+   <input th:value="*{uid}" type="number" class="form-control">
+   <input th:value="*{username}" type="text" class="form-control">
+   <input th:value="*{password}" type="password" class="form-control">
+   <input th:value="*{fullname}" type="text" class="form-control">
+   <input th:value="*{email}" type="email" class="form-control">
+   <select class="form-control" th:field="*{access}">
+      <option th:each="ua : ${uaccess}" th:value="${ua.uaid}" th:text="${ua.uaName}"
+         th:selected="(${ua.uaid} == *{access})" th:readonly="(${ua.uaid} == *{access})">
+      </option>
+   </select>
+</form>

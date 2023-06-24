@@ -1,4 +1,4 @@
-package courage.controllers.api.RestUser;
+package courage.controllers.rest.user_api;
 
 import java.util.ArrayList;
 import java.util.Arrays;

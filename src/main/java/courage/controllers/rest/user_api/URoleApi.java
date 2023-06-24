@@ -1,10 +1,10 @@
-package courage.controllers.api.RestUser;
+package courage.controllers.rest.user_api;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import courage.controllers.api.AbstractRESTful;
+import courage.controllers.rest.AbstractRESTful;
 import courage.model.entities.User;
 
 @RestController
