@@ -17,7 +17,7 @@ GO
    ------------------------------ USER AND AUTHORIZATIONS ------------------------------
    - CRM
    ├──[#TABLES]
-   │  ├──[ACCOUNT]: user is primary
+   │  ├──[UACCOUNT]: user is primary
    │  ├──[UIMAGE]: user's images | one-many
    │  │
    │  ├──[UACCESS]: access for user
@@ -32,10 +32,10 @@ GO
       └──[pr_login]: login by (@username or @email) and @password
 */
 -- ---------------------------------------------------------------------------------------------------- #TABLES
--- Drop [ACCOUNT] table if already exist then create new [ACCOUNT] table
-IF OBJECT_ID('USER', 'U') IS NOT NULL DROP TABLE [ACCOUNT]
+-- Drop [UACCOUNT] table if already exist then create new [UACCOUNT] table
+IF OBJECT_ID('USER', 'U') IS NOT NULL DROP TABLE [UACCOUNT]
 GO
-CREATE TABLE [ACCOUNT] (
+CREATE TABLE [UACCOUNT] (
    [uid] bigint identity primary key,
    [username] varchar(20) null unique, -- username for login
    [email] varchar(50) unique not null, -- email for contact
@@ -48,10 +48,9 @@ GO
 IF OBJECT_ID('UIMAGE', 'U') IS NOT NULL DROP TABLE [UIMAGE]
 GO
 CREATE TABLE [UIMAGE] (
+   [image] varchar(100) primary key,
    [u_id] bigint foreign key references
-   [ACCOUNT]([uid]) on delete cascade not null,
-   [image] varchar(100) unique not null,
-   primary key([u_id], [image])
+   [UACCOUNT]([uid]) on delete cascade not null
 );
 GO
 
@@ -76,11 +75,11 @@ CREATE TABLE [UACCESS] (
 GO
 
 -- Drop [ROLES] table if already exist and create new [ROLES] table
-IF OBJECT_ID('ROLES', 'U') IS NOT NULL DROP TABLE [ROLES]
+IF OBJECT_ID('UROLES', 'U') IS NOT NULL DROP TABLE [UROLES]
 GO
-CREATE TABLE [ROLES] (
+CREATE TABLE [UROLES] (
    [urid] tinyint primary key,
-   [role] nvarchar(50) unique not null
+   [role] varchar(20) unique not null
 );
 GO
 
@@ -89,7 +88,7 @@ GO
 IF OBJECT_ID('US_UA', 'U') IS NOT NULL DROP TABLE [US_UA]
 GO
 CREATE TABLE [US_UA] ( -- USER ACCESS
-   [u_id] bigint foreign key references [ACCOUNT]([uid]) on delete cascade not null,
+   [u_id] bigint foreign key references [UACCOUNT]([uid]) on delete cascade not null,
    [ua_id] tinyint foreign key references [UACCESS]([uaid]) not null,
    primary key ([u_id])
 );
@@ -99,7 +98,7 @@ GO
 IF OBJECT_ID('US_UP', 'U') IS NOT NULL DROP TABLE [US_UP]
 GO
 CREATE TABLE [US_UP] ( -- USER PLATFORMS
-   [u_id] bigint foreign key references [ACCOUNT]([uid]) on delete cascade not null,
+   [u_id] bigint foreign key references [UACCOUNT]([uid]) on delete cascade not null,
    [up_id] tinyint foreign key references [UPLATFORM]([upid]) not null,
    primary key ([u_id], [up_id])
 );
@@ -109,8 +108,10 @@ GO
 IF OBJECT_ID('US_UR', 'U') IS NOT NULL DROP TABLE [US_UR]
 GO
 CREATE TABLE [US_UR] ( -- USER ROLES (authorization)
-   [u_id] bigint foreign key references [ACCOUNT]([uid]) on delete cascade not null,
-   [ur_id] tinyint foreign key references [ROLES]([urid]) not null,
+   [u_id] bigint foreign key references [UACCOUNT]([uid]) on delete cascade not null,
+   [ur_id] tinyint foreign key references [UROLES]([urid]) not null,
    primary key ([u_id], [ur_id])
 );
 GO
+
+USE master
