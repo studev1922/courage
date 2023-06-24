@@ -2,7 +2,7 @@
 Java Spring-boot source system management
 
 ## JAVA MAIN CLASS
-[Application.java](src/main/java/courage/Application.java)
+Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 ## SCRIPTS DATABASE FILE
 - File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
