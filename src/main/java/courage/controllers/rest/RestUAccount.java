@@ -1,34 +1,35 @@
 package courage.controllers.rest;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import courage.model.entities.UAccount;
+import courage.model.entities.User.Account;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping({ "/api/accounts" })
-public class RestUAccount extends AbstractRESTful<UAccount, Long> {
+public class RestUAccount extends AbstractRESTful<Account, Long> {
+
+   public RestUAccount() {
+      super("account");
+   }
+   
+   @Override
+   protected Long getKey(Account e) {
+      return e.getUid();
+   }
 
    @Override
-   protected Iterable<Long> keyParams() {
-      String[] params = super.req.getParameterValues("id");
-      if(params == null) return new ArrayList<Long>();
-      
-      Long[] ids = new Long[params.length];
-      for (int i = 0; i < ids.length; i++) {
-         try {
-            ids[i] = new Long(params[i]);
-         } catch (Exception e) {
-            ids[0] = 0L;
-         }
-      }
-      
-      return Arrays.asList(ids);
+   protected String[] filesExist(Account e) {
+      return e.getImages().toArray(new String[1]);
+   }
+
+   @Override
+   protected void setFiles(Account e, Set<String> images) {
+      e.setImages(images);
    }
 
 }

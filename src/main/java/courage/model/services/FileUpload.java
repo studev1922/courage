@@ -16,9 +16,12 @@ public interface FileUpload {
 	
 	/**
 	 * @param directories are contain folders or files
-	 * @return the path path to the server - EX: http://localhost:8080/data/images/...
+	 * @return the path path to the server - EX: http://localhost:8080/uploads/images/...
 	 */
-	String pointingFolder(String...directories);
+	String pathServer(String...directories);
+
+	// get local on this PC - EX: file://C:/.../src/main/data/images/...
+	String pathLocal(String...directories);
 
 	/**
 	 * @param isFileOnly get only files or folders else all

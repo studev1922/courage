@@ -23,14 +23,17 @@ public class FileServiceImpl implements FileUpload {
 	
 	@Autowired private ServletContext context;
 		
-	@Override // read SERVER folders contain files
-	public String pointingFolder(String...directories) {
+	@Override // get url on server - EX: http://localhost:8080/data/images/...
+	public String pathServer(String...directories) {
 		String uri = uri(directories);
-		File file = new File(context.getRealPath(""), uri);
-		uri = pathServer(uri); // get path on the server;
-		return file.isFile() 
-			? uri.substring(0, uri.lastIndexOf('/'))
-			: file.canRead() ? uri : null;
+		File file = new File(context.getRealPath(""), uri); // get path on the server;
+		uri = ServletUriComponentsBuilder.fromCurrentContextPath().path(uri).toUriString();
+		return file.canRead() ? uri : file.getAbsolutePath();
+	}
+
+	@Override // get local on this PC - EX: file://C:/.../src/main/data/images/...
+	public String pathLocal(String...directories) {
+		return context.getRealPath(uri(directories));
 	}
 	
 	@Override // read all files're name
@@ -118,16 +121,6 @@ public class FileServiceImpl implements FileUpload {
 		
 		for(String directory : directories) str.append("/").append(directory);
 		return str.toString();
-	}
-	
-	// get local on this PC - EX: file://C:/.../src/main/data/images/...
-	protected String pathLocal(String...directories) {
-		return context.getRealPath(uri(directories));
-	}
-	
-	// get url on server - EX: http://localhost:8080/data/images/...
-	protected String pathServer(String path) {
-		return ServletUriComponentsBuilder.fromCurrentContextPath().path(path).toUriString();
 	}
 
 	// get file and make folders if not doesn't exist
