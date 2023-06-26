@@ -1,4 +1,4 @@
-package courage.controllers.rest;
+package courage.controller.rest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @param K is type of entity's key
  * 
  * @see courage.model.entities.User
- * @see courage.controllers.rest.AbstractAPI_SaveAll
+ * @see courage.controller.rest.AbstractAPI_SaveAll
  */
 public abstract class AbstractRestAPI<E, K> extends AbstractAPI_SaveAll<E, K> {
 
@@ -27,7 +27,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_SaveAll<E, K> {
    @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
 	public ResponseEntity<Object> saveOne(@RequestBody E entity) {
 		try { // save one data
-			return ResponseEntity.ok(dao.save(entity));
+			return ResponseEntity.ok(rep.save(entity));
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(e.getMessage());
 		}
@@ -44,7 +44,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_SaveAll<E, K> {
 	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {
 		if (id != null)
 			try { // delete by id
-				dao.deleteById(id);
+				rep.deleteById(id);
 				return ResponseEntity.ok().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(400).body(e.getMessage());

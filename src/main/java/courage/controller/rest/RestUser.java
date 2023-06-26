@@ -1,4 +1,4 @@
-package courage.controllers.rest;
+package courage.controller.rest;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

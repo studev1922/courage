@@ -43,11 +43,11 @@ SET IDENTITY_INSERT [dbo].[UACCOUNT] ON
 INSERT INTO [dbo].[UACCOUNT]
    ([uid], [username], [email], [password], [fullname])
 VALUES
-   (1001, 'admin', 'ngoduyhoaname2002@gmail.com', '123', N'Admin System Test'),
-   (1002, 'staff', 'sdhoa1922@gmail.com', '123', N'Staff System Test'),
-   (1003, 'user1', 'user1.studev1922@gmail.com', '123', N'User System Test'),
-   (1004, 'user2', 'user2.studev1922@gmail.com', '123', N'User System Test'),
-   (1005, 'partner', 'partner.studev1922@gmail.com', '123', N'Partner System Test');
+   (1001, 'admin', 'ngoduyhoaname2002@gmail.com', PWDENCRYPT('123'), N'Admin System Test'),
+   (1002, 'staff', 'sdhoa1922@gmail.com', PWDENCRYPT('123'), N'Staff System Test'),
+   (1003, 'user1', 'user1.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test'),
+   (1004, 'user2', 'user2.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test'),
+   (1005, 'partner', 'partner.studev1922@gmail.com', PWDENCRYPT('123'), N'Partner System Test');
 GO
 SET IDENTITY_INSERT [dbo].[UACCOUNT] OFF
 

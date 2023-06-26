@@ -33,13 +33,13 @@ GO
 */
 -- ---------------------------------------------------------------------------------------------------- #TABLES
 -- Drop [UACCOUNT] table if already exist then create new [UACCOUNT] table
-IF OBJECT_ID('USER', 'U') IS NOT NULL DROP TABLE [UACCOUNT]
+IF OBJECT_ID('UACCOUNT', 'U') IS NOT NULL DROP TABLE [UACCOUNT]
 GO
 CREATE TABLE [UACCOUNT] (
    [uid] bigint identity primary key,
    [username] varchar(20) null unique, -- username for login
    [email] varchar(50) unique not null, -- email for contact
-   [password] varchar(70) not null, -- size of PWDENCRYPT = 70
+   [password] binary(70) not null, -- size of PWDENCRYPT = 70
    [fullname] nvarchar(50) not null
 );
 GO
@@ -112,6 +112,30 @@ CREATE TABLE [US_UR] ( -- USER ROLES (authorization)
    [ur_id] tinyint foreign key references [UROLES]([urid]) not null,
    primary key ([u_id], [ur_id])
 );
+GO
+
+-- ---------------------------------------------------------------------------------------------------- #PROCEDURES
+-- Create procedure login >>> login by (username or email) and password
+IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_login') DROP PROC pr_login
+GO
+CREATE PROCEDURE pr_login
+   @username varchar(256), @password varchar(256)
+AS
+BEGIN
+   DECLARE @error nvarchar(255);
+   IF @username is null OR LEN(@password) = 0 RAISERROR('username is empty',15,1);
+   IF @password is null OR LEN(@password) = 0 RAISERROR('password is empty',15,1);
+
+   SELECT u.*, r.ua_id INTO #USER FROM UACCOUNT u LEFT JOIN US_UA r ON u.uid = r.u_id
+   WHERE (username = @username OR email = @username) AND PWDCOMPARE(@password, password) = 1;
+
+   IF NOT EXISTS(SELECT [uid] FROM #USER) BEGIN
+      SET @error = CONCAT('username:', @username, ' and password:', @password, ' is incorrect');
+      RAISERROR(@error, 15,1);
+   END ELSE IF ((SELECT ua_id FROM #USER) > 1)
+      SELECT * FROM #USER
+   ELSE RAISERROR('This account is not activated yet!!!', 15,1);
+END
 GO
 
 USE master

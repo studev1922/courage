@@ -36,10 +36,11 @@ public interface User {
    @NoArgsConstructor @AllArgsConstructor
    class Platform {
       @Id private Integer upid;
+      @Column(unique = true)
       private String upName;
       private String upOther;
 
-      @ElementCollection @Column(name = "u_id")
+      @ElementCollection(fetch = FetchType.LAZY) @Column(name = "u_id")
       @CollectionTable(
          name="US_UP",
          joinColumns = @JoinColumn( name="up_id", referencedColumnName = "upid")
@@ -51,9 +52,10 @@ public interface User {
    @NoArgsConstructor @AllArgsConstructor
    class Access {
       @Id private Integer uaid;
+      @Column(unique = true)
       private String uaName;
       
-      @ElementCollection @Column(name = "u_id")
+      @ElementCollection(fetch = FetchType.LAZY) @Column(name = "u_id")
       @CollectionTable(
          name="US_UA",
          joinColumns = @JoinColumn( name="ua_id", referencedColumnName = "uaid")
@@ -65,9 +67,10 @@ public interface User {
    @NoArgsConstructor @AllArgsConstructor
    class Role {
       @Id private Integer urid;
+      @Column(unique = true)
       private String role;
       
-      @ElementCollection @Column(name = "u_id")
+      @ElementCollection(fetch = FetchType.LAZY) @Column(name = "u_id")
       @CollectionTable(
          name="US_UR",
          joinColumns = @JoinColumn( name="ur_id", referencedColumnName = "urid")
@@ -88,10 +91,12 @@ public interface User {
 
       @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
       private Long uid;
+      @Column(unique = true)
       private String username;
+      @Column(unique = true)
+      private String email;
       private String password;
       private String fullname;
-      private String email;
 
       // user access by UACCESS's id
       @ObtainVia

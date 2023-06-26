@@ -1,4 +1,4 @@
-package courage.controllers.rest;
+package courage.controller.rest;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import courage.model.services.FileUpload;
  * @param K is type of entity's key
  * 
  * @see courage.model.entities.User
- * @see courage.controllers.rest.AbstractAPI_SaveAll
+ * @see courage.controller.rest.AbstractAPI_SaveAll
  */
 public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 
@@ -59,9 +59,9 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {
 		if (id != null)
 			try {
-				Optional<E> o = dao.findById(id);
+				Optional<E> o = rep.findById(id);
 				if (o.isPresent()) {
-					dao.deleteById(id);
+					rep.deleteById(id);
 					file.deleteFiles(filesExist(o.get()), directory);
 				}
 				return ResponseEntity.ok().build();
@@ -75,7 +75,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 	// save file images | e1: previous entity & e2: next entity
 	protected E updateEntity(E e, MultipartFile... files) throws Exception {
 		// @formatter:off
-		Optional<E> o = dao.findById(getKey(e)); // delete previous images
+		Optional<E> o = rep.findById(getKey(e)); // delete previous images
 		if(o.isPresent()) file.deleteFiles(filesExist(o.get()), directory);
 
 		if (this.filesExist(e).length > 0) { // add new all files
@@ -93,13 +93,13 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 			this.setFiles(e, new HashSet<>(Arrays.asList(images))); 
 			
 			// save entity with all images when successfully
-			if(null != (e = this.dao.save(e))) {
+			if(null != (e = this.rep.save(e))) {
 				for(int i = 0; i < length; i++)
 					file.saveFile(images[i], files[i], directory);
 			}
 
 			return e;
-		} else return this.dao.save(e); // save entity without images
+		} else return this.rep.save(e); // save entity without images
 		// @formatter:on
 	}
 
