@@ -20,6 +20,22 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
    </thead>
    <tbody>
       <tr>
+         <td rowspan="2">login with jwt or username and password</td>
+         <th rowspan="2">POST</th>
+         <td colspan="2" style="text-align: center">
+            <h3>[authorization:'token ...'] has higher priority than [username & password]</h3>
+         </td>
+      </tr>
+      <tr>
+         <td>http://localhost:8080/api/accounts/login</td>
+         <td>
+            <ul>
+               <li>USERNAME & PASSWORD: ?username=admin&password=123</li>
+               <li>JSON WEB TOKEN: header['authorization'] = '[token...]'</li>
+            </ul>
+         </td>
+      </tr>
+      <tr>
          <td>read account's image file on divice</td>
          <th>GET</th>
          <td>[project's location...]\courage\src\main\webapp\uploads\account\{fileName}</td>
