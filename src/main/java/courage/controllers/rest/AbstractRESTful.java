@@ -1,5 +1,6 @@
 package courage.controllers.rest;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -8,43 +9,61 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import courage.model.services.FileUpload;
 
-public abstract class AbstractRESTful<E, K> extends AbstractReadAPI<E, K> {
+/**
+ * POST - PUT methods receive single data by multipart/form-data
+ * POST - PUT methods receive multiple data by json body
+ * 
+ * @param E is type of entity
+ * @param K is type of entity's key
+ * 
+ * @see courage.model.entities.User
+ * @see courage.controllers.rest.AbstractAPI_SaveAll
+ */
+public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 
 	// @formatter:off
 	@Autowired protected FileUpload file;
-	protected final String directory;
-	protected abstract K getKey(E e);
+	protected final String directory; // image storage folder
+	protected abstract K getKey(E e); // entity's key
 	protected abstract String[] filesExist(E e);
 	protected abstract void setFiles(E e, Set<String> images);
 	AbstractRESTful(String directory) { this.directory = directory; }
 	// @formatter:on
 
-	@RequestMapping(value = { "", "/{any}" }, method = { RequestMethod.POST, RequestMethod.PUT })
-	public ResponseEntity<Object> saveOne(E entity, @RequestBody(required = false) MultipartFile[] files) {
+	@PutMapping({ "", "/one" })
+	@PostMapping({ "", "/one" })
+	public ResponseEntity<Object> save(E entity, @RequestBody(required = false) MultipartFile[] files) {
 		try {
-			Optional<E> o = dao.findById(getKey(entity));
-			E e1 = o.isPresent() ? o.get() : null;
-			E e2 = dao.save(entity); // save first data
-	
-			this.updateImage(e1, e2, files);
-			return ResponseEntity.ok(e2);
+			entity = this.updateEntity(entity, files);
+			return ResponseEntity.ok(entity);
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(e.getMessage());
 		}
+	}
+
+	@Override
+	@PostMapping("/all")
+	@PutMapping("/all")
+	public ResponseEntity<Object> saveAll(@RequestBody Iterable<E> entities) {
+		return super.saveAll(entities);
 	}
 
 	@DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
 	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {
 		if (id != null)
 			try {
-				dao.deleteById(id);
+				Optional<E> o = dao.findById(id);
+				if (o.isPresent()) {
+					dao.deleteById(id);
+					file.deleteFiles(filesExist(o.get()), directory);
+				}
 				return ResponseEntity.ok().build();
 			} catch (Exception e) {
 				return ResponseEntity.status(400).body(e.getMessage());
@@ -53,28 +72,35 @@ public abstract class AbstractRESTful<E, K> extends AbstractReadAPI<E, K> {
 			return ResponseEntity.noContent().build();
 	}
 
-	// save file images | e1: old entity & e2: new entity
-	protected void updateImage(E e1, E e2, MultipartFile... files) {
-		if (e2 == null || files == null) return;
-		
-		if(e1 != null) file.deleteFiles(filesExist(e1), directory);
+	// save file images | e1: previous entity & e2: next entity
+	protected E updateEntity(E e, MultipartFile... files) throws Exception {
+		// @formatter:off
+		Optional<E> o = dao.findById(getKey(e)); // delete previous images
+		if(o.isPresent()) file.deleteFiles(filesExist(o.get()), directory);
 
-		if (this.filesExist(e2).length > 0) { // add new all files
-			Set<String> images = new HashSet<>(files.length);
-			Long at = System.currentTimeMillis();
-			String name = null;
-
-			System.out.println(file.pathLocal(directory));
-			System.out.println(file.pathServer(directory));
-			for (MultipartFile f : files) {
-				name = fileHashName(at, f.getOriginalFilename());
-				images.add(file.saveFile(name, f, directory));
-				System.out.println(name);
+		if (this.filesExist(e).length > 0) { // add new all files
+			int length = files.length;
+			String[] images = new String[length];
+			
+			// hash file name
+			for(int i = 0; i < length; i++)
+				images[i] = fileHashName(
+					System.currentTimeMillis(),
+					files[i].getOriginalFilename()
+				);
+				
+			// set new images
+			this.setFiles(e, new HashSet<>(Arrays.asList(images))); 
+			
+			// save entity with all images when successfully
+			if(null != (e = this.dao.save(e))) {
+				for(int i = 0; i < length; i++)
+					file.saveFile(images[i], files[i], directory);
 			}
 
-			this.setFiles(e2, images); // set new images
-			this.dao.save(e2); // update image to database
-		}
+			return e;
+		} else return this.dao.save(e); // save entity without images
+		// @formatter:on
 	}
 
 	// hash code array String EX: ["a", 1, 3, x.jpg] => "2761525322623523.jpg"

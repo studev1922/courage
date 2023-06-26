@@ -16,7 +16,7 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
    public RestUAccount() {
       super("account");
    }
-   
+
    @Override
    protected Long getKey(Account e) {
       return e.getUid();
@@ -24,7 +24,7 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
 
    @Override
    protected String[] filesExist(Account e) {
-      return e.getImages().toArray(new String[1]);
+      return e == null ? new String[0] : e.getImages().toArray(new String[1]);
    }
 
    @Override

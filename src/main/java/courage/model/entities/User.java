@@ -8,6 +8,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,6 +21,14 @@ import lombok.Builder.ObtainVia;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * <h2>CRM entity</h2>
+ * 
+ * @see User.Account
+ * @see User.Role
+ * @see User.Access
+ * @see User.Platform
+ */
 public interface User {
 
    // @formatter:off
@@ -90,8 +99,7 @@ public interface User {
       private Integer access = 0;
 
       // user's images
-      @ObtainVia 
-      @ElementCollection
+      @ElementCollection(fetch = FetchType.EAGER)
       @Column(name = "image")
       @CollectionTable( name = "UIMAGE", 
          joinColumns = @JoinColumn(name = "u_id")
