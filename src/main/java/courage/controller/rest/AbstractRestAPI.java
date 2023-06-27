@@ -33,13 +33,6 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_SaveAll<E, K> {
 		}
 	}
 
-	@Override
-	@PostMapping("/all")
-	@PutMapping("/all")
-	public ResponseEntity<Object> saveAll(@RequestBody Iterable<E> entities) {
-		return super.saveAll(entities);
-	}
-
    @DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
 	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {
 		if (id != null)

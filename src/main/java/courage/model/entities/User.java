@@ -1,5 +1,6 @@
 package courage.model.entities;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +16,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.SecondaryTable;
+
+import org.hibernate.annotations.ColumnTransformer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder.ObtainVia;
@@ -90,11 +93,13 @@ public interface User {
    class Account {
 
       @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-      private Long uid;
+      private Long uid = -1L;
       @Column(unique = true)
       private String username;
       @Column(unique = true)
       private String email;
+      @Column(updatable = false) // avoid update password
+      @ColumnTransformer(write = "PWDENCRYPT(?)")
       private String password;
       private String fullname;
 

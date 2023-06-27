@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import courage.model.services.FileUpload;
@@ -37,8 +39,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 	AbstractRESTful(String directory) { this.directory = directory; }
 	// @formatter:on
 
-	@PutMapping({ "", "/one" })
-	@PostMapping({ "", "/one" })
+	@RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
 	public ResponseEntity<Object> save(E entity, @RequestBody(required = false) MultipartFile[] files) {
 		try {
 			entity = this.updateEntity(entity, files);
@@ -46,13 +47,6 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_SaveAll<E, K> {
 		} catch (Exception e) {
 			return ResponseEntity.status(400).body(e.getMessage());
 		}
-	}
-
-	@Override
-	@PostMapping("/all")
-	@PutMapping("/all")
-	public ResponseEntity<Object> saveAll(@RequestBody Iterable<E> entities) {
-		return super.saveAll(entities);
 	}
 
 	@DeleteMapping({ "", "/{id}" }) // Delete method to remove entity

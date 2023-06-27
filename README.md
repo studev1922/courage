@@ -20,6 +20,26 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
    </thead>
    <tbody>
       <tr>
+         <td>update only password</td>
+         <th>PUT, PATCH</th>
+         <td>http://localhost:8080/api/accounts/update-passowrd</td>
+         <td>
+            <h3>unique is email or username</h3>
+            <ol>
+               <li>http://localhost:8080/api/accounts/update-passowrd?email=...&password=...</li>
+               <li>http://localhost:8080/api/accounts/update-passowrd?unique=...&password=...</li>
+               <li>http://localhost:8080/api/accounts/update-passowrd?username=...&password=...</li>
+            </ol>
+         </td>
+      </tr>
+      <tr>
+         <td>log-out account</td>
+         <th>ALL</th>
+         <td colspan="2" style="text-align: center">
+            http://localhost:8080/api/accounts/logout
+         </td>
+      </tr>
+      <tr>
          <td rowspan="2">login with jwt or username and password</td>
          <th rowspan="2">POST</th>
          <td colspan="2" style="text-align: center">

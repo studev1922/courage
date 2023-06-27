@@ -114,8 +114,10 @@ CREATE TABLE [US_UR] ( -- USER ROLES (authorization)
 );
 GO
 
+
+
 -- ---------------------------------------------------------------------------------------------------- #PROCEDURES
--- Create procedure login >>> login by (username or email) and password
+-- Create procedure pr_login >>> login by (username or email) and password
 IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_login') DROP PROC pr_login
 GO
 CREATE PROCEDURE pr_login
@@ -135,6 +137,26 @@ BEGIN
    END ELSE IF ((SELECT ua_id FROM #USER) > 1)
       SELECT * FROM #USER
    ELSE RAISERROR('This account is not activated yet!!!', 15,1);
+END
+GO
+
+-- Create procedure pr_update_pass >>> update password by username or email
+IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_update_pass') DROP PROC pr_login
+GO
+CREATE PROCEDURE pr_update_pass
+   @unique varchar(256), @password varchar(256)
+AS
+BEGIN
+   DECLARE @err nvarchar(256);
+   DECLARE @id bigint = (SELECT [uid] FROM UACCOUNT WHERE @unique IN ([username], [email]));
+
+   IF @id IS NOT NULL BEGIN
+      UPDATE UACCOUNT SET [password]=PWDENCRYPT(@password) WHERE [uid]=@id;
+      SELECT [password] FROM UACCOUNT WHERE [uid]=@id;
+   END ELSE BEGIN
+      SET @err = CONCAT(@unique, ' does not exist, cannot update this password:', @password)
+      RAISERROR(@err, 15,1);
+   END
 END
 GO
 
