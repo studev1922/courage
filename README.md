@@ -25,11 +25,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
          <td>http://localhost:8080/api/accounts/update-passowrd</td>
          <td>
             <h3>unique is email or username</h3>
-            <ol>
-               <li>http://localhost:8080/api/accounts/update-passowrd?email=...&password=...</li>
-               <li>http://localhost:8080/api/accounts/update-passowrd?unique=...&password=...</li>
-               <li>http://localhost:8080/api/accounts/update-passowrd?username=...&password=...</li>
-            </ol>
+            http://localhost:8080/api/accounts/update-passowrd?unique=...&password=...
          </td>
       </tr>
       <tr>

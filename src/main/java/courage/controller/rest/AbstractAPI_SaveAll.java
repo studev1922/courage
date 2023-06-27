@@ -1,9 +1,6 @@
 package courage.controller.rest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -28,6 +25,7 @@ abstract class AbstractAPI_SaveAll<E, K> extends AbstractAPI_Read<E, K> {
       try { // save all data
          return ResponseEntity.ok(rep.saveAll(entities));
       } catch (Exception e) {
+         e.printStackTrace();
          return ResponseEntity.status(400).body(e.getMessage());
       }
    }

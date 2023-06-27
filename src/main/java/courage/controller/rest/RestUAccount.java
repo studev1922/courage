@@ -1,6 +1,7 @@
 package courage.controller.rest;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -10,12 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import courage.model.entities.User;
 import courage.model.entities.User.Account;
 import courage.model.repositories.UAccountRepository;
 import courage.model.services.JwtService;
@@ -25,48 +24,20 @@ import courage.model.services.JwtService;
 @RequestMapping({ "/api/accounts" })
 public class RestUAccount extends AbstractRESTful<Account, Long> {
 
-   @Autowired
-   private JwtService jwt;
-   @Autowired
-   private HttpServletRequest req;
-
-   public RestUAccount() {
-      super("account");
-   }
+   // @formatter:off
+   @Autowired private JwtService jwt;
+   @Autowired private HttpServletRequest req;
+   public RestUAccount() { super(true, "account");}
+   // @formatter:on
 
    @PostMapping("/login")
    public ResponseEntity<Object> login() {
       UAccountRepository dao = ((UAccountRepository) super.rep);
-      String bearer = req.getHeader("authorization");
-      String us = req.getParameter("username");
-      String pw = req.getParameter("password");
-      String token = null;
-      User.Account e;
+      String token = req.getHeader("authorization");
 
-      if (bearer != null && !bearer.isEmpty())
-         try {
-            token = bearer.substring(bearer.lastIndexOf(" "));
-            String username = jwt.verify(token);
-            e = dao.findByUsername(username);
-            return e != null
-                  ? ResponseEntity.ok(e)
-                  : ResponseEntity.status(401).body("account is empty!");
-         } catch (Exception ex) {
-            return ResponseEntity.status(401).body(ex.getMessage());
-         }
-      else
-         try { // sign new token
-            e = dao.pr_login(us, pw);
-            if (e != null) {
-               String username = e.getUsername();
-               req.login(username, e.getPassword()); // servlet login
-               return ResponseEntity.ok(jwt.sign(username)); // create token
-            } else {
-               return ResponseEntity.status(401).body("account is empty!");
-            }
-         } catch (Exception ex) {
-            return ResponseEntity.status(401).body(ex.getMessage());
-         }
+      return (token != null && !token.isEmpty())
+            ? this.handleToken(dao, token) // login by token
+            : this.handleLogin(dao); // login by username and password
    }
 
    @RequestMapping("/logout")
@@ -79,22 +50,19 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
    }
 
    // @PreAuthorize
-   @RequestMapping(value = "/update-passowrd", method = {RequestMethod.PUT, RequestMethod.PATCH})
+   @RequestMapping(value = "/update-passowrd", method = { RequestMethod.PUT, RequestMethod.PATCH })
    public ResponseEntity<Object> updatePassword() {
       UAccountRepository dao = ((UAccountRepository) super.rep);
       String unique = req.getParameter("unique");
-      String email = req.getParameter("email");
-      String username = req.getParameter("username");
       String password = req.getParameter("password");
-      unique = unique!=null ? unique : username==null 
-         ? email==null ? null : email : username;
-      
+
       try {
          return (password = dao.update_password(unique, password)) != null
-            ? ResponseEntity.ok(password)
-            : ResponseEntity.status(500).body("update password failed!");
+               ? ResponseEntity.ok(password)
+               : ResponseEntity.status(500).body("update password failed!");
       } catch (SQLException ex) {
-            return ResponseEntity.status(500).body(ex.getMessage());
+         ex.printStackTrace();
+         return ResponseEntity.status(500).body(ex.getMessage());
       }
 
    }
@@ -105,12 +73,56 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
    }
 
    @Override
-   protected String[] filesExist(Account e) {
-      return e == null ? new String[0] : e.getImages().toArray(new String[1]);
+   protected String[] filesExist(Account e, String... prevents) {
+      if (e == null)
+         return new String[0];
+      Set<String> images = e.getImages();
+      images.removeAll(Arrays.asList(prevents));
+      return images.toArray(new String[0]);
    }
 
    @Override
    protected void setFiles(Account e, Set<String> images) {
       e.setImages(images);
+   }
+
+   private ResponseEntity<Object> handleToken(UAccountRepository dao, String token) {
+      String username;
+      Account e;
+
+      try {
+         token = token.substring(token.lastIndexOf(" "));
+         username = jwt.verify(token); // find username by token
+         e = dao.findByUsername(username);
+         req.login(username, e.getPassword()); // servlet login
+
+         return e != null
+               ? ResponseEntity.ok(e)
+               : ResponseEntity.status(401).body("account is empty!");
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         return ResponseEntity.status(401).body(ex.getMessage());
+      }
+   }
+
+   private ResponseEntity<Object> handleLogin(UAccountRepository dao) {
+      String us = req.getParameter("username");
+      String pw = req.getParameter("password");
+      String username;
+      Account e;
+
+      try { // sign new token
+         e = dao.pr_login(us, pw);
+         if (e != null) {
+            username = e.getUsername();
+            req.login(username, e.getPassword()); // servlet login
+            return ResponseEntity.ok(jwt.sign(username)); // create token
+         } else {
+            return ResponseEntity.status(401).body("account is empty!");
+         }
+      } catch (Exception ex) {
+         ex.printStackTrace();
+         return ResponseEntity.status(401).body(ex.getMessage());
+      }
    }
 }

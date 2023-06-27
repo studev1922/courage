@@ -31,6 +31,7 @@ public abstract class AbstractAPI_Read<E, K> {
          return ResponseEntity.ok(id == null ? rep.findAll()
                : rep.findAllById(java.util.Arrays.asList(id)));
       } catch (Exception e) {
+         e.printStackTrace();
          return ResponseEntity.status(400).body(e.getMessage());
       }
    }
