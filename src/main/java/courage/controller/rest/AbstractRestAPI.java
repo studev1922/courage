@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
+ * <h2 style='text-align: center'>POST PUT JSON WITHOUT FILES</h2>
+ * 
  * POST - PUT methods only receive json body
  * - save without file<br>
  * - save one data json<br>
@@ -17,9 +19,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @param K is type of entity's key
  * 
  * @see courage.model.entities.User
- * @see courage.controller.rest.AbstractAPI_SaveAll
+ * @see courage.controller.rest.AbstractAPI_Read
  */
-public abstract class AbstractRestAPI<E, K> extends AbstractAPI_SaveAll<E, K> {
+public abstract class AbstractRestAPI<E, K> extends AbstractAPI_Read<E, K> {
 
 	// @formatter:off
    @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
@@ -30,6 +32,16 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_SaveAll<E, K> {
 			return ResponseEntity.status(400).body(e.getMessage());
 		}
 	}
+
+   @RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
+   public ResponseEntity<Object> saveAll(Iterable<E> entities) {
+      try { // save all data
+         return ResponseEntity.ok(rep.saveAll(entities));
+      } catch (Exception e) {
+         e.printStackTrace();
+         return ResponseEntity.status(400).body(e.getMessage());
+      }
+   }
 
    @DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
 	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {

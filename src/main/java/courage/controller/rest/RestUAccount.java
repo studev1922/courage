@@ -64,7 +64,6 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
          ex.printStackTrace();
          return ResponseEntity.status(500).body(ex.getMessage());
       }
-
    }
 
    @Override

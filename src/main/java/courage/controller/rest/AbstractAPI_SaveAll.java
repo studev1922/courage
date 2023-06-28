@@ -18,15 +18,5 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 abstract class AbstractAPI_SaveAll<E, K> extends AbstractAPI_Read<E, K> {
 
-   // @formatter:offs
-
-   @RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
-   public ResponseEntity<Object> saveAll(Iterable<E> entities) {
-      try { // save all data
-         return ResponseEntity.ok(rep.saveAll(entities));
-      } catch (Exception e) {
-         e.printStackTrace();
-         return ResponseEntity.status(400).body(e.getMessage());
-      }
-   }
+   // @formatter:off
 }
