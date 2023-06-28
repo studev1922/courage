@@ -1,11 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Client test Account Form</title>
+
+   <!-- Bootstrap v5.1.3 style -->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
+
 <body>
-     
+   <div class="container-xxl border">
+      <h1 class="display-3">FORM DATA</h1>
+      <!-- Temp form -->
+      <form action="http://localhost:8080/api/accounts/one" method="post" class="row p-1 col-xxl-8 col-sm-12 border"
+         id="formTemp" enctype="multipart/form-data">
+         <h2 class="col-9">account</h2>
+         <div class="col-2">
+
+         </div>
+         <div class="col-1">
+            <button type="button" class="btn-outline-success" onclick="appendForm(formTemp, this)">➕</button>
+         </div>
+         <!-- FIELDS -->
+         <div class="col-4">
+            <div class="me-2 text-nowrap">
+               <input type="checkbox" class="form-check-input" id="random" onchange="randomFields(formTemp, this)">
+               <label class="form-check-label" for="random">RANDOM</label>
+            </div>
+            <input type="hidden" value="-1" name="uid">
+            <div class="mt-1">
+               <label class="form-label">username</label>
+               <input type="text" class="form-control" name="username">
+            </div>
+            <div class="mt-1">
+               <label class="form-label">email</label>
+               <input type="email" class="form-control" name="email">
+            </div>
+            <div class="mt-1">
+               <label class="form-label">password</label>
+               <input type="password" class="form-control" name="password">
+            </div>
+            <div class="mt-1">
+               <label class="form-label">fullname</label>
+               <input type="text" class="form-control" name="fullname">
+            </div>
+         </div>
+         <!-- RELATIONSHIPS -->
+         <div class="col-8">
+            <!-- ACCESS -->
+            <div class="mt-1">
+               <label class="form-label">access</label>
+               <div class="d-flex text-nowrap">
+                  <div class="m-1">
+                     <input type="radio" class="form-check-input" value="0" name="access" checked>
+                     <label class="form-check-label">AWAITING</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="radio" class="form-check-input" value="1" name="access">
+                     <label class="form-check-label">LOCK</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="radio" class="form-check-input" value="2" name="access">
+                     <label class="form-check-label">PRIVATE</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="radio" class="form-check-input" value="3" name="access">
+                     <label class="form-check-label">PROTECTED</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="radio" class="form-check-input" value="4" name="access">
+                     <label class="form-check-label">PUBLIC</label>
+                  </div>
+               </div>
+            </div>
+            <!-- ROLE -->
+            <div class="mt-1">
+               <label class="form-label">roles</label>
+               <div class="d-flex">
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="0" name="roles" checked>
+                     <label class="form-check-label">USER</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="1" name="roles">
+                     <label class="form-check-label">STAFF</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="2" name="roles">
+                     <label class="form-check-label">ADMIN</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="3" name="roles">
+                     <label class="form-check-label">PARTNER</label>
+                  </div>
+               </div>
+            </div>
+            <!-- PLATFORM -->
+            <div class="mt-1">
+               <label class="form-label">platforms</label>
+               <div class="d-flex">
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="0" name="platforms" checked>
+                     <label class="form-check-label">SYSTEM</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="1" name="platforms">
+                     <label class="form-check-label">GOOGLE</label>
+                  </div>
+                  <div class="m-1">
+                     <input type="checkbox" class="form-check-input" value="2" name="platforms">
+                     <label class="form-check-label">FACEBOOK</label>
+                  </div>
+               </div>
+            </div>
+            <div class="mt-1">
+               <label for="formFileSm" class="form-label">files</label>
+               <input class="form-control form-control-sm" type="file" name="files" multiple>
+            </div>
+         </div>
+         <div class="col-12 text-end">
+            <button class="btn-primary" type="submit">submit one</button>
+         </div>
+      </form>
+      <!-- append form -->
+      <div class="container-fluid">
+         <div class="mt-2">
+            <h1>multiple form</h1>
+            <div class="d-flex justify-content-end gap-1">
+               <button class="btn btn-outline-primary" onclick="sumitAll()">submit all</button>
+               <button class="btn btn-danger" onclick="metaForm.innerHTML=null; i=0;">clear all</button>
+            </div>
+         </div>
+         <div class="row flex-wrap-reverse justify-content-center" id="metaForm"></div>
+      </div>
+   </div>
+
+   <!-- Bootstrap v5.1.3 bundle scripts -->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"></script>
+
+   <!-- App script -->
+   <script>
+      const metaForm = document.getElementById('metaForm');
+      const meta = new Array();
+
+      let i = 0;
+      function appendForm(temp) {
+         let newForm = temp.cloneNode(true);
+         let formId = `form${++i}`;
+         let btn = newForm.getElementsByTagName('button')[0];
+
+         newForm.querySelector("div.col-4 > div.me-2.text-nowrap").innerHTML = null;
+         newForm.getElementsByTagName('h2')[0].innerText = formId;
+         newForm.setAttribute('id', formId);
+         btn.setAttribute('onclick', `metaForm.removeChild(${formId})`);
+         btn.setAttribute('class', 'btn-outline-danger')
+         btn.innerText = '❌';
+         metaForm.appendChild(newForm);
+      }
+
+      function sumitAll() {
+         for (let form of metaForm.children)
+            meta.push(new FormData(form));
+
+         fetch('http://localhost:8080/api/accounts/all', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'multipart/form-data;boundary=U1RVREVWLUNPVVJBR0U='
+            },
+            body: meta
+         })
+            .then(response => response.json())
+            .then(response => console.log(JSON.stringify(response)))
+      }
+
+      function randomFields(temp, check) {
+         if (!check.checked) return;
+         temp.querySelector("#formTemp > div.col-4 > div:nth-child(3) > input").value = rValue() // username
+         temp.querySelector("#formTemp > div.col-4 > div:nth-child(4) > input").value = rValue(36, '@gmail.com') // email
+         temp.querySelector("#formTemp > div.col-4 > div:nth-child(5) > input").value = '123' // password
+         temp.querySelector("#formTemp > div.col-4 > div:nth-child(6) > input").value = rValue() // name
+      }
+
+      var rValue = (x = 36, last = '') => (Math.random() + 1).toString(x).substring(7) + last;
+   </script>
 </body>
+
 </html>
