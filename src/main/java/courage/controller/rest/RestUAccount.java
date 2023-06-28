@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import courage.model.entities.User.Account;
+import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 import courage.model.services.JwtService;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping({ "/api/accounts" })
-public class RestUAccount extends AbstractRESTful<Account, Long> {
+public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // @formatter:off
    @Autowired private JwtService jwt;
@@ -67,12 +67,12 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
    }
 
    @Override
-   protected Long getKey(Account e) {
+   protected Long getKey(UAccount e) {
       return e.getUid();
    }
 
    @Override
-   protected String[] filesExist(Account e, String... prevents) {
+   protected String[] filesExist(UAccount e, String... prevents) {
       if (e == null)
          return new String[0];
       Set<String> images = e.getImages();
@@ -81,13 +81,13 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
    }
 
    @Override
-   protected void setFiles(Account e, Set<String> images) {
+   protected void setFiles(UAccount e, Set<String> images) {
       e.setImages(images);
    }
 
    private ResponseEntity<Object> handleToken(UAccountRepository dao, String token) {
       String username;
-      Account e;
+      UAccount e;
 
       try {
          token = token.substring(token.lastIndexOf(" "));
@@ -108,7 +108,7 @@ public class RestUAccount extends AbstractRESTful<Account, Long> {
       String us = req.getParameter("username");
       String pw = req.getParameter("password");
       String username;
-      Account e;
+      UAccount e;
 
       try { // sign new token
          e = dao.pr_login(us, pw);

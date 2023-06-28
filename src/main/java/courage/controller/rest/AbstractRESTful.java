@@ -2,7 +2,6 @@ package courage.controller.rest;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import courage.model.entities.FormData;
 import courage.model.services.FileUpload;
 
 /**
@@ -50,6 +48,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 	@RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
 	public ResponseEntity<Object> save(E entity, @RequestBody(required = false) MultipartFile... files) {
+		System.out.println(entity);
 		try {
 			entity = this.updateEntity(entity, files);
 			return ResponseEntity.ok(entity);
@@ -57,28 +56,6 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 			e.printStackTrace();
 			return ResponseEntity.status(400).body(e.getMessage());
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.PUT })
-	// make sure that entity(form) extends E and implements FormData
-	public ResponseEntity<Object> save(Iterable<FormData> entities) {
-		Iterator<FormData> iterator = entities.iterator();
-		MultipartFile[] files;
-		FormData form;
-		E e;
-
-		while (iterator.hasNext()) {
-			form = (FormData) iterator.next();
-			files = form.getFiles();
-			e = (E) form;
-
-			// TODO this.updateEntity(e, files); sucess:append to return <> catch printStackTrace
-			System.out.println("files.length: " + files.length);
-			System.out.println("entity: " + e.toString());
-		}
-
-		return ResponseEntity.ok(entities);
 	}
 
 	@DeleteMapping({ "", "/{id}" }) // Delete method to remove entity

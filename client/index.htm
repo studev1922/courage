@@ -19,17 +19,14 @@
          id="formTemp" enctype="multipart/form-data">
          <h2 class="col-9">account</h2>
          <div class="col-2">
-
+            <button type="button" class="btn-outline-warning" onclick="randomFields(formTemp)">random</button>
+            <button type="button" class="btn-outline-secondary" onclick="clearFields(formTemp)">clear</button>
          </div>
          <div class="col-1">
             <button type="button" class="btn-outline-success" onclick="appendForm(formTemp, this)">➕</button>
          </div>
          <!-- FIELDS -->
          <div class="col-4">
-            <div class="me-2 text-nowrap">
-               <input type="checkbox" class="form-check-input" id="random" onchange="randomFields(formTemp, this)">
-               <label class="form-check-label" for="random">RANDOM</label>
-            </div>
             <input type="hidden" value="-1" name="uid">
             <div class="mt-1">
                <label class="form-label">username</label>
@@ -41,7 +38,8 @@
             </div>
             <div class="mt-1">
                <label class="form-label">password</label>
-               <input type="password" class="form-control" name="password">
+               <input title="double click show this field password" type="password" class="form-control" name="password"
+                  ondblclick="this.type=this.type=='text' ? 'password' : 'text'">
             </div>
             <div class="mt-1">
                <label class="form-label">fullname</label>
@@ -146,15 +144,18 @@
    <!-- App script -->
    <script>
       const metaForm = document.getElementById('metaForm');
-      const meta = new Array();
 
       let i = 0;
       function appendForm(temp) {
          let newForm = temp.cloneNode(true);
          let formId = `form${++i}`;
-         let btn = newForm.getElementsByTagName('button')[0];
+         let btn = newForm.getElementsByTagName('button');
+         if (btn?.length) {
+            btn[0].setAttribute('onclick', `randomFields(${formId})`); // btn random
+            btn[1].setAttribute('onclick', `clearFields(${formId})`) // btn clear
+            btn = btn[2]; // btn appen -> remove
+         }
 
-         newForm.querySelector("div.col-4 > div.me-2.text-nowrap").innerHTML = null;
          newForm.getElementsByTagName('h2')[0].innerText = formId;
          newForm.setAttribute('id', formId);
          btn.setAttribute('onclick', `metaForm.removeChild(${formId})`);
@@ -163,30 +164,79 @@
          metaForm.appendChild(newForm);
       }
 
-      function sumitAll() {
-         for (let form of metaForm.children)
-            meta.push(new FormData(form));
+      let sumitAll = async () => {
+         let mesWin = new String(), mesLos = new String();
+         let countWin = 0, countLos = 0;
+         let formNamed;
 
-         fetch('http://localhost:8080/api/accounts/all', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'multipart/form-data;boundary=U1RVREVWLUNPVVJBR0U='
-            },
-            body: meta
-         })
-            .then(response => response.json())
-            .then(response => console.log(JSON.stringify(response)))
+         for (let form of metaForm.children) {
+            formNamed = form.querySelector('h2').innerText;
+
+            await fetch('http://localhost:8080/api/accounts', {
+               method: 'POST',
+               headers: { 'Content-Type': 'multipart/form-data;boundary=U1RVREVWLUNPVVJBR0U=' },
+               body: new FormData(form)
+            }).then(res => response.json())
+               .then(res => {
+                  mesWin += `\n${formNamed} execute sucessfully.`;
+                  metaForm.removeChild(form);
+                  ++countWin;
+               })
+               .catch(err => {
+                  form.style.background = '#ff888880'
+                  mesLos += `\n${formNamed} execute failed: ${err}`;
+                  ++countLos;
+               });
+         }
+
+         if (countWin) alert(`EXECUTE DATA SUCCESS: ${countWin} form. ${mesWin}`)
+         if (countLos) alert(`EXECUTE DATA FAILED: ${countLos} form!!! ${mesLos}`)
       }
 
-      function randomFields(temp, check) {
-         if (!check.checked) return;
-         temp.querySelector("#formTemp > div.col-4 > div:nth-child(3) > input").value = rValue() // username
-         temp.querySelector("#formTemp > div.col-4 > div:nth-child(4) > input").value = rValue(36, '@gmail.com') // email
-         temp.querySelector("#formTemp > div.col-4 > div:nth-child(5) > input").value = '123' // password
-         temp.querySelector("#formTemp > div.col-4 > div:nth-child(6) > input").value = rValue() // name
+      function clearFields(temp) {
+         let inputs = temp.querySelectorAll('input');
+         for (let input of inputs) {
+            switch (input.type) {
+               case 'radio':
+               case 'checkbox':
+                  input.checked = false;
+                  break;
+               default:
+                  input.value = null;
+                  break;
+            }
+         }
+      }
+
+      function randomFields(temp) {
+         // fields
+         let username = temp.querySelector("div.col-4 > div:nth-child(2) > input"); // username
+         let email = temp.querySelector("div.col-4 > div:nth-child(3) > input"); // email
+         let password = temp.querySelector("div.col-4 > div:nth-child(4) > input"); // password
+         let name = temp.querySelector("div.col-4 > div:nth-child(5) > input"); // name
+
+         username.value = rValue();
+         email.value = rValue(36, '@gmail.com');
+         password.value = '123';
+         name.value = rValue();
+
+         // relationships
+         let autoCheck = (data) => {
+            if (data?.length) {
+               for (let i = 0; i < data.length; i++)
+                  data[i].checked = rNumber(1, 2) % 2;
+            }
+         }
+         let accesses = temp.querySelectorAll("div.col-8 > div:nth-child(1) > div input") // list access
+         let roles = temp.querySelectorAll("div.col-8 > div:nth-child(2) > div input") // list role
+         let platforms = temp.querySelectorAll("div.col-8 > div:nth-child(3) > div input") // list platfrom
+
+         accesses[rNumber(0, accesses?.length - 1)].checked = true;
+         autoCheck(roles); autoCheck(platforms);
       }
 
       var rValue = (x = 36, last = '') => (Math.random() + 1).toString(x).substring(7) + last;
+      var rNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
    </script>
 </body>
 
