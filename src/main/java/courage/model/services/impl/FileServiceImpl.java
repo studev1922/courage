@@ -26,9 +26,7 @@ public class FileServiceImpl implements FileUpload {
 	@Override // get url on server - EX: http://localhost:8080/data/images/...
 	public String pathServer(String...directories) {
 		String uri = uri(directories);
-		File file = new File(context.getRealPath(""), uri); // get path on the server;
-		uri = ServletUriComponentsBuilder.fromCurrentContextPath().path(uri).toUriString();
-		return file.canRead() ? uri : file.getAbsolutePath();
+		return ServletUriComponentsBuilder.fromCurrentContextPath().path(uri).toUriString();
 	}
 
 	@Override // get local on this PC - EX: file://C:/.../src/main/data/images/...

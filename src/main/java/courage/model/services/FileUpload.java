@@ -24,12 +24,12 @@ public interface FileUpload {
 	String pathLocal(String...directories);
 
 	/**
-	 * @param isFileOnly get only files or folders else all
+	 * @param fileOrDir get only files or folders else
 	 * @param directories are contain folders or files
-	 * @return all file're path with condition's isFileOnly
+	 * @return all file're path with condition's fileOrDir
 	 * <h3><b>EX: </b>[abc.png, bcd.jpg, cde.pdf, ...]</h3>
 	 */
-	String[] fileNames(Boolean isFileOnly, String...directories);
+	String[] fileNames(Boolean fileOrDir, String...directories);
 
 	/**
 	 * @param directories to create

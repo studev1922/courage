@@ -27,7 +27,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    // @formatter:off
    @Autowired private JwtService jwt;
    @Autowired private HttpServletRequest req;
-   public RestUAccount() { super(true, "account");}
+   public RestUAccount() { super(UAccount.DIVIDE, UAccount.DIRECTORY);}
    // @formatter:on
 
    @PostMapping("/login")
