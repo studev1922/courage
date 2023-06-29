@@ -1,8 +1,6 @@
 package courage.model.services;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +14,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtService {
 
    @Value("${jwt.secret}")
-   private String secret;
+   private String secret = "U1RVREVWLUNPVVJBR0U="; // STUDEV-COURAGE
 
    @Value("${jwt.expiration}")
-   private Long expiration;
+   private Long expiration = 120000L; // 2 minutes
+
+   @Value("${jwt.tobase64}")
+   private Boolean toBase64 = false;
 
    /**
     * @return new token
@@ -27,6 +28,9 @@ public class JwtService {
    public String sign(String value) {
       long now = System.currentTimeMillis();
       long expDate = now + expiration;
+      // endcode value to base64
+      if (toBase64)
+         value = Base64.getEncoder().encodeToString(value.getBytes());
 
       return Jwts.builder()
             .setIssuedAt(new Date(now))
@@ -41,37 +45,12 @@ public class JwtService {
     * @return value of input param at sign method
     */
    public String verify(String token) throws JwtException, IllegalArgumentException {
-      return Jwts.parser()
+      String subject = Jwts.parser()
             .setSigningKey(secret)
             .parseClaimsJws(token)
             .getBody()
             .getSubject();
+      return toBase64 ? new String(Base64.getDecoder().decode(subject)) : subject;
 
-   }
-
-   private final static String hex_code(Object data) {
-      MessageDigest messageDigest;
-      byte[] bytes;
-
-      try {
-         messageDigest = MessageDigest.getInstance("SHA-256");
-         bytes = messageDigest.digest(data.toString().getBytes(StandardCharsets.UTF_8));
-      } catch (NoSuchAlgorithmException e) {
-         System.err.println(e.getMessage());
-         bytes = String.valueOf(System.currentTimeMillis()).getBytes(StandardCharsets.UTF_8);
-      }
-      return bytesToHex(bytes);
-   }
-
-   private static String bytesToHex(byte[] bytes) {
-      StringBuilder hexString = new StringBuilder(2 * bytes.length);
-      for (int i = 0; i < bytes.length; i++) {
-         String hex = Integer.toHexString(0xff & bytes[i]);
-         if (hex.length() == 1) {
-            hexString.append('0');
-         }
-         hexString.append(hex);
-      }
-      return hexString.toString();
    }
 }
