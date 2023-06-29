@@ -13,6 +13,11 @@ public interface FileUpload {
 	
 	static final String DEFAULT_FOLDER = "/uploads";
 	static final String NOT_DELETE = "default.(\\w)*";;
+
+	/**
+	 * @return
+	 */
+	byte[] getFile(String...paths);
 	
 	/**
 	 * @param directories are contain folders or files
