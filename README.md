@@ -1,4 +1,4 @@
-# source
+# README
 Java Spring-boot source system management
 
 ## SCRIPTS DATABASE FILE
@@ -7,6 +7,8 @@ Java Spring-boot source system management
 
 ## JAVA MAIN CLASS
 Run file [open Application.java](src/main/java/courage/Application.java#L9)
+
+<hr>
 
 ## ABSTRACT API CONTROLLER
 - [AbstractAPI_Read.java](src/main/java/courage/controller/rest/AbstractAPI_Read.java)
@@ -20,13 +22,86 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
   + [save all by array json](src/main/java/courage/controller/rest/AbstractRestAPI.java#L37)
   + [delete one by id](src/main/java/courage/controller/rest/AbstractRestAPI.java#L47)
 - [AbstractFileAPI.java](src/main/java/courage/controller/rest/AbstractFileAPI.java)
-  + `In process`
+  + [getFiles](src/main/java/courage/controller/rest/AbstractFileAPI.java#L59)
+  + [saveFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L76)
+  + [deleteFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L89)
 - [RestFileControl.java](src/main/java/courage/controller/rest/RestFileControl.java)
-  + `In process extends from AbstractFileAPI.java`
+  + [RestFileControl$UAccessApi](src/main/java/courage/controller/rest/RestFileControl.java#L19)
+
+<hr>
+
+## TEST FILE API CONTROLLER
+TEST FILE CONTROLLER `... in process`
+
+<table border>
+   <thead>
+      <tr>
+         <th>function</th>
+         <th>method</th>
+         <th>path</th>
+         <th>example</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>read static file</td>
+         <th>GET</th>
+         <td>http://localhost:8080/uploads/account<code>/{path}</code> </td>
+         <td>http://localhost:8080/uploads/account<code>/default.png</code></td>
+      </tr>
+      <tr>
+         <td>read file api</td>
+         <th>GET</th>
+         <td>http://localhost:8080/api/uploads/account</td>
+         <td>
+            <ul>
+               <li>
+                  <h3>option file api</h3>
+                  http://localhost:8080/api/uploads/account
+               </li>
+               <li>
+                  <h3>read byte[] as file</h3>
+                  http://localhost:8080/api/uploads/account<code>/default.png?is=true</code>
+               </li>
+            </ul>
+         </td>
+      </tr>
+      <tr>
+         <td>save file</td>
+         <th>POST</th>
+         <td>http://localhost:8080/api/uploads/account</td>
+         <td>
+            <code>
+               form action="http://localhost:8080/api/uploads/account" enctype="multipart/form-data"
+               <br>
+               input type="file" name="files" multiple
+            </code>
+         </td>
+      </tr>
+      <tr>
+         <td>delete file</td>
+         <th>DELETE</th>
+         <td>http://localhost:8080/api/uploads/account<code>/{path}</code></td>
+         <td>
+            <ol>
+               <li>
+                  <h3>delete folder: "test"</h3>
+                  http://localhost:8080/api/uploads/account<code>/test</code>
+               </li>
+               <li>
+                  <h3>delete files in folder: "test"</h3>
+                  http://localhost:8080/api/uploads/account<code>/test?files=file1.png,file2.jpg,file3.gif</code>
+               </li>
+            </ol>
+         </td>
+      </tr>
+   </tbody>
+</table>
+
+<hr>
 
 ## TEST ACCOUNT API CONTROLLER
-TEST ACCOUNT FORM DATA
-[OPEN ACCOUNT FORM CONTROL](client/index.html)
+TEST ACCOUNT FORM DATA [OPEN ACCOUNT FORM CONTROL](client/index.html)
 
 <table border>
    <thead>

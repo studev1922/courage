@@ -86,7 +86,7 @@ public abstract class AbstractFileAPI {
    }
 
    @DeleteMapping({"", "/**"})
-   public ResponseEntity<Void> deleteFile(
+   public ResponseEntity<Void> deleteFile (
       @RequestParam(required = false, name = "files") String...fileNames
    ) {
       String path = this.getPath();
