@@ -135,7 +135,7 @@ BEGIN
       SET @error = CONCAT('username:', @username, ' and password:', @password, ' is incorrect');
       RAISERROR(@error, 15,1);
    END ELSE IF ((SELECT ua_id FROM #USER) > 1)
-      SELECT * FROM #USER
+      SELECT * FROM #USER -- GET UACCOUNT & UACCESS ONE-TO-ONE
    ELSE RAISERROR('This account is not activated yet!!!', 15,1);
 END
 GO
@@ -150,7 +150,7 @@ BEGIN
    DECLARE @err nvarchar(256);
    DECLARE @id bigint = (SELECT [uid] FROM UACCOUNT WHERE @unique IN ([username], [email]));
 
-   IF @id IS NOT NULL BEGIN
+   IF @id IS NOT NULL BEGIN -- update password if uid already exist.
       UPDATE UACCOUNT SET [password]=PWDENCRYPT(@password) WHERE [uid]=@id;
       SELECT [password] FROM UACCOUNT WHERE [uid]=@id;
    END ELSE BEGIN
