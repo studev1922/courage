@@ -26,7 +26,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 ## TEST ACCOUNT API CONTROLLER
 TEST ACCOUNT FORM DATA
-[OPEN ACCOUNT FORM CONTROL](client/index.html)
+[OPEN ACCOUNT FORM CONTROL](client/index.htm)
 
 <table border>
    <thead>
