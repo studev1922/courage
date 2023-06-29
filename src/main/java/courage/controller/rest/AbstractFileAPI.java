@@ -9,7 +9,11 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import courage.model.services.FileUpload;
 import lombok.AllArgsConstructor;
@@ -18,8 +22,10 @@ import lombok.Data;
 // @formatter:off
 /**
  * @see AbstractFileAPI.OptionFile
- * @see AbstractFileAPI#AbstractFileAPI
- * @see AbstractFileAPI#getFiles : OptionFile || byte[] as file
+ * @see AbstractFileAPI#AbstractFileAPI(boolean, String)
+ * @see AbstractFileAPI#getFiles(Boolean) : OptionFile || byte[] as file
+ * @see AbstractFileAPI#saveFile(MultipartFile...)
+ * @see AbstractFileAPI#deleteFile(String...)
  */
 public abstract class AbstractFileAPI {
 
@@ -36,7 +42,6 @@ public abstract class AbstractFileAPI {
 	protected final boolean devide;
 	protected final String directory; // image storage folder
    
-
    /**
 	 * @param devide folder by entity's id
 	 * @param directory is archive folder
@@ -51,20 +56,51 @@ public abstract class AbstractFileAPI {
     * @return OptionFile || byte[] as path file
     */
    @GetMapping({"","/**"}) // get file or folder
-   public ResponseEntity<Object> getFiles() {
+   public ResponseEntity<Object> getFiles(@RequestParam(required = false) Boolean is) {
       String path = this.getPath(); // get path after directory
       int dotPath = path.lastIndexOf("."); // type of file
 
-      // is file has dot type (.[type])
-      if(dotPath > -1) {
+      if(dotPath > -1 || (is!=null && is)) { // is file has dot type (.[type])
          String fileName = path.substring(path.lastIndexOf("/")+1);
          return this.toFile(fileName, file.getFile(directory, path));
       }
 
+      // default get path api OptionFile
       return ResponseEntity.ok(new OptionFile(
-         file.pathServer(directory, path),
+         file.pathServer(directory, path), // path server to get static file
          file.fileNames(true, directory, path)
       ));
+   }
+
+   @PostMapping({"", "/**"})
+   public ResponseEntity<Object> saveFile(MultipartFile...files) {
+      String path = this.getPath(); // get path after directory
+
+      // return path api on server with all files saved
+      return ResponseEntity.ok(
+         new OptionFile(
+            file.pathServer(directory, path),
+            file.saveFiles(files, true, directory, path).toArray(new String[0])
+         )
+      );
+   }
+
+   @DeleteMapping({"", "/**"})
+   public ResponseEntity<Void> deleteFile(
+      @RequestParam(required = false, name = "files") String...fileNames
+   ) {
+      String path = this.getPath();
+      
+      if(fileNames!=null)
+         file.deleteFiles(fileNames, directory, path); // delete file name
+      else try {
+         file.deleteFile(directory, path); // delete folder
+      } catch (Exception e) {
+         e.printStackTrace();
+         return ResponseEntity.internalServerError().build();
+      }
+
+      return ResponseEntity.ok(null);
    }
 
    protected String getPath() { // all path variables affter directory
@@ -74,7 +110,8 @@ public abstract class AbstractFileAPI {
       return buffer.substring(start, end).toString();
    }
    
-   private ResponseEntity<Object> toFile(String fileName, byte[] data) {
+   // response the file from array bytes
+   protected ResponseEntity<Object> toFile(String fileName, byte[] data) {
       ByteArrayResource resource = new ByteArrayResource(data);
       return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_OCTET_STREAM)

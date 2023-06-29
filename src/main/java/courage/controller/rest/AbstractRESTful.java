@@ -112,11 +112,12 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 	private E handleFiles(E e, String[] prevents, MultipartFile... files) {
 		int i = 0, length = files.length, lengPre = prevents.length;
 		String[] images = new String[length + lengPre];
-		String folder = null;
+		String folder = String.valueOf(getKey(e));
 
 		// create hash names
 		while (i < length) {
-			images[i] = fileHashName(
+			images[i] = FileUpload.hashFileName(
+				folder,
 				System.currentTimeMillis(),
 				files[i++].getOriginalFilename()
 			);
@@ -138,15 +139,4 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 		return e;
 	} // @formatter:on
-
-	// the last parameter must be the file type
-	private String fileHashName(Object... names) {
-		StringBuilder str = new StringBuilder();
-		String type = names[names.length - 1].toString();
-		type = type.substring(type.lastIndexOf(".")).trim();
-		for (Object name : names)
-			str.append(name);
-		// hash code array String EX: ["a", 1, 3, x.jpg] => "322623523.jpg"
-		return str.hashCode() + type;
-	}
 }
