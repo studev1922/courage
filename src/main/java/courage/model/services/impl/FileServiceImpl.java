@@ -47,10 +47,10 @@ public class FileServiceImpl implements FileUpload {
 
 	@Override // read all files're name
 	public String[] fileNames(Boolean fileOrDir, String... directories) {
-		File directory = new File(pathLocal(directories));
+		File file = new File(pathLocal(directories));
 
-		return fileOrDir == null ? directory.list() // only file or folder else fileOrDir is null
-				: directory.list((dir, name) -> fileOrDir == name.lastIndexOf(".") > -1);
+		return fileOrDir == null ? file.list() // only file or folder else fileOrDir is null
+				: file.list((dir, name) -> fileOrDir == name.lastIndexOf(".") > -1);
 	}
 
 	public String saveFolder(String... directories) {

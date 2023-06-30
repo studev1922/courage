@@ -53,6 +53,8 @@ public abstract class AbstractFileAPI {
 
    /**
     * @see AbstractFileAPI.OptionFile
+    *
+    * @param is == true get files only or false to get folders else get all
     * @return OptionFile || byte[] as path file
     */
    @GetMapping({"","/**"}) // get file or folder
@@ -60,7 +62,7 @@ public abstract class AbstractFileAPI {
       String path = this.getPath(); // get path after directory
       int dotPath = path.lastIndexOf("."); // type of file
 
-      if(dotPath > -1 || (is!=null && is)) { // is file has dot type (.[type])
+      if(dotPath > -1) { // is file has dot type (.[type])
          String fileName = path.substring(path.lastIndexOf("/")+1);
          return this.toFile(fileName, file.getFile(directory, path));
       }
@@ -68,7 +70,7 @@ public abstract class AbstractFileAPI {
       // default get path api OptionFile
       return ResponseEntity.ok(new OptionFile(
          file.pathServer(directory, path), // path server to get static file
-         file.fileNames(true, directory, path)
+         file.fileNames(is, directory, path)
       ));
    }
 

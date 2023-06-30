@@ -75,7 +75,7 @@ public interface FileUpload {
 	String pathLocal(String... directories);
 
 	/**
-	 * @param fileOrDir   get only files or folders else
+	 * @param fileOrDir   get only files or folders else get all by null
 	 * @param directories are contain folders or files
 	 * @return all file're path with condition's fileOrDir
 	 *         <h3><b>EX: </b>[abc.png, bcd.jpg, cde.pdf, ...]</h3>
