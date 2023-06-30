@@ -1,0 +1,146 @@
+<div class="accordion" id="accordionExample">
+   <div class="accordion-item">
+      <h2 class="accordion-header">
+         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+            aria-expanded="true" aria-controls="collapseOne">
+            FORM DATA
+         </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+         <div class="accordion-body">
+            <!-- Temp form -->
+            <form action="http://localhost:8080/api/accounts/one" method="post"
+               class="m-auto row p-1 col-xxl-8 col-sm-12 border" id="formTemp" enctype="multipart/form-data">
+               <h2 class="col-8">account</h2>
+               <div class="col-3">
+                  <button type="button" class="btn-outline-warning" onclick="randomFields(formTemp)">random</button>
+                  <button type="button" class="btn-outline-secondary" onclick="clearFields(formTemp)">clear</button>
+               </div>
+               <div class="col-1">
+                  <button type="button" class="btn-outline-success" onclick="appendForm(formTemp, this)">➕</button>
+               </div>
+               <!-- FIELDS -->
+               <div class="col-4">
+                  <input type="hidden" value="-1" name="uid">
+                  <div class="mt-1">
+                     <label class="form-label">username</label>
+                     <input type="text" class="form-control" name="username">
+                  </div>
+                  <div class="mt-1">
+                     <label class="form-label">email</label>
+                     <input type="email" class="form-control" name="email">
+                  </div>
+                  <div class="mt-1">
+                     <label class="form-label">password</label>
+                     <input title="double click show this field password" type="password" class="form-control"
+                        name="password" ondblclick="this.type=this.type=='text' ? 'password' : 'text'" autocomplete="on">
+                  </div>
+                  <div class="mt-1">
+                     <label class="form-label">fullname</label>
+                     <input type="text" class="form-control" name="fullname">
+                  </div>
+               </div>
+               <!-- RELATIONSHIPS -->
+               <div class="col-8">
+                  <!-- ACCESS -->
+                  <div class="mt-1">
+                     <label class="form-label">access</label>
+                     <div class="d-flex text-nowrap">
+                        <div class="m-1">
+                           <input type="radio" class="form-check-input" value="0" name="access" checked>
+                           <label class="form-check-label">AWAITING</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="radio" class="form-check-input" value="1" name="access">
+                           <label class="form-check-label">LOCK</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="radio" class="form-check-input" value="2" name="access">
+                           <label class="form-check-label">PRIVATE</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="radio" class="form-check-input" value="3" name="access">
+                           <label class="form-check-label">PROTECTED</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="radio" class="form-check-input" value="4" name="access">
+                           <label class="form-check-label">PUBLIC</label>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- ROLE -->
+                  <div class="mt-1">
+                     <label class="form-label">roles</label>
+                     <div class="d-flex">
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="0" name="roles" checked>
+                           <label class="form-check-label">USER</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="1" name="roles">
+                           <label class="form-check-label">STAFF</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="2" name="roles">
+                           <label class="form-check-label">ADMIN</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="3" name="roles">
+                           <label class="form-check-label">PARTNER</label>
+                        </div>
+                     </div>
+                  </div>
+                  <!-- PLATFORM -->
+                  <div class="mt-1">
+                     <label class="form-label">platforms</label>
+                     <div class="d-flex">
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="0" name="platforms" checked>
+                           <label class="form-check-label">SYSTEM</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="1" name="platforms">
+                           <label class="form-check-label">GOOGLE</label>
+                        </div>
+                        <div class="m-1">
+                           <input type="checkbox" class="form-check-input" value="2" name="platforms">
+                           <label class="form-check-label">FACEBOOK</label>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="mt-1">
+                     <label for="formFileSm" class="form-label">files</label>
+                     <input class="form-control form-control-sm" type="file" name="files" multiple>
+                  </div>
+               </div>
+               <div class="col-12 text-end">
+                  <button class="btn-primary" type="submit">submit one</button>
+               </div>
+            </form>
+
+            <!-- append form -->
+            <div class="container-fluid">
+               <div class="mt-2">
+                  <h1>multiple form</h1>
+                  <div class="d-flex justify-content-end gap-1">
+                     <button class="btn btn-outline-primary" onclick="sumitAll()">submit all</button>
+                     <button class="btn btn-danger" onclick="metaForm.innerHTML=null; i=0;">clear all</button>
+                  </div>
+               </div>
+               <div class="row flex-wrap-reverse justify-content-center" id="metaForm"></div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="accordion-item">
+      <h2 class="accordion-header">
+         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            API CONTROL
+         </button>
+      </h2>
+      <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+         API CONTROL
+      </div>
+   </div>
+</div>

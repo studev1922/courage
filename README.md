@@ -30,9 +30,14 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 <hr>
 
-## TEST FILE API CONTROLLER
-TEST FILE CONTROLLER `... in process`
+## TEST CONTROLLER
+<ol>
+   <li>execute file database</li>
+   <li>start server</li>
+   <li>open app on <code>http://localhost:8080</code></li>
+</ol>
 
+## TEST FILE API CONTROLLER
 <table border>
    <thead>
       <tr>
@@ -101,8 +106,6 @@ TEST FILE CONTROLLER `... in process`
 <hr>
 
 ## TEST ACCOUNT API CONTROLLER
-TEST ACCOUNT FORM DATA [OPEN ACCOUNT FORM CONTROL](client/index.html)
-
 <table border>
    <thead>
       <tr>
