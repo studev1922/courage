@@ -29,7 +29,8 @@ GO
    │  └──[US_UR]: user has multiple roles | one-many
    │
    └──[#PROCEDURES]
-      └──[pr_login]: login by (@username or @email) and @password
+   │  ├──[pr_login]: login by (username or email) and password: parameters(@unique, @password)
+      └──[pr_update_pass]: update password by (username or email): parameters(@unique, @password)
 */
 -- ---------------------------------------------------------------------------------------------------- #TABLES
 -- Drop [UACCOUNT] table if already exist then create new [UACCOUNT] table
@@ -39,7 +40,7 @@ CREATE TABLE [UACCOUNT] (
    [uid] bigint identity primary key,
    [username] varchar(20) null unique, -- username for login
    [email] varchar(50) unique not null, -- email for contact
-   [password] binary(70) not null, -- size of PWDENCRYPT = 70
+   [password] binary(70) not null, -- size of PWDENCRYPT is 70
    [fullname] nvarchar(50) not null
 );
 GO
@@ -121,18 +122,18 @@ GO
 IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_login') DROP PROC pr_login
 GO
 CREATE PROCEDURE pr_login
-   @username varchar(256), @password varchar(256)
+   @unique varchar(256), @password varchar(256)
 AS
 BEGIN
    DECLARE @error nvarchar(255);
-   IF @username is null OR LEN(@password) = 0 RAISERROR('username is empty',15,1);
-   IF @password is null OR LEN(@password) = 0 RAISERROR('password is empty',15,1);
+   IF @unique is null OR LEN(@password) = 0 RAISERROR('username is empty',15,1);
+   IF @password is null OR LEN(@unique) = 0 RAISERROR('password is empty',15,1);
 
    SELECT u.*, r.ua_id INTO #USER FROM UACCOUNT u LEFT JOIN US_UA r ON u.uid = r.u_id
-   WHERE (username = @username OR email = @username) AND PWDCOMPARE(@password, password) = 1;
+   WHERE (username = @unique OR email = @unique) AND PWDCOMPARE(@password, password) = 1;
 
    IF NOT EXISTS(SELECT [uid] FROM #USER) BEGIN
-      SET @error = CONCAT('username:', @username, ' and password:', @password, ' is incorrect');
+      SET @error = CONCAT('username:', @unique, ' and password:', @password, ' is incorrect');
       RAISERROR(@error, 15,1);
    END ELSE IF ((SELECT ua_id FROM #USER) > 1)
       SELECT * FROM #USER -- GET UACCOUNT & UACCESS ONE-TO-ONE
@@ -141,7 +142,7 @@ END
 GO
 
 -- Create procedure pr_update_pass >>> update password by username or email
-IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_update_pass') DROP PROC pr_login
+IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_update_pass') DROP PROC pr_update_pass
 GO
 CREATE PROCEDURE pr_update_pass
    @unique varchar(256), @password varchar(256)

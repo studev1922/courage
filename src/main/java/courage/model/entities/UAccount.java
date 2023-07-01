@@ -34,7 +34,7 @@ import lombok.Builder.ObtainVia;
 )
 public class UAccount {
 
-   public final static boolean DIVIDE = true; // divide folder to save files
+   public final static boolean DIVIDE = true; // divide folder by uid to save files
    public final static String DIRECTORY = "account"; // file storage in folder
 
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

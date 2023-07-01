@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import courage.model.entities.UAccount;
 
 public interface UAccountRepository extends JpaRepository<UAccount, Long> {
+
+   UAccount findByEmail(String email) throws Exception;
    UAccount findByUsername(String username) throws Exception;
 
-   @Query(value = "EXEC pr_login :username, :password", nativeQuery = true)
-   UAccount pr_login(String username, String password) throws Exception;
+   @Query(value = "EXEC pr_login :unique, :password", nativeQuery = true)
+   UAccount pr_login(String unique, String password) throws Exception;
 
    /**
     * @formatter:off
