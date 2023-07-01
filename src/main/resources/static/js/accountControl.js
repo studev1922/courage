@@ -130,9 +130,9 @@ async function getData() {
             for (let k of keys) {
                let e2 = e[k];
                let cellText = new String();
-               if (Array.isArray(e2)) {
+               if(k === 'access') cellText = aMap.get(e2.access)?.uaName;
+               else if (Array.isArray(e2)) {
                   switch (k) {
-                     case 'access': e2.forEach(id => cellText += `${aMap.get(id)?.uaName}<br>`); break;
                      case 'roles': e2.forEach(id => cellText += `${rMap.get(id)?.role}<br>`); break;
                      case 'platforms': e2.forEach(id => cellText += `${pMap.get(id)?.upName}<br>`); break;
                      default: cellText = e2.toString().replaceAll(',', '<br>'); break;
