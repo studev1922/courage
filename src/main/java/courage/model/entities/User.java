@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 /**
  * <h2>CRM entity</h2>
  * 
- * @see User.Account
+ * @see UAccount
  * @see User.Role
  * @see User.Access
  * @see User.Platform

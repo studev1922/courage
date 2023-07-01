@@ -130,6 +130,8 @@ async function getData() {
             for (let k of keys) {
                let e2 = e[k];
                let cellText = new String();
+
+               // set view all relationships
                if(k === 'access') cellText = aMap.get(e2.access)?.uaName;
                else if (Array.isArray(e2)) {
                   switch (k) {
