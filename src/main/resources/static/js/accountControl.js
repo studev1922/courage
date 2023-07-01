@@ -17,30 +17,30 @@ function appendForm(temp) {
    metaForm.appendChild(newForm);
 }
 
-async function sumitAll()  {
-   let mesWin = new String(), mesLos = new String();
-   let countWin = 0, countLos = 0;
-   let formNamed;
-
-   for (let form of metaForm.children) {
+function sumitAll() {
+   // convert to array for use each asynch
+   [].slice.call(metaForm.children).forEach(async form => {
       formNamed = form.querySelector('h2').innerText;
       let url = 'http://localhost:8080/api/accounts';
 
-      http.post(url, new FormData(form))
-         .then(res => {
-            mesWin += `\n${formNamed} execute sucessfully.`;
-            metaForm.removeChild(form);
-            ++countWin;
-         })
-         .catch(err => {
-            form.style.background = '#ff888880'
-            mesLos += `\n${formNamed} execute failed: ${err}`;
-            ++countLos;
-         });
-   }
+      let res = await fetch(url, {
+         method: "POST",
+         body: new FormData(form)
+      }); // #do not set headers, browser will auto set boundary
+      let data = await res.json();
 
-   if (countWin) alert(`EXECUTE DATA SUCCESS: ${countWin} form. ${mesWin}`)
-   if (countLos) alert(`EXECUTE DATA FAILED: ${countLos} form!!! ${mesLos}`)
+      if (res.status == 200) {
+         mesWin += `\n${formNamed} execute sucessfully.`;
+         metaForm.removeChild(form);
+         ++countWin;
+         console.log(data);
+      } else {
+         form.style.background = '#ff888880'
+         mesLos += `\n${formNamed} execute failed`;
+         ++countLos;
+         console.error(data);
+      }
+   });
 }
 
 function clearFields(temp) {

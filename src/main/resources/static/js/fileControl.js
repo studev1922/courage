@@ -25,11 +25,39 @@ async function readData() {
    }
 }
 
+async function deleteData() {
+   let res = await fetch(inp.value, { method: "DELETE"});
+
+   document.getElementById('showresult')
+      .innerHTML = res.status != 200 // != 200 => error
+         ? JSON.stringify(await res.json(), null, 4)
+         : null;
+}
+
+
+// form submit
+form.addEventListener('submit', async evt => {
+   evt.preventDefault(); // prevent redirect
+
+   // fetch api
+   let res = await fetch(inp.value, {
+      method: "POST",
+      body: new FormData(evt.target)
+   }); // #do not set headers, browser will auto set boundary
+
+   let data = await res.json(); // response
+   console.log(`response status code: ${res.status}`);
+
+   if (data) document.getElementById('showresult')
+      .innerHTML = JSON.stringify(data, null, 4);
+})
+
+
 // file input on change
 form.querySelector('input[type="file"]')
    ?.addEventListener('change', e => {
       let img;
-      
+
       while (prepareImg.firstChild)
          prepareImg.removeChild(prepareImg.firstChild);
 
@@ -42,23 +70,4 @@ form.querySelector('input[type="file"]')
          prepareImg.appendChild(img);
       }
    })
-
-
-// form submit
-form.addEventListener('submit', async evt => {
-   evt.preventDefault(); // prevent redirect
-
-   // fetch api
-   let res = await fetch(inp.value, {
-      method: "POST",
-      body: new FormData(evt.target),
-      headers: { 'Content-Type': 'multipart/form-data;boundary=---WebKitFormBoundaryc3R1ZGV2' }
-   });
-
-   let data = await res.json(); // response
-   console.log(`response status code: ${res.status}`);
-
-   if (data) document.getElementById('showresult')
-      .innerHTML = JSON.stringify(data, null, 4);
-})
 

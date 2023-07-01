@@ -39,17 +39,13 @@ public abstract class AbstractFileAPI {
    @Autowired protected FileUpload file;
    @Autowired protected HttpServletRequest req;
    @Autowired protected HttpServletResponse res;
-	protected final boolean devide;
 	protected final String directory; // image storage folder
    
    /**
 	 * @param devide folder by entity's id
 	 * @param directory is archive folder
 	 */
-	AbstractFileAPI(boolean devide, String directory) {
-		this.devide = devide;
-		this.directory = directory;
-	}
+	AbstractFileAPI(String directory) {this.directory = directory;}
 
    /**
     * @see AbstractFileAPI.OptionFile
@@ -107,8 +103,9 @@ public abstract class AbstractFileAPI {
 
    protected String getPath() { // all path variables affter directory
       StringBuffer buffer = req.getRequestURL();
+      int paramAt = buffer.lastIndexOf("?");
       int start = buffer.lastIndexOf(directory)+directory.length();
-      int end = buffer.length();
+      int end = paramAt>-1 ? (buffer.length()-paramAt)-1 : buffer.length();
       return buffer.substring(start, end).toString();
    }
    

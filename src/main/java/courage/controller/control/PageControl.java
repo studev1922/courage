@@ -7,8 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping({ "", "/" })
 public class PageControl {
+
+   @GetMapping("/server")
+   public String index() {
+      return "index";
+   }
+
    @GetMapping
    public String getIndex() {
-      return "index.html";
+      // static for client != template on this server
+      return "redirect:/index.html"; // redirect to client side
    }
 }
