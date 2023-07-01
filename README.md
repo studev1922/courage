@@ -32,7 +32,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 ## TEST CONTROLLER
 <ol>
-   <li>execute two files in mssql(SQL Server 2019)</li>
+   <li>execute <a href="assets">two files</a> in mssql(SQL Server 2019)</li>
    <li>start server in <a href="src/main/java/courage/Application.java#L9">Application.java</a> </li>
    <li>open app on <code>http://localhost:8080</code></li>
 </ol>
