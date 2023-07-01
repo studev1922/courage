@@ -7,7 +7,12 @@
             <input id="inputpathapi" type="text" class="form-control" value="http://localhost:8080/api/uploads/account">
             <button class="btn btn-outline-info" onclick="readData()">GET</button>
          </div>
+         <pre class="d-flex bg-dark text-white" id="showresult"></pre>
+         <form id="fileapicontroler" class="d-flex gap-1">
+            <input type="file" class="form-control" multiple name="files">
+            <button type="submit" class="btn btn-outline-success">POST</button>
+         </form>
       </div>
-      <pre class="d-flex bg-dark text-white" id="showresult"></pre>
+      <div class="d-flex flex-wrap p-1 gap-1" id="showprepareimg"></div>
    </div>
 </div>

@@ -58,7 +58,7 @@ public abstract class AbstractFileAPI {
     * @return OptionFile || byte[] as path file
     */
    @GetMapping({"","/**"}) // get file or folder
-   public ResponseEntity<Object> getFiles(@RequestParam(required = false) Boolean is) {
+   public ResponseEntity<?> getFiles(@RequestParam(required = false) Boolean is) {
       String path = this.getPath(); // get path after directory
       int dotPath = path.lastIndexOf("."); // type of file
 
@@ -75,7 +75,7 @@ public abstract class AbstractFileAPI {
    }
 
    @PostMapping({"", "/**"})
-   public ResponseEntity<Object> saveFile(MultipartFile...files) {
+   public ResponseEntity<?> saveFile(MultipartFile...files) {
       String path = this.getPath(); // get path after directory
 
       // return path api on server with all files saved
@@ -113,7 +113,7 @@ public abstract class AbstractFileAPI {
    }
    
    // response the file from array bytes
-   protected ResponseEntity<Object> toFile(String fileName, byte[] data) {
+   protected ResponseEntity<?> toFile(String fileName, byte[] data) {
       ByteArrayResource resource = new ByteArrayResource(data);
       return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_OCTET_STREAM)
