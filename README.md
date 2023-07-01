@@ -32,7 +32,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 ## TEST CONTROLLER
 <ol>
-   <li>execute file database</li>
+   <li>execute two files database</li>
    <li>start server</li>
    <li>open app on <code>http://localhost:8080</code></li>
 </ol>
