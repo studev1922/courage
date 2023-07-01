@@ -1,3 +1,9 @@
+
+aMap = new Map(); // access
+rMap = new Map(); // roles
+pMap = new Map(); // platform
+
+
 i = 0;
 function appendForm(temp) {
    let newForm = temp.cloneNode(true);
@@ -87,3 +93,65 @@ function randomFields(temp) {
 
 rValue = (x = 36, last = '') => (Math.random() + 1).toString(x).substring(7) + last;
 rNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+async function cacheData(path, map = new Map(), k = 'id') {
+   console.log(`GET data from ${path} to cache.`);
+
+   let res = await fetch(path);
+   let data = await res.json();
+
+   if (res.status == 200)
+      for (let e of data) map.set(e[k], e);
+   else console.error(path, data);
+}
+
+async function getData() {
+   let res = await fetch('http://localhost:8080/api/accounts');
+   let data = await res.json();
+
+   if (res.status == 200) {
+      let thead = document.querySelector('#collapseTwo thead');
+      let tbody = document.querySelector('#collapseTwo tbody');
+
+      while(thead.lastChild) thead.removeChild(thead.firstChild);
+      while(tbody.lastChild) tbody.removeChild(tbody.firstChild);
+
+      if (data) {
+         // set sobjects on the header
+         let keys = Object.keys(data[0]);
+         let row = document.createElement('tr');
+         row.setAttribute('class', 'text-center');
+         for (let k of keys) row.innerHTML += `<th>${k}</th>`;
+         thead.appendChild(row)
+
+         // set view all data
+         for (let e of data) {
+            let tr = document.createElement('tr');
+            for (let k of keys) {
+               let e2 = e[k];
+               let cellText = new String();
+               if (Array.isArray(e2)) {
+                  switch (k) {
+                     case 'access': e2.forEach(id => cellText += `${aMap.get(id)?.uaName}<br>`); break;
+                     case 'roles': e2.forEach(id => cellText += `${rMap.get(id)?.role}<br>`); break;
+                     case 'platforms': e2.forEach(id => cellText += `${pMap.get(id)?.upName}<br>`); break;
+                     default: cellText = e2.toString().replaceAll(',', '<br>'); break;
+                  }
+               } else cellText = e2;
+               tr.innerHTML += `<td>${cellText}</td>`;
+            }
+            tbody.appendChild(tr);
+         }
+      }
+   } else {
+      console.error(data);
+   }
+}
+
+
+(async () => {
+   await cacheData('http://localhost:8080/api/accesses', aMap, 'uaid');
+   await cacheData('http://localhost:8080/api/roles', rMap, 'urid');
+   await cacheData('http://localhost:8080/api/platforms', pMap, 'upid');
+   await getData();
+})()
