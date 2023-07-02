@@ -26,7 +26,7 @@ public abstract class AbstractAPI_Read<E, K> {
    @Autowired protected JpaRepository<E, K> rep;
 
    @GetMapping("") // read all or by multiple ids
-   public ResponseEntity<Object> getData(@RequestParam(required = false) K[] id) {
+   public ResponseEntity<?> getData(@RequestParam(required = false) K[] id) {
       try {
          return ResponseEntity.ok(id == null ? rep.findAll()
                : rep.findAllById(java.util.Arrays.asList(id)));
@@ -37,7 +37,7 @@ public abstract class AbstractAPI_Read<E, K> {
    }
 
    @GetMapping("/{id}") // read by single id
-   public ResponseEntity<Object> getData(@PathVariable(required = false) K id) {
+   public ResponseEntity<?> getData(@PathVariable(required = false) K id) {
       Optional<E> optional = rep.findById(id);
       return optional.isPresent()
             ? ResponseEntity.ok(optional.get())

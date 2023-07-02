@@ -47,7 +47,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 	// @formatter:on
 
 	@RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
-	public ResponseEntity<Object> save(E entity, @RequestBody(required = false) MultipartFile... files) {
+	public ResponseEntity<?> save(E entity, @RequestBody(required = false) MultipartFile... files) {
 		System.out.println(entity);
 		try {
 			entity = this.updateEntity(entity, files);
@@ -59,7 +59,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 	}
 
 	@DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
-	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {
+	public ResponseEntity<?> delete(@PathVariable(required = false) K id) {
 		String folder = this.devide ? directory + '/' + id : directory;
 		if (id != null)
 			try {

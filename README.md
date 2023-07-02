@@ -2,8 +2,8 @@
 Java Spring-boot source system management
 
 ## SCRIPTS DATABASE FILE
-- File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
-- File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
+1. File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
+2. File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
 
 ## JAVA MAIN CLASS
 Run file [open Application.java](src/main/java/courage/Application.java#L9)
@@ -22,9 +22,9 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
   + [save all by array json](src/main/java/courage/controller/rest/AbstractRestAPI.java#L37)
   + [delete one by id](src/main/java/courage/controller/rest/AbstractRestAPI.java#L47)
 - [AbstractFileAPI.java](src/main/java/courage/controller/rest/AbstractFileAPI.java)
-  + [getFiles](src/main/java/courage/controller/rest/AbstractFileAPI.java#L59)
-  + [saveFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L76)
-  + [deleteFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L89)
+  + [getFiles](src/main/java/courage/controller/rest/AbstractFileAPI.java#L57)
+  + [saveFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L74)
+  + [deleteFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L87)
 - [RestFileControl.java](src/main/java/courage/controller/rest/RestFileControl.java)
   + [RestFileControl$UAccessApi](src/main/java/courage/controller/rest/RestFileControl.java#L19)
 
@@ -32,9 +32,9 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 ## TEST CONTROLLER
 <ol>
-   <li>execute file database</li>
-   <li>start server</li>
-   <li>open app on <code>http://localhost:8080</code></li>
+   <li>execute <a href="assets">two files</a> in mssql(SQL Server 2019)</li>
+   <li>start server in <a href="src/main/java/courage/Application.java#L9">Application.java</a> </li>
+   <li>open app on <code>http://localhost:8080</code> for client or <code>http://localhost:8080/server</code></li>
 </ol>
 
 ## TEST FILE API CONTROLLER
@@ -122,7 +122,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
          <td>http://localhost:8080/api/accounts/update-passowrd</td>
          <td>
             <h3>unique is email or username</h3>
-            http://localhost:8080/api/accounts/update-passowrd?unique=...&password=...
+            http://localhost:8080/api/accounts/update-passowrd<code>?unique=...&password=...</code>
          </td>
       </tr>
       <tr>
@@ -143,7 +143,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
          <td>http://localhost:8080/api/accounts/login</td>
          <td>
             <ul>
-               <li>USERNAME & PASSWORD: ?username=admin&password=123</li>
+               <li>USERNAME & PASSWORD: <code>?username=admin&password=123</code></li>
                <li>JSON WEB TOKEN: header['authorization'] = '[token...]'</li>
             </ul>
          </td>
@@ -151,14 +151,14 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
       <tr>
          <td>read account's image file on divice</td>
          <th>GET</th>
-         <td>[project's location...]\courage\src\main\webapp\uploads\account\{fileName}</td>
-         <td>[project's location...]\courage\src\main\webapp\uploads\account\default.png</td>
+         <td>[project's location...]\courage\src\main\webapp\uploads\account<code>\{fileName}</code></td>
+         <td>[project's location...]\courage\src\main\webapp\uploads\account<code>\default.png</code></td>
       </tr>
       <tr>
          <td>read account's image file on server</td>
          <td>GET</td>
-         <td>http://localhost:8080/uploads/account/{fileName}</td>
-         <td>http://localhost:8080/uploads/account/default.png</td>
+         <td>http://localhost:8080/uploads/account<code>/{fileName}</code></td>
+         <td>http://localhost:8080/uploads/account<code>/default.png</code></td>
       </tr>
       <tr>
          <td>read all or read by list id</td>
@@ -166,21 +166,21 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
          <td>
             <ul>
                <li>all: http://localhost:8080/api/accounts</li>
-               <li>by ids: http://localhost:8080/api/accounts?id={ids}</li>
+               <li>by ids: http://localhost:8080/api/accounts<code>?id={ids}</code></li>
             </ul>
          </td>
          <td>
             <ul>
                <li>all: http://localhost:8080/api/accounts</li>
-               <li>by ids: http://localhost:8080/api/accounts?id=1001,1002</li>
+               <li>by ids: http://localhost:8080/api/accounts<code>?id=1001,1002</code></li>
             </ul>
          </td>
       </tr>
       <tr>
          <td>read one by id</td>
          <td>GET</td>
-         <td>http://localhost:8080/api/accounts/{id}</td>
-         <td>http://localhost:8080/api/accounts/1001</td>
+         <td>http://localhost:8080/api/accounts<code>/{id}</code></td>
+         <td>http://localhost:8080/api/accounts<code>/1001</code></td>
       </tr>
       <tr>
          <td>save with image</td>
@@ -196,18 +196,10 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
          </td>
       </tr>
       <tr>
-         <td>save all by json body</td>
-         <td>POST, PUT</td>
-         <td>http://localhost:8080/api/accounts/all</td>
-         <td>
-            request.body = [{}, {}, ...]
-         </td>
-      </tr>
-      <tr>
          <td>delete by id</td>
          <td>DELETE</td>
-         <td>http://localhost:8080/api/accounts/{id}</td>
-         <td>http://localhost:8080/api/accounts/{1001}</td>
+         <td>http://localhost:8080/api/accounts<code>/{id}</code></td>
+         <td>http://localhost:8080/api/accounts<code>/{1001}</code></td>
       </tr>
    </tbody>
 </table>
