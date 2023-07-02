@@ -31,7 +31,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    // @formatter:on
 
    @PostMapping("/login")
-   public ResponseEntity<Object> login() {
+   public ResponseEntity<?> login() {
       UAccountRepository dao = ((UAccountRepository) super.rep);
       String token = req.getHeader("authorization");
 
@@ -51,7 +51,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // @PreAuthorize
    @RequestMapping(value = "/update-passowrd", method = { RequestMethod.PUT, RequestMethod.PATCH })
-   public ResponseEntity<Object> updatePassword() {
+   public ResponseEntity<?> updatePassword() {
       UAccountRepository dao = ((UAccountRepository) super.rep);
       String unique = req.getParameter("unique");
       String password = req.getParameter("password");
@@ -85,7 +85,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       e.setImages(images);
    }
 
-   private ResponseEntity<Object> handleToken(UAccountRepository dao, String token) {
+   private ResponseEntity<?> handleToken(UAccountRepository dao, String token) {
       String username;
       UAccount e;
 
@@ -104,7 +104,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       }
    }
 
-   private ResponseEntity<Object> handleLogin(UAccountRepository dao) {
+   private ResponseEntity<?> handleLogin(UAccountRepository dao) {
       String us = req.getParameter("username");
       String pw = req.getParameter("password");
       String username;

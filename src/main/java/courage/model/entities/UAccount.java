@@ -13,8 +13,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
 
 import org.hibernate.annotations.ColumnTransformer;
 
@@ -27,11 +25,6 @@ import lombok.Builder.ObtainVia;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "UAccount")
-@SecondaryTable(name = "US_UA", 
-   pkJoinColumns = @PrimaryKeyJoinColumn (
-      name = "u_id", referencedColumnName = "uid"
-   )
-)
 public class UAccount {
 
    public final static boolean DIVIDE = true; // divide folder by uid to save files
@@ -47,11 +40,8 @@ public class UAccount {
    @ColumnTransformer(write = "PWDENCRYPT(?)")
    private String password;
    private String fullname;
-
-   // user access by UACCESS's id
-   @ObtainVia
-   @Column(table = "US_UA", name = "ua_id")
-   private Integer access = 0;
+   @ObtainVia @Column(name = "ua_id")
+   private Integer access = 0; // default AWAITING for access
 
    // user's images
    @ElementCollection(fetch = FetchType.EAGER)

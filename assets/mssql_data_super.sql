@@ -1,7 +1,6 @@
 USE DB_SUPER
 GO
    -- DELETE [dbo].[US_UR];
-   -- DELETE [dbo].[US_UA];
    -- DELETE [dbo].[US_UP];
    DELETE [dbo].[UACCOUNT];
    DELETE [dbo].[UROLES];
@@ -41,13 +40,13 @@ GO
 -- INSERT UACCOUNT
 SET IDENTITY_INSERT [dbo].[UACCOUNT] ON
 INSERT INTO [dbo].[UACCOUNT]
-   ([uid], [username], [email], [password], [fullname])
+   ([uid], [username], [email], [password], [fullname], [ua_id])
 VALUES
-   (1001, 'admin', 'ngoduyhoaname2002@gmail.com', PWDENCRYPT('123'), N'Admin System Test'),
-   (1002, 'staff', 'sdhoa1922@gmail.com', PWDENCRYPT('123'), N'Staff System Test'),
-   (1003, 'user1', 'user1.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test'),
-   (1004, 'user2', 'user2.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test'),
-   (1005, 'partner', 'partner.studev1922@gmail.com', PWDENCRYPT('123'), N'Partner System Test');
+   (1001, 'admin', 'ngoduyhoaname2002@gmail.com', PWDENCRYPT('123'), N'Admin System Test', 4),
+   (1002, 'staff', 'sdhoa1922@gmail.com', PWDENCRYPT('123'), N'Staff System Test', 4),
+   (1003, 'user1', 'user1.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test', 2),
+   (1004, 'user2', 'user2.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test', 0),
+   (1005, 'partner', 'partner.studev1922@gmail.com', PWDENCRYPT('123'), N'Partner System Test', 3);
 GO
 SET IDENTITY_INSERT [dbo].[UACCOUNT] OFF
 
@@ -58,16 +57,6 @@ VALUES
    (1001, 'admin1.png'),
    (1001, 'admin3.png'),
    (1002, 'staff1.png');
-GO
-
--- INSERT USER ACCESS
-INSERT INTO [dbo].[US_UA]
-   ([u_id], [ua_id])
-VALUES
-   (1001, 4),
-   (1002, 4),
-   (1003, 2),
-   (1005, 3);
 GO
 
 -- INSERT USER'S AUTHORIZATION

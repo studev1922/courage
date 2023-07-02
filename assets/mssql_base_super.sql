@@ -24,38 +24,15 @@ GO
    │  ├──[UPLATFORM]: login platform information
    │  ├──[UROLE]: role for user
    │  │
-   │  ├──[US_UA]: unique user access relationship | one-one
    │  ├──[US_UP]: user references platform | one-many
    │  └──[US_UR]: user has multiple roles | one-many
    │
    └──[#PROCEDURES]
-   │  ├──[pr_login]: login by (username or email) and password: parameters(@unique, @password)
+      ├──[pr_login]: login by (username or email) and password: parameters(@unique, @password)
       └──[pr_update_pass]: update password by (username or email): parameters(@unique, @password)
 */
 -- ---------------------------------------------------------------------------------------------------- #TABLES
--- Drop [UACCOUNT] table if already exist then create new [UACCOUNT] table
-IF OBJECT_ID('UACCOUNT', 'U') IS NOT NULL DROP TABLE [UACCOUNT]
-GO
-CREATE TABLE [UACCOUNT] (
-   [uid] bigint identity primary key,
-   [username] varchar(20) null unique, -- username for login
-   [email] varchar(50) unique not null, -- email for contact
-   [password] binary(70) not null, -- size of PWDENCRYPT is 70
-   [fullname] nvarchar(50) not null
-);
-GO
 
--- Drop [UIMAGE] table if already exist then create new [UIMAGE] table
-IF OBJECT_ID('UIMAGE', 'U') IS NOT NULL DROP TABLE [UIMAGE]
-GO
-CREATE TABLE [UIMAGE] (
-   [image] varchar(100) primary key,
-   [u_id] bigint foreign key references
-   [UACCOUNT]([uid]) on delete cascade not null
-);
-GO
-
--- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Drop [UPLATFORM] table if already exist then create new [UPLATFORM] table
 IF OBJECT_ID('UPLATFORM', 'U') IS NOT NULL DROP TABLE [UPLATFORM]
 GO
@@ -85,23 +62,37 @@ CREATE TABLE [UROLES] (
 GO
 
 -- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
--- Drop [US_UA] table if already exist and create new [US_UA] table
-IF OBJECT_ID('US_UA', 'U') IS NOT NULL DROP TABLE [US_UA]
+-- Drop [UACCOUNT] table if already exist then create new [UACCOUNT] table
+IF OBJECT_ID('UACCOUNT', 'U') IS NOT NULL DROP TABLE [UACCOUNT]
 GO
-CREATE TABLE [US_UA] ( -- USER ACCESS
-   [u_id] bigint foreign key references [UACCOUNT]([uid]) on delete cascade not null,
-   [ua_id] tinyint foreign key references [UACCESS]([uaid]) not null,
-   primary key ([u_id])
+CREATE TABLE [UACCOUNT] (
+   [uid] bigint identity primary key,
+   [username] varchar(20) null unique, -- username for login
+   [email] varchar(50) unique not null, -- email for contact
+   [password] binary(70) not null, -- size of PWDENCRYPT is 70
+   [fullname] nvarchar(50) not null,
+   [ua_id] tinyint foreign key references [UACCESS]([uaid]) default 0 not null
 );
 GO
 
+-- Drop [UIMAGE] table if already exist then create new [UIMAGE] table
+IF OBJECT_ID('UIMAGE', 'U') IS NOT NULL DROP TABLE [UIMAGE]
+GO
+CREATE TABLE [UIMAGE] (
+   [image] varchar(100) primary key, -- photo has only one user(hash file's name to MD5)
+   [u_id] bigint foreign key references
+   [UACCOUNT]([uid]) on delete cascade not null
+);
+GO
+
+-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 -- Drop [US_UP] table if already exist and create new [US_UP] table
 IF OBJECT_ID('US_UP', 'U') IS NOT NULL DROP TABLE [US_UP]
 GO
 CREATE TABLE [US_UP] ( -- USER PLATFORMS
    [u_id] bigint foreign key references [UACCOUNT]([uid]) on delete cascade not null,
    [up_id] tinyint foreign key references [UPLATFORM]([upid]) not null,
-   primary key ([u_id], [up_id])
+   primary key ([u_id], [up_id]) -- BCNF
 );
 GO
 
@@ -111,11 +102,9 @@ GO
 CREATE TABLE [US_UR] ( -- USER ROLES (authorization)
    [u_id] bigint foreign key references [UACCOUNT]([uid]) on delete cascade not null,
    [ur_id] tinyint foreign key references [UROLES]([urid]) not null,
-   primary key ([u_id], [ur_id])
+   primary key ([u_id], [ur_id]) -- BCNF
 );
 GO
-
-
 
 -- ---------------------------------------------------------------------------------------------------- #PROCEDURES
 -- Create procedure pr_login >>> login by (username or email) and password
@@ -129,8 +118,10 @@ BEGIN
    IF @unique is null OR LEN(@password) = 0 RAISERROR('username is empty',15,1);
    IF @password is null OR LEN(@unique) = 0 RAISERROR('password is empty',15,1);
 
-   SELECT u.*, r.ua_id INTO #USER FROM UACCOUNT u LEFT JOIN US_UA r ON u.uid = r.u_id
-   WHERE (username = @unique OR email = @unique) AND PWDCOMPARE(@password, password) = 1;
+   SELECT u.* INTO #USER FROM UACCOUNT u
+   WHERE 
+      (username = @unique OR email = @unique) 
+      AND PWDCOMPARE(@password, password) = 1;
 
    IF NOT EXISTS(SELECT [uid] FROM #USER) BEGIN
       SET @error = CONCAT('username:', @unique, ' and password:', @password, ' is incorrect');

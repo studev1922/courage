@@ -25,7 +25,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_Read<E, K> {
 
 	// @formatter:off
    @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
-	public ResponseEntity<Object> saveOne(@RequestBody E entity) {
+	public ResponseEntity<?> saveOne(@RequestBody E entity) {
 		try { // save one data
 			return ResponseEntity.ok(rep.save(entity));
 		} catch (Exception e) {
@@ -34,7 +34,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_Read<E, K> {
 	}
 
    @RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
-   public ResponseEntity<Object> saveAll(Iterable<E> entities) {
+   public ResponseEntity<?> saveAll(Iterable<E> entities) {
       try { // save all data
          return ResponseEntity.ok(rep.saveAll(entities));
       } catch (Exception e) {
@@ -44,7 +44,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_Read<E, K> {
    }
 
    @DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
-	public ResponseEntity<Object> delete(@PathVariable(required = false) K id) {
+	public ResponseEntity<?> delete(@PathVariable(required = false) K id) {
 		if (id != null)
 			try { // delete by id
 				rep.deleteById(id);

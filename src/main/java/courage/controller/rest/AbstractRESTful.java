@@ -131,8 +131,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 		i = 0; // reset index at for save file
 		length = files.length; // reset length of files
-		// save all files when successfully
-		if (null != (e = this.rep.save(e))) {
+		if (null != (e = this.rep.save(e))) { // save all files when successfully
 			folder = this.devide ? directory+'/'+getKey(e) : directory; // next
 			while (i < length) file.saveFile(images[i], files[i++], folder);
 		}

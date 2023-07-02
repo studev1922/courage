@@ -49,9 +49,9 @@ public interface User {
       @Column(unique = true)
       private String uaName;
       
-      @ElementCollection(fetch = FetchType.LAZY) @Column(name = "u_id")
+      @ElementCollection(fetch = FetchType.LAZY) @Column(name = "uid")
       @CollectionTable(
-         name="US_UA",
+         name="UACCOUNT",
          joinColumns = @JoinColumn( name="ua_id", referencedColumnName = "uaid")
       )
       private Set<Long> accounts = new HashSet<>();
