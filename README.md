@@ -27,15 +27,33 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
   + [deleteFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L87)
 - [RestFileControl.java](src/main/java/courage/controller/rest/RestFileControl.java)
   + [RestFileControl$UAccessApi](src/main/java/courage/controller/rest/RestFileControl.java#L19)
-
 <hr>
 
 ## TEST CONTROLLER
-<ol>
-   <li>execute <a href="assets">two files</a> in mssql(SQL Server 2019)</li>
-   <li>start server in <a href="src/main/java/courage/Application.java#L9">Application.java</a> </li>
-   <li>open app on <code>http://localhost:8080</code> for client or <code>http://localhost:8080/server</code></li>
-</ol>
+<ul>
+   <li>
+      <h3>execute <a href="assets">two files</a> in mssql(SQL Server 2019)</h3>
+      <ul>
+         <li><a href="assets/mssql_base_super.sql">create database</a></li>
+         <li><a href="assets/mssql_data_super.sql">insert data into database</a></li>
+      </ul>
+   </li>
+   <li>
+      <h3>start server in</h3>
+      <ol>
+         <li>Main java: <a href="src/main/java/courage/Application.java#L9">Application.java</a></li>
+         <li>Maven run: <code>./mvnw spring-boot:run</code></li>
+      </ol>
+   </li>
+   <li>
+      <h3>open app on</h3>
+      <ol>
+         <li><code>http://localhost:8080</code></li>
+         <li><code>http://localhost:8080/server</code></li>
+      </ol>
+   </li>
+</ul>
+<hr>
 
 ## TEST FILE API CONTROLLER
 <table border>
