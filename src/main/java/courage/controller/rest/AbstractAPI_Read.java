@@ -3,6 +3,8 @@ package courage.controller.rest;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,28 @@ public abstract class AbstractAPI_Read<E, K> {
          e.printStackTrace();
          return ResponseEntity.status(400).body(e.getMessage());
       }
+   }
+
+   /**
+    * @param p number of page
+    * @param s size of data
+    * @param o order by "ASC" || "DESC"
+    * @param f fields to order by
+    * @return ResponseEntity<? extends List<E>>
+    */
+   @GetMapping("/page")
+   public ResponseEntity<?> getData(
+      @RequestParam(required = false, defaultValue = "0") Integer p,
+      @RequestParam(required = false, defaultValue = "20") Integer s,
+      @RequestParam(required = false, defaultValue = "ASC") Sort.Direction o,
+      @RequestParam(required = false) String...f
+   ) {
+      boolean isSort = f != null && f.length > 0;
+      PageRequest fil = isSort 
+         ? PageRequest.of(p, s, Sort.by(o, f)) 
+         : PageRequest.of(p, s);
+      
+      return ResponseEntity.ok(rep.findAll(fil));
    }
 
    @GetMapping("/{id}") // read by single id
