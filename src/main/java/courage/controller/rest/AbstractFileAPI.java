@@ -31,7 +31,7 @@ public abstract class AbstractFileAPI {
 
    @Data
    @AllArgsConstructor
-   static class OptionFile {
+   static class OptionFiles {
       String path;
       String[] fileNames;
    }
@@ -42,10 +42,9 @@ public abstract class AbstractFileAPI {
 	protected final String directory; // image storage folder
    
    /**
-	 * @param devide folder by entity's id
 	 * @param directory is archive folder
 	 */
-	AbstractFileAPI(String directory) {this.directory = directory;}
+	AbstractFileAPI(String directory) { this.directory = directory; }
 
    /**
     * @see AbstractFileAPI.OptionFile
@@ -64,7 +63,7 @@ public abstract class AbstractFileAPI {
       }
 
       // default get path api OptionFile
-      return ResponseEntity.ok(new OptionFile(
+      return ResponseEntity.ok(new OptionFiles(
          file.pathServer(directory, path), // path server to get static file
          file.fileNames(is, directory, path)
       ));
@@ -76,7 +75,7 @@ public abstract class AbstractFileAPI {
 
       // return path api on server with all files saved
       return ResponseEntity.ok(
-         new OptionFile(
+         new OptionFiles(
             file.pathServer(directory, path),
             file.saveFiles(files, true, directory, path).toArray(new String[0])
          )

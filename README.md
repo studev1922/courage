@@ -12,8 +12,9 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
 
 ## ABSTRACT API CONTROLLER
 - [AbstractAPI_Read.java](src/main/java/courage/controller/rest/AbstractAPI_Read.java)
-  + [read all or by list id](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L29)
-  + [read one by id](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L40)
+  + [read all or by list id](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L31)
+  + [read by page](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L49)
+  + [read one by id](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L63)
 - [AbstractRESTful.java](src/main/java/courage/controller/rest/AbstractRESTful.java)
   + [save one data with files](src/main/java/courage/controller/rest/AbstractRESTful.java#L50)
   + [delete data and files by path id](src/main/java/courage/controller/rest/AbstractRESTful.java#L62)
