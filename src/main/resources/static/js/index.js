@@ -27,7 +27,7 @@ let element = // 20230708173430
 app.controller('control', ($scope, $http) => {
    $scope.data = [];
 
-   $scope.appendContents = (size = 4) => {
+   $scope.appendContents = (size = 8) => {
       for (let i = 0; i < size; i++) {
          $scope.data.push({ ...element })
       }
