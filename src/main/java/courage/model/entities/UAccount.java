@@ -1,6 +1,7 @@
 package courage.model.entities;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.ColumnTransformer;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,10 +39,13 @@ public class UAccount {
    private String username;
    @Column(unique = true)
    private String email;
+   @JsonIgnore // igrore password for read api
    @Column(updatable = false) // avoid update password
    @ColumnTransformer(write = "PWDENCRYPT(?)")
    private String password;
    private String fullname;
+   @ObtainVia @Column(name = "regTime")
+   private Date regTime = new Date();
    @ObtainVia @Column(name = "ua_id")
    private Integer access = 0; // default AWAITING for access
 

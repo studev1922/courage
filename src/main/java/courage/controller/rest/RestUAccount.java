@@ -34,7 +34,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    public ResponseEntity<?> login() {
       UAccountRepository dao = ((UAccountRepository) super.rep);
       String token = req.getHeader("authorization");
-
+      
       return (token != null && !token.isEmpty())
             ? this.handleToken(dao, token) // login by token
             : this.handleLogin(dao); // login by username and password

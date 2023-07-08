@@ -40,14 +40,15 @@ GO
 -- INSERT UACCOUNT
 SET IDENTITY_INSERT [dbo].[UACCOUNT] ON
 INSERT INTO [dbo].[UACCOUNT]
-   ([uid], [username], [email], [password], [fullname], [ua_id])
+   ([uid], [username], [email], [password], [fullname], [regDate], [ua_id])
 VALUES
-   (1001, 'admin', 'ngoduyhoaname2002@gmail.com', PWDENCRYPT('123'), N'Admin System Test', 4),
-   (1002, 'staff', 'sdhoa1922@gmail.com', PWDENCRYPT('123'), N'Staff System Test', 4),
-   (1003, 'user1', 'user1.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test', 2),
-   (1004, 'user2', 'user2.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test', 0),
-   (1005, 'partner', 'partner.studev1922@gmail.com', PWDENCRYPT('123'), N'Partner System Test', 3);
+   (1001, 'admin', 'ngoduyhoaname2002@gmail.com', PWDENCRYPT('123'), N'Admin System Test', '2023-02-18 08:58:33', 4),
+   (1002, 'staff', 'sdhoa1922@gmail.com', PWDENCRYPT('123'), N'Staff System Test', '2023-05-04 04:45:17', 4),
+   (1003, 'user1', 'user1.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test', '2023-03-25 09:09:27', 2),
+   (1004, 'user2', 'user2.studev1922@gmail.com', PWDENCRYPT('123'), N'User System Test', '2023-04-05 21:32:00', 0),
+   (1005, 'partner', 'partner.studev1922@gmail.com', PWDENCRYPT('123'), N'Partner System Test', '2023-01-22 15:08:08', 3);
 GO
+
 SET IDENTITY_INSERT [dbo].[UACCOUNT] OFF
 
 -- INSERT UACCOUNT'S IMAGES

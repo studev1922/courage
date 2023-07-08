@@ -71,6 +71,7 @@ CREATE TABLE [UACCOUNT] (
    [email] varchar(50) unique not null, -- email for contact
    [password] binary(70) not null, -- size of PWDENCRYPT is 70
    [fullname] nvarchar(50) not null,
+   [regTime] datetime default GETDATE(),
    [ua_id] tinyint foreign key references [UACCESS]([uaid]) default 0 not null
 );
 GO
