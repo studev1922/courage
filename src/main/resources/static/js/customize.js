@@ -1,4 +1,8 @@
-const textTyping = (e, interval = 10) => {
+/**
+ * @param {HTMLElement} e 
+ * @param {Number} speed 
+ */
+const textTyping = (e, speed = 10) => {
    let className = e.getAttribute('class');
 
    if (className.includes('typing')) {
