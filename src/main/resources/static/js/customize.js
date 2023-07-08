@@ -1,4 +1,7 @@
-
+/**
+ * @param {HTMLElement} e 
+ * @param {Number} speed 
+ */
 const textTyping = (e, speed = 10) => {
    let className = e.getAttribute('class');
 
