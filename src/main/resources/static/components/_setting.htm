@@ -1,0 +1,31 @@
+<div class="offcanvas offcanvas-top bg-opacity-50 bg-dark text-white" data-bs-scroll="true" tabindex="-1" id="setting"
+   aria-labelledby="settingLabel" style="min-height: 50vh;">
+   <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="settingLabel">app customize</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+   </div>
+   <div class="offcanvas-body">
+      <h3>background</h3>
+      <div class="mt-1 d-flex gap-1 flex-wrap">
+         <div class="col-6 col-md-3">
+            <div class="d-inline-block form-check form-switch">
+               <input class="form-check-input" type="checkbox" role="switch" id="customizeColorStrip"
+                  ng-model="customize.colortrip" ng-change="setting()">
+               <label class="form-check-label" for="customizeColorStrip">Color strip</label>
+            </div>
+            <div class="d-inline-block form-check form-switch">
+               <input class="form-check-input" type="checkbox" role="switch" id="customizeBackground"
+                  ng-model="customize.bgr.on" ng-change="setting()">
+               <label class="form-check-label" for="customizeBackground">background</label>
+            </div>
+            <br>
+            <button class="btn btn-outline-warning" ng-click="updateCustom()">update</button>
+         </div>
+
+         <div class="col-6 col-md-3">
+            <label class="form-label">link background image</label>
+            <input type="text" class="form-control" ng-model="customize.bgr.link">
+         </div>
+      </div>
+   </div>
+</div>

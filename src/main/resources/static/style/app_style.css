@@ -1,5 +1,4 @@
 :root {
-   --bgr-url: url('https://static.vecteezy.com/system/resources/thumbnails/002/017/939/original/cosmic-galaxy-with-nebula-free-video.jpg');
    --bgr-linear1: linear-gradient(-45deg, #00000000 25%, #e7c53c50, #23a6d550, #ba23d550);
    --bgr-linear2: linear-gradient(-45deg, #00000000 25%, #23a6d550, #ba23d550, #e7c53c50);
    --bgr-linear3: linear-gradient(-45deg, #00000000 25%, #ba23d550, #e7c53c50, #23a6d550);
@@ -29,9 +28,15 @@
    }
 }
 
+@media(min-width: 1200px) {
+   .col-s5 {
+      flex: 0 0 auto;
+      width: calc(100%/5);
+   }
+}
+
 body {
    background: no-repeat fixed;
-   background-image: var(--bgr-linear1), var(--bgr-url);
    background-size: cover;
    height: 100vh;
 }
@@ -63,8 +68,10 @@ body {
    background-image: var(--bgr-linear);
    animation: gradient 10s ease-in-out infinite;
    position: fixed;
-   width: 100%;
-   height: 100%;
+   left: 0;
+   top: 0;
+   right: 0;
+   bottom: 0;
    z-index: -1;
 }
 
