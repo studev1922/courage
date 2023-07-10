@@ -49,24 +49,12 @@ app.config(($routeProvider) => {
       .otherwise({ redirectTo: '/' });
 })
 
-app.controller('detailcontrol', function ($scope, $route) {
+app.controller('detailcontrol', function ($scope, $routeParams) {
    (async () => {
       if(!$scope.ur) console.log(location.href = '');
 
-      let id = $route.current?.params['id'];
-      let { data, ur } = $scope, { roles, accesses, platforms } = ur;
-      let e = $scope.e = Object.assign({}, data.find(e => e.uid == id)) || {};
-
-      // set references values
-      e.access = accesses.get(e.access);
-      for (let i = 0; i < e.roles.length; i++) {
-         let { urid, role } = roles.get(e.roles[i]);
-         e.roles[i] = { urid, role };
-      }
-      for (let i = 0; i < e.platforms.length; i++) {
-         let { upid, upName } = platforms.get(e.platforms[i]);
-         e.platforms[i] = { upid, upName };
-      }
+      let id = $routeParams['id'];
+      $scope.e = Object.assign({}, $scope.data.find(e => e.uid == id)) || {};
    })();
 });
 
