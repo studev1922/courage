@@ -16,9 +16,9 @@ public interface RestFileControl {
    @RestController
    @CrossOrigin("*") // file default api rest controller
    @RequestMapping({ "/api/uploads/default", "/api/uploads/unknown" })
-   public class UAccessApi extends AbstractFileAPI {
-      UAccessApi() {
-         super(UAccount.DIRECTORY);
+   public class DefaultAPI extends AbstractFileAPI {
+      DefaultAPI() {
+         super("default");
       }
    }
 
