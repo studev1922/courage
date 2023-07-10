@@ -43,7 +43,7 @@ Run file [open Application.java](src/main/java/courage/Application.java#L9)
       <h3>start server in</h3>
       <ol>
          <li>Main java: <a href="src/main/java/courage/Application.java#L9">Application.java</a></li>
-         <li>Maven run: <code>./mvnw spring-boot:run</code></li>
+         <li>Maven run: <code>mvn spring-boot:run</code></li>
       </ol>
    </li>
    <li>
