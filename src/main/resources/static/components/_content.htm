@@ -1,7 +1,10 @@
 <!-- FILTER -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary navbar-dark" style="font-size: 1.2rem;">
    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="#">
+         <img src="assets/icon/code.svg" alt="courage" width="32px" style="color: #ffffff;">
+         <span>FILTER</span>
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
          <span class="navbar-toggler-icon"></span>
@@ -9,21 +12,24 @@
       <div class="collapse navbar-collapse" id="navbarNav">
          <ul class="navbar-nav text-white">
             <li class="nav-item">
-               page at <input type="number" min="0" ng-model="fil.page">
+               page at <input class="text-center" type="number" min="0" ng-model="fil.page">
             </li>
             <li class="nav-item">
-               size <input type="number" min="0" max="{{data.length}}" ng-model="fil.size">
+               size <input class="text-center" type="number" min="0" max="{{data.length}}" ng-model="fil.size">
             </li>
          </ul>
+         <div class="ms-auto">
+            <input type="text" class="form-control text-end" placeholder="search like name" ng-model="fil.name">
+         </div>
       </div>
    </div>
 </nav>
 <!-- contents -->
 <div class="d-flex flex-wrap border overflow-auto" id="listcontents" style="max-height: 150vh;">
    <ng-include class="col-6 col-s5 col-md-4" style="padding: .15rem;" src="'components/_card.htm'"
-      ng-repeat="(i,e) in data | limitTo: fil.size:fil.page*fil.size"></ng-include>
+      ng-repeat="(i,e) in data | limitTo: fil.size:fil.page*fil.size | filter : {fullname : fil.name}"></ng-include>
 </div>
 <!-- call api append content ... TODO -->
 <div class="text-center">
-   <a class="text-white" href="" ng-click="appendContents(5)">show more</a>
+   <a class="text-white" href="" ng-click="appendContents(fil.page, fil.size, 'ASC')">show more</a>
 </div>
