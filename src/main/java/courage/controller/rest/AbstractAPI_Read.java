@@ -57,7 +57,7 @@ public abstract class AbstractAPI_Read<E, K> {
          ? PageRequest.of(p, s, Sort.by(o, f)) 
          : PageRequest.of(p, s);
       
-      return ResponseEntity.ok(rep.findAll(fil));
+      return ResponseEntity.ok(rep.findAll(fil).getContent());
    }
 
    @GetMapping("/{id}") // read by single id
