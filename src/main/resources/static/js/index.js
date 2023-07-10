@@ -1,28 +1,5 @@
 const app = angular.module('app', ['ngRoute']);
-
-// http://localhost:8080/api/accounts/1001
-let element = {
-   "uid": 1001,
-   "username": "admin",
-   "email": "ngoduyhoaname2002@gmail.com",
-   "fullname": "Admin System Test",
-   "regTime": new Date(),
-   "access": 4,
-   "images": [
-      "admin1.png",
-      "admin3.png"
-   ],
-   "roles": [
-      0,
-      1,
-      2
-   ],
-   "platforms": [
-      0,
-      1
-   ]
-};
-
+const server = 'testapi' // 'http://localhost:8080/api';
 
 let local = {
    /**
@@ -81,6 +58,10 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
 })
 
 app.controller('control', ($scope, $http) => {
+   $scope.fil = {
+      page: 0,
+      size: 10,
+   };
    $scope.data = [];
    $scope.customize = local.read('customize') || {
       colortrip: false,
@@ -90,14 +71,46 @@ app.controller('control', ($scope, $http) => {
       }
    };
 
+   let crud = {
+      get: (path, to) => $http
+         .get(`${server}/${path}`)
+         .then(r => $scope[to] = r.data)
+         .catch(e => console.error(e)),
+      post: (path, to, data) => $http
+         .post(`${server}/${path}`, data)
+         .then(r => {
+            $scope[to].push(r.data);
+            return r.data;
+         })
+         .catch(e => console.error(e)),
+      put: (path, to, data) => $http
+         .put(`${server}/${path}`, data)
+         .then(r => $scope[to]
+            .forEach(e => { // update element in array
+               if (e === data) {
+                  Object.assign(e, r.data)
+                  return e; // return element assigned
+               }
+            })
+         )
+         .catch(e => console.error(e)),
+      delete: (path, to, id, key = 'id') => $http
+         .delete(`${server}/${path}/${id}`)
+         .then(r => $scope[to].forEach((e, i) => {
+            if (e[key] == id) {
+               $scope[to].splice(i, 1);
+               return r.data; // number of deleted on server
+            }
+         }))
+         .catch(e => console.error(e))
+   }
+
    $scope.detail = (e) => {
       location = `#!detail/${e.uid}`
    }
 
-   $scope.appendContents = (size = 10) => {
-      for (let i = 0; i < size; i++) {
-         $scope.data.push({ ...element })
-      }
+   $scope.appendContents = (p, s, o, ...f) => {
+      console.log(p, s, o, ...f);
    }
 
    $scope.setting = () => {
@@ -107,8 +120,22 @@ app.controller('control', ($scope, $http) => {
    }
    $scope.updateCustom = () => local.write('customize', $scope.customize);
 
-   $scope.$watch('$stateChangeSuccess', () => {
+   $scope.$watch('$stateChangeSuccess', async () => {
+      let data = await crud.get('accounts.json', 'data');
       $scope.appendContents();
       $scope.setting();
+
+      ((sup) => { // clone data to test
+         for (let i = 0; i < sup; i++) {
+            let append = [];
+            data.forEach(e => {
+               let x = { ...e };
+               x.uid += data.length
+               x.username += data.length
+               append.push(x);
+            })
+            data.push(...append)
+         }
+      })(5);
    });
 });

@@ -3,7 +3,7 @@
    <ng-include
       class="col-6 col-s5 col-md-4"
       src="'components/_card.htm'"
-      ng-repeat="(i,e) in data"
+      ng-repeat="(i,e) in data | limitTo: fil.size:fil.page*fil.size"
       style="padding: .15rem;"
    ></ng-include>
 </div>
