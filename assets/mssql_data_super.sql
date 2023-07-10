@@ -40,7 +40,7 @@ GO
 -- INSERT UACCOUNT
 SET IDENTITY_INSERT [dbo].[UACCOUNT] ON
 INSERT INTO [dbo].[UACCOUNT]
-   ([uid], [username], [email], [password], [fullname], [regDate], [ua_id])
+   ([uid], [username], [email], [password], [fullname], [regTime], [ua_id])
 VALUES
    (1001, 'admin', 'ngoduyhoaname2002@gmail.com', PWDENCRYPT('123'), N'Admin System Test', '2023-02-18 08:58:33', 4),
    (1002, 'staff', 'sdhoa1922@gmail.com', PWDENCRYPT('123'), N'Staff System Test', '2023-05-04 04:45:17', 4),

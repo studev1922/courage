@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.ColumnTransformer;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -44,7 +45,8 @@ public class UAccount {
    @ColumnTransformer(write = "PWDENCRYPT(?)")
    private String password;
    private String fullname;
-   @ObtainVia @Column(name = "regTime")
+   @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.SSS")
+	@ObtainVia @Column(name = "regtime")
    private Date regTime = new Date();
    @ObtainVia @Column(name = "ua_id")
    private Integer access = 0; // default AWAITING for access
