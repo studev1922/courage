@@ -49,20 +49,32 @@ app.config(($routeProvider) => {
       .otherwise({ redirectTo: '/' });
 })
 
-app.controller('detailcontrol', function ($scope, $routeParams) {
-   let id = $routeParams['id'];
-   let { data } = $scope;
-   let index = data.findIndex(e => e.uid == id);
+app.controller('detailcontrol', function ($scope, $route) {
+   (async () => {
+      if(!$scope.ur) console.log(location.href = '');
 
-   $scope.e = JSON.stringify(index > -1 ? data[index] : {}, null, 4);
-})
+      let id = $route.current?.params['id'];
+      let { data, ur } = $scope, { roles, accesses, platforms } = ur;
+      let e = $scope.e = Object.assign({}, data.find(e => e.uid == id)) || {};
+
+      // set references values
+      e.access = accesses.get(e.access);
+      for (let i = 0; i < e.roles.length; i++) {
+         let { urid, role } = roles.get(e.roles[i]);
+         e.roles[i] = { urid, role };
+      }
+      for (let i = 0; i < e.platforms.length; i++) {
+         let { upid, upName } = platforms.get(e.platforms[i]);
+         e.platforms[i] = { upid, upName };
+      }
+   })();
+});
 
 app.controller('control', ($scope, $http) => {
    $scope.fil = {
       page: 0,
       size: 10,
    };
-   $scope.data = [];
    $scope.customize = local.read('customize') || {
       colortrip: false,
       bgr: {
@@ -74,7 +86,7 @@ app.controller('control', ($scope, $http) => {
    let crud = {
       get: (path, to) => $http
          .get(`${server}/${path}`)
-         .then(r => $scope[to] = r.data)
+         .then(r => to ? $scope[to] = r.data : r.data)
          .catch(e => console.error(e)),
       post: (path, to, data) => $http
          .post(`${server}/${path}`, data)
@@ -120,12 +132,29 @@ app.controller('control', ($scope, $http) => {
    }
    $scope.updateCustom = () => local.write('customize', $scope.customize);
 
+
+   $scope.onloadData = async () => {
+      let [roles, accesses, platforms] = [
+         await crud.get('roles.json'),
+         await crud.get('accesses.json'),
+         await crud.get('platforms.json'),
+         await crud.get('accounts.json', 'data')
+      ];
+
+      $scope.ur = {
+         roles: new Map(roles.map(e => [e['urid'], e])),
+         accesses: new Map(accesses.map(e => [e['urid'], e])),
+         platforms: new Map(platforms.map(e => [e['upid'], e]))
+      }
+   }
+
    $scope.$watch('$stateChangeSuccess', async () => {
-      let data = await crud.get('accounts.json', 'data');
-      $scope.appendContents();
+      await $scope.onloadData();
       $scope.setting();
 
-      ((sup) => { // clone data to test
+      let data = $scope.data;
+
+      ((sup) => { // clone data for test
          for (let i = 0; i < sup; i++) {
             let append = [];
             data.forEach(e => {
