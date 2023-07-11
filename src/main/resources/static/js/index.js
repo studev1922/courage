@@ -23,6 +23,7 @@ let local = {
    delete: (key) => localStorage.removeItem(key)
 }
 
+// seting user-inteface
 function setting(customize = {}) {
    let { colortrip, bgr } = customize;
    let { body } = document;
@@ -49,13 +50,14 @@ app.config(($routeProvider) => {
       .otherwise({ redirectTo: '/' });
 })
 
+// Show detail controller
 app.controller('detailcontrol', function ($scope, $routeParams) {
 
    /**
     * 
     * @param {Array} values are keys to find
     * @param {Map} map to get element
-    * @param  {...String} deletes 
+    * @param  {...String} deletes any fields
     */
    function set(values, map, ...deletes) {
       let { length } = values;
@@ -81,25 +83,38 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
    })();
 });
 
+
+// MAIN APP CONTROLLER
 app.controller('control', ($scope, $http) => {
    $scope.defaultImg = 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg';
-   $scope.fil = {
-      page: 0,
-      size: 10,
-   };
+   $scope.fil = { page: 0, size: 10 }; // filter contents
    $scope.customize = local.read('customize') || {
       colortrip: false,
       bgr: {
-         on: true,
+         on: true, // default background image
          link: 'https://static.vecteezy.com/system/resources/thumbnails/002/017/939/original/cosmic-galaxy-with-nebula-free-video.jpg'
       }
    };
 
+   // fetch api
    let crud = {
+      /**
+       * 
+       * @param {String} path to get api
+       * @param {String} to is set to variable in scope
+       * @returns {Promise<Array<Object>>} data gotten
+       */
       get: (path, to) => $http
          .get(`${server}/${path}`)
          .then(r => to ? $scope[to] = r.data : r.data)
          .catch(e => console.error(e)),
+      /**
+       * 
+       * @param {String} path to save api
+       * @param {String} to variable to add new data
+       * @param {String} data data for save
+       * @returns {Promise<Object>} data inserted
+       */
       post: (path, to, data) => $http
          .post(`${server}/${path}`, data)
          .then(r => {
@@ -107,6 +122,13 @@ app.controller('control', ($scope, $http) => {
             return r.data;
          })
          .catch(e => console.error(e)),
+      /**
+       * 
+       * @param {string} path to update api
+       * @param {String} to variable update data
+       * @param {Object} data for update
+       * @returns {Promise<Object>} data updated
+       */
       put: (path, to, data) => $http
          .put(`${server}/${path}`, data)
          .then(r => $scope[to]
@@ -118,6 +140,14 @@ app.controller('control', ($scope, $http) => {
             })
          )
          .catch(e => console.error(e)),
+      /**
+       * 
+       * @param {String} path to delete api
+       * @param {String} to variable in scope
+       * @param {any} id is value of the key
+       * @param {String} key default id
+       * @returns {Promise<Object>} number of rows deleted
+       */
       delete: (path, to, id, key = 'id') => $http
          .delete(`${server}/${path}/${id}`)
          .then(r => $scope[to].forEach((e, i) => {
@@ -129,22 +159,28 @@ app.controller('control', ($scope, $http) => {
          .catch(e => console.error(e))
    }
 
+   // show detail content
    $scope.detail = (e) => {
       location = `#!detail/${e.uid}`
    }
 
+   // get page api and append to data
    $scope.appendContents = (p, s, o, ...f) => {
       console.log(p, s, o, ...f);
+      // TODO call api, append to data
    }
 
+   // seting display
    $scope.setting = () => {
       // custom...
 
       setting($scope.customize);
    }
+
+   // saving custom to localStored
    $scope.updateCustom = () => local.write('customize', $scope.customize);
 
-
+   // fetch api
    $scope.onloadData = async () => {
       let [roles, accesses, platforms] = [
          await crud.get('roles.json'),
@@ -153,7 +189,7 @@ app.controller('control', ($scope, $http) => {
          await crud.get('accounts.json', 'data')
       ];
 
-      $scope.ur = {
+      $scope.ur = { // set map data references
          roles: new Map(roles.map(e => [e['urid'], e])),
          accesses: new Map(accesses.map(e => [e['urid'], e])),
          platforms: new Map(platforms.map(e => [e['upid'], e]))
@@ -161,11 +197,10 @@ app.controller('control', ($scope, $http) => {
    }
 
    $scope.$watch('$stateChangeSuccess', async () => {
-      await $scope.onloadData();
-      $scope.setting();
+      await $scope.onloadData(); // await for load all data
+      $scope.setting(); // setting display
 
       let data = $scope.data;
-
       ((sup) => { // clone data for test
          for (let i = 0; i < sup; i++) {
             let append = [];
