@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 :root {
    --bgr-linear1: linear-gradient(-45deg, #00000000 25%, #e7c53c50, #23a6d550, #ba23d550);
    --bgr-linear2: linear-gradient(-45deg, #00000000 25%, #23a6d550, #ba23d550, #e7c53c50);
@@ -44,6 +46,18 @@ body {
 .scroll-s1::-webkit-scrollbar {
    height: .5rem;
    width: .5rem;
+}
+
+.custom-field {
+   display: block;
+   border: none;
+   background: none;
+   border-bottom: 1px solid #00aaff;
+   text-shadow: 0 0 5px #ffee00;
+}
+
+.custom-field:hover {
+   animation: lights 5s 750ms linear infinite;
 }
 
 .c-text-white,
@@ -125,4 +139,52 @@ body {
    100% {
       background-position: 0% 50%;
    }
+}
+
+@keyframes lights {
+   0% {
+      color: #b8bee0;
+      text-shadow:
+         0 0 1em #ff00aa33,
+         0 0 0.125em #ff33bb4d,
+         -1em -0.125em 0.5em #ffbb3300,
+         1em 0.125em 0.5em #33bbff00;
+   }
+
+   30% {
+      color: #d1d8fa;
+      text-shadow:
+         0 0 1em #ff00aa80,
+         0 0 0.125em #ff33bb80,
+         -0.5em -0.125em 0.25em #ffbb3333,
+         0.5em 0.125em 0.25em #33bbff66;
+   }
+
+   40% {
+      color: #e5eaff;
+      text-shadow:
+         0 0 1em #ff00aa80,
+         0 0 0.125em #ffccee80,
+         -0.25em -0.125em 0.125em #ffbb3333,
+         0.25em 0.125em 0.125em #33bbff66;
+   }
+
+   70% {
+      color: #d1d8fa;
+      text-shadow:
+         0 0 1em #ff00aa80,
+         0 0 0.125em #ff33bb80,
+         0.5em -0.125em 0.25em #ffbb3333,
+         -0.5em 0.125em 0.25em #33bbff66;
+   }
+
+   100% {
+      color: #b8bee0;
+      text-shadow:
+         0 0 1em #ff00aa33,
+         0 0 0.125em #ff33bb4d,
+         1em -0.125em 0.5em #ffbb3300,
+         -1em 0.125em 0.5em #33bbff00;
+   }
+
 }
