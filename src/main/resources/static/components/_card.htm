@@ -6,7 +6,7 @@
       <h5 class="card-title">{{e.fullname}}</h5>
       <div class="ratio" style="aspect-ratio: 4/3;" ng-dblClick="detail(e)">
          <img class="d-block-dark" style="object-fit: cover;" alt=""
-            ng-src="{{e.images[0] || 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg'}}">
+            ng-src="{{e.images[0] || defaultImg}}">
       </div>
       <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
       <a href="#!detail/{{e.uid}}" class="btn btn-primary">detail {{e.uid}}</a>

@@ -41,6 +41,11 @@ body {
    height: 100vh;
 }
 
+.scroll-s1::-webkit-scrollbar {
+   height: .5rem;
+   width: .5rem;
+}
+
 .c-text-white,
 .c-text-white a {
    text-decoration: none;

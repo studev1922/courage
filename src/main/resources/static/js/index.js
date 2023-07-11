@@ -50,15 +50,39 @@ app.config(($routeProvider) => {
 })
 
 app.controller('detailcontrol', function ($scope, $routeParams) {
+
+   /**
+    * 
+    * @param {Array} values are keys to find
+    * @param {Map} map to get element
+    * @param  {...String} deletes 
+    */
+   function set(values, map, ...deletes) {
+      let { length } = values;
+      if (deletes?.length) {
+         for (let i = 0; i < length; i++) {
+            values[i] = map.get(values[i]);
+            for (let del of deletes)
+               delete values[i][del];
+         }
+      } else for (let i = 0; i < length; i++)
+         values[i] = map.get(values[i]);
+   }
+
    (async () => {
-      if(!$scope.ur) console.log(location.href = '');
+      if (!$scope.ur) console.log(location.href = '');
 
       let id = $routeParams['id'];
-      $scope.e = Object.assign({}, $scope.data.find(e => e.uid == id)) || {};
+      let e = $scope.e = Object.assign({}, $scope.data.find(x => x.uid == id)) || {};
+      // relationships
+      e.access = $scope.ur.accesses?.get(e.access);
+      set(e.roles, $scope.ur.roles, 'accounts');
+      set(e.platforms, $scope.ur.platforms, 'accounts');
    })();
 });
 
 app.controller('control', ($scope, $http) => {
+   $scope.defaultImg = 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg';
    $scope.fil = {
       page: 0,
       size: 10,

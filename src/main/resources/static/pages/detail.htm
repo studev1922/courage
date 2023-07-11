@@ -1,6 +1,47 @@
-<h1>DETAIL</h1>
+<div class="mt-5"></div>
 <div class="text-white">
-   <!-- {{e.username}}({{e.uid}}) -->
-   <h3>INFO</h3>
-   <pre>{{e}}</pre>
+   <h3>INFO {{e.username}}({{e.uid}})</h3>
+   <div class="d-flex flex-wrap">
+      <!-- show images -->
+      <div id="{{e.username}}" class="p-1 col-12 col-md-4 carousel slide">
+         <div class="carousel-inner">
+            <!-- each in items -->
+            <div class="carousel-item {{i?'':'active'}}" ng-repeat="(i,img) in e.images track by $index">
+               <img ng-src="{{img}}" class="fit-img-block" style="aspect-ratio: 5/3;" alt="{{img}}">
+            </div>
+            <!-- default image : show when images is empty -->
+            <div class="carousel-item active" ng-if="!e.images.length">
+               <img ng-src="{{defaultImg}}" class="fit-img-block" style="aspect-ratio: 5/3;" alt="default image">
+               <h3 style="position: absolute; bottom: 0; right: 0;">default image</h3>
+            </div>
+         </div>
+         <!-- thumbnail -->
+         <div class="d-flex border overflow-auto scroll-s1" style="width: 100%; z-index: 1000;">
+            <div type="button" class="p-1 col-2 col-xl-3 col-md-4 {{i?'':'active'}}" data-bs-target="#{{e.username}}"
+               data-bs-slide-to="{{i}}" ng-repeat="(i,img) in e.images track by $index" style="height: 5rem;">
+               <img ng-src="{{img}}" class="fit-img-block" alt="{{img}}">
+            </div>
+         </div>
+         <!-- carousel-control buttons : show when size of images > 0 -->
+         <tag ng-if="e.images.length">
+            <button class="carousel-control-prev" type="button" data-bs-target="#{{e.username}}" data-bs-slide="prev">
+               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+               <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#{{e.username}}" data-bs-slide="next">
+               <span class="carousel-control-next-icon" aria-hidden="true"></span>
+               <span class="visually-hidden">Next</span>
+            </button>
+         </tag>
+      </div>
+      <!-- detail information -->
+      <div class="p-1 col-12 col-md-8">
+         <div class="row">
+            <h3>detail</h3>
+            <p style="font-family: monospace;">{{e}}</p>
+         </div>
+      </div>
+      <!-- show other contents -->
+      <ng-include src="'components/_content.htm'" class="d-block mt-1"></ng-include>
+   </div>
 </div>
