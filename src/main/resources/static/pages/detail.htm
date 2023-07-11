@@ -1,5 +1,5 @@
 <div class="mt-5"></div>
-<div class="text-white">
+<div class="container-xxl text-white">
    <h3>INFO {{e.username}}({{e.uid}})</h3>
    <div class="d-flex flex-wrap">
       <!-- show images -->
@@ -16,14 +16,15 @@
             </div>
          </div>
          <!-- thumbnail -->
-         <div class="d-flex border overflow-auto scroll-s1" style="width: 100%; z-index: 1000;">
+         <div class="d-flex border overflow-auto scroll-s1" style="width: 100%; z-index: 1000;"
+            ng-if="e.images.length>1">
             <div type="button" class="p-1 col-2 col-xl-3 col-md-4 {{i?'':'active'}}" data-bs-target="#{{e.username}}"
-               data-bs-slide-to="{{i}}" ng-repeat="(i,img) in e.images track by $index" style="height: 5rem;">
-               <img ng-src="{{img}}" class="fit-img-block" alt="{{img}}">
+               data-bs-slide-to="{{i}}" ng-repeat="(i,img) in e.images track by $index">
+               <img ng-src="{{img}}" class="fit-img-block" alt="{{img}}" style="aspect-ratio: 2/1; height: auto;">
             </div>
          </div>
          <!-- carousel-control buttons : show when size of images > 0 -->
-         <tag ng-if="e.images.length">
+         <tag ng-if="e.images.length > 1">
             <button class="carousel-control-prev" type="button" data-bs-target="#{{e.username}}" data-bs-slide="prev">
                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                <span class="visually-hidden">Previous</span>
@@ -35,13 +36,44 @@
          </tag>
       </div>
       <!-- detail information -->
-      <div class="p-1 col-12 col-md-8">
+      <div class="p-1 col-12 col-md-8 text-xl-end text-md-center text-sm-start">
+         <h3>show detail <span class="text-warning">{{e.username}}</span></h3>
+         <hr>
+         <div hidden aria-hidden="true">
+            {{e.uid}}
+         </div>
          <div class="row">
-            <h3>detail</h3>
-            <p style="font-family: monospace;">{{e}}</p>
+            <div class="mt-1 col-xl-6 col-sm-12">
+               <label class="form-label fw-bold" for="">username</label>
+               <div class="custom-field" ng-bind="e.username"></div>
+            </div>
+            <div class="mt-1 col-xl-6 col-sm-12">
+               <label class="form-label fw-bold" for="">email</label>
+               <div class="custom-field" ng-bind="e.email"></div>
+            </div>
+            <div class="mt-1 col-xl-6 col-sm-12">
+               <label class="form-label fw-bold" for="">fullname</label>
+               <div class="custom-field" ng-bind="e.fullname"></div>
+            </div>
+            <div class="mt-1 col-xl-6 col-sm-12">
+               <label class="form-label fw-bold" for="">register time</label>
+               <div class="custom-field" ng-bind="e.regTime | date : 'medium'"></div>
+            </div>
+            <div class="mt-1 col-xl-6 col-sm-12">
+               <label class="form-label fw-bold" for="">roles</label>
+               <div class="custom-field">
+                  <span class="m-1 badge bg-gradient bg-warning" ng-repeat="r in e.roles">&nbsp;{{r.role}}&nbsp;</span>
+               </div>
+            </div>
+            <div class="mt-1 col-xl-6 col-sm-12">
+               <label class="form-label fw-bold" for="">platforms</label>
+               <div class="custom-field">
+                  <span class="m-1 badge bg-gradient bg-warning" ng-repeat="r in e.platforms" ng-bind="r.upName"></span>
+               </div>
+            </div>
          </div>
       </div>
       <!-- show other contents -->
-      <ng-include src="'components/_content.htm'" class="d-block mt-1"></ng-include>
+      <ng-include src="'components/_content.htm'" class="d-block mt-1 w-100"></ng-include>
    </div>
 </div>

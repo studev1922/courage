@@ -6,19 +6,18 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>CLIENT TEST DATA</title>
 
-   <!-- Bootstrap v5.1.3 style -->
+   <!-- cascading style sheets -->
    <link rel="stylesheet" href="style/bootstrap-v5.1.3.min.css">
    <link rel="stylesheet" href="style/app_style.css">
 </head>
 
 <body ng-controller="control" style="font-size: 1.2rem;">
-   
-   <!-- <div class="bg-animation"></div> -->
    <!-- THIS IS SINGLE PAGE BUILD IN ANGUlARJS AND BOOTSTRAP FRAMEWORKS -->
    <ng-include src="'components/_navbar.htm'" class="fixed-top bg-dark-gradient navbar-dark" id="navbar"></ng-include>
-   <ng-view></ng-view>
+   <ng-view><!-- ROUTER-ANGULARJS WILL BE REPLACE CONTENT AT HERE --></ng-view>
    <ng-include src="'components/_footer.htm'" class="position-sticky text-white bg-dark-gradient"></ng-include>
    <ng-include src="'components/_setting.htm'"></ng-include>
+   <!-- <div class="bg-animation"></div> -->
 
    <!-- frameworks for javascript -->
    <script src="js/angular-v1.8.0.min.js"></script>
