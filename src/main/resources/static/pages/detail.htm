@@ -7,7 +7,8 @@
          <div class="carousel-inner">
             <!-- each in items -->
             <div class="carousel-item {{i?'':'active'}}" ng-repeat="(i,img) in e.images track by $index">
-               <img ng-src="{{getImage(img, 'uploads/account', e.uid)}}" class="fit-img-block" style="aspect-ratio: 5/3;" alt="{{img}}">
+               <img ng-src="{{getImage(img, 'uploads/account', e.uid)}}" class="fit-img-block"
+                  style="aspect-ratio: 5/3; object-fit: contain;" alt="{{img}}">
             </div>
             <!-- default image : show when images is empty -->
             <div class="carousel-item active" ng-if="!e.images.length">
