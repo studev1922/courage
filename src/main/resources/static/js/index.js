@@ -54,32 +54,37 @@ app.config(($routeProvider) => {
 app.controller('detailcontrol', function ($scope, $routeParams) {
 
    /**
+    * get map from to set data
     * 
-    * @param {Array} values are keys to find
+    * @param {String} from data
     * @param {Map} map to get element
+    * @param {String} to set data
+    * @param {Object} e element to set data
     * @param  {...String} deletes any fields
     */
-   function set(values, map, ...deletes) {
-      let { length } = values;
+   function set(from, map, to, e, ...deletes) {
+      e[to] = [];
+      let values = e[from], { length } = values;
+
       if (deletes?.length) {
          for (let i = 0; i < length; i++) {
-            values[i] = map.get(values[i]);
-            for (let del of deletes)
-               delete values[i][del];
+            e[to].push({ ...map.get(values[i]) });
+            if (e[to][i]) for (let del of deletes)
+               delete e[to][i][del]; // delete fields
          }
       } else for (let i = 0; i < length; i++)
-         values[i] = map.get(values[i]);
+         e[to].push({ ...map.get(values[i]) });
    }
 
    (async () => {
-      if (!$scope.ur) console.log(location.href = '');
+      if (!$scope.ur) location.href = '';
 
       let id = $routeParams['id'];
       let e = $scope.e = Object.assign({}, $scope.data.find(x => x.uid == id)) || {};
       // relationships
       e.access = $scope.ur.accesses?.get(e.access);
-      set(e.roles, $scope.ur.roles, 'accounts');
-      set(e.platforms, $scope.ur.platforms, 'accounts');
+      set('roles', $scope.ur.roles, '_roles', e, 'accounts');
+      set('platforms', $scope.ur.platforms, '_platforms', e, 'accounts');
    })();
 });
 
@@ -190,8 +195,6 @@ app.controller('control', ($scope, $http) => {
          await crud.get('platforms'),
          await crud.get('accounts', 'data')
       ];
-
-      console.log($scope.data);
 
       $scope.ur = { // set map data references
          roles: new Map(roles.map(e => [e['urid'], e])),

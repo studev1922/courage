@@ -64,13 +64,13 @@
             <div class="mt-1 col-xl-6 col-sm-12">
                <label class="form-label fw-bold" for="">roles</label>
                <div class="custom-field">
-                  <span class="m-1 badge bg-gradient bg-warning" ng-repeat="r in e.roles">&nbsp;{{r.role}}&nbsp;</span>
+                  <span class="m-1 badge bg-gradient bg-warning" ng-repeat="r in e._roles">&nbsp;{{r.role}}&nbsp;</span>
                </div>
             </div>
             <div class="mt-1 col-xl-6 col-sm-12">
                <label class="form-label fw-bold" for="">platforms</label>
                <div class="custom-field">
-                  <span class="m-1 badge bg-gradient bg-warning" ng-repeat="r in e.platforms" ng-bind="r.upName"></span>
+                  <span class="m-1 badge bg-gradient bg-warning" ng-repeat="r in e._platforms" ng-bind="r.upName"></span>
                </div>
             </div>
          </div>
