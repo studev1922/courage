@@ -7,7 +7,7 @@
          <div class="carousel-inner">
             <!-- each in items -->
             <div class="carousel-item {{i?'':'active'}}" ng-repeat="(i,img) in e.images track by $index">
-               <img ng-src="{{img}}" class="fit-img-block" style="aspect-ratio: 5/3;" alt="{{img}}">
+               <img ng-src="{{getImage(img, 'uploads/account', e.uid)}}" class="fit-img-block" style="aspect-ratio: 5/3;" alt="{{img}}">
             </div>
             <!-- default image : show when images is empty -->
             <div class="carousel-item active" ng-if="!e.images.length">
@@ -20,7 +20,8 @@
             ng-if="e.images.length>1">
             <div type="button" class="p-1 col-2 col-xl-3 col-md-4 {{i?'':'active'}}" data-bs-target="#{{e.username}}"
                data-bs-slide-to="{{i}}" ng-repeat="(i,img) in e.images track by $index">
-               <img ng-src="{{img}}" class="fit-img-block" alt="{{img}}" style="aspect-ratio: 2/1; height: auto;">
+               <img ng-src="{{getImage(img, 'uploads/account/'+e.uid)}}" class="fit-img-block" alt="{{img}}"
+                  style="aspect-ratio: 2/1; height: auto;">
             </div>
          </div>
          <!-- carousel-control buttons : show when size of images > 0 -->

@@ -5,8 +5,8 @@
    <div class="card-body">
       <h5 class="card-title">{{e.fullname}}</h5>
       <div class="ratio" style="aspect-ratio: 4/3;" ng-dblClick="detail(e)">
-         <img class="d-block-dark" style="object-fit: cover;" alt=""
-            ng-src="{{e.images[0] || defaultImg}}">
+         <img class="d-block-dark" style="object-fit: cover;" alt="{{e.images[0]}}"
+            ng-src="{{getImage(e.images[0], 'uploads/account', e.uid)}}">
       </div>
       <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
       <a href="#!detail/{{e.uid}}" class="btn btn-primary">detail {{e.uid}}</a>

@@ -1,5 +1,5 @@
 const app = angular.module('app', ['ngRoute']);
-const server = 'testapi' // 'http://localhost:8080/api';
+const server = 'http://localhost:8080/api';
 
 let local = {
    /**
@@ -159,6 +159,8 @@ app.controller('control', ($scope, $http) => {
          .catch(e => console.error(e))
    }
 
+   $scope.getImage = (img, ...paths) => img ? `${server}/${paths.join('/')}/${img}` : $scope.defaultImg;
+
    // show detail content
    $scope.detail = (e) => {
       location = `#!detail/${e.uid}`
@@ -183,11 +185,13 @@ app.controller('control', ($scope, $http) => {
    // fetch api
    $scope.onloadData = async () => {
       let [roles, accesses, platforms] = [
-         await crud.get('roles.json'),
-         await crud.get('accesses.json'),
-         await crud.get('platforms.json'),
-         await crud.get('accounts.json', 'data')
+         await crud.get('roles'),
+         await crud.get('accesses'),
+         await crud.get('platforms'),
+         await crud.get('accounts', 'data')
       ];
+
+      console.log($scope.data);
 
       $scope.ur = { // set map data references
          roles: new Map(roles.map(e => [e['urid'], e])),
