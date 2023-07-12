@@ -45,6 +45,15 @@ body {
    width: .5rem;
 }
 
+.custom-input {
+   background: transparent;
+   border: none;
+   border-bottom: 1px solid #00b8ff;
+   color: white;
+   font-weight: bolder;
+   text-shadow: 0 0 1rem #ff0000;
+}
+
 .custom-field {
    display: block;
    border: none;
