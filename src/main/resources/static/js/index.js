@@ -91,6 +91,7 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
 
 // MAIN APP CONTROLLER
 app.controller('control', ($scope, $http) => {
+   $scope.dynamic_src = 'js/test.js'
    $scope.defaultImg = 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg';
    $scope.fil = { page: 0, size: 10 }; // filter contents
    $scope.customize = local.read('customize') || {
@@ -118,10 +119,11 @@ app.controller('control', ($scope, $http) => {
        * @param {String} path to save api
        * @param {String} to variable to add new data
        * @param {String} data data for save
+       * @param {Object} config config post data
        * @returns {Promise<Object>} data inserted
        */
-      post: (path, to, data) => $http
-         .post(`${server}/${path}`, data)
+      post: (path, to, data, config) => $http
+         .post(`${server}/${path}`, data, config)
          .then(r => {
             $scope[to].push(r.data);
             return r.data;
@@ -132,10 +134,11 @@ app.controller('control', ($scope, $http) => {
        * @param {string} path to update api
        * @param {String} to variable update data
        * @param {Object} data for update
+       * @param {Object} config config put data
        * @returns {Promise<Object>} data updated
        */
-      put: (path, to, data) => $http
-         .put(`${server}/${path}`, data)
+      put: (path, to, data, config) => $http
+         .put(`${server}/${path}`, data, config)
          .then(r => $scope[to]
             .forEach(e => { // update element in array
                if (e === data) {

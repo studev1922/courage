@@ -93,7 +93,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
          token = token.substring(token.lastIndexOf(" "));
          username = jwt.verify(token); // find username by token
          e = dao.findByUsername(username);
-         req.login(username, e.getPassword()); // servlet login
+         // req.login(username, e.getPassword()); // servlet login
 
          return e != null
                ? ResponseEntity.ok(e)
@@ -112,9 +112,10 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
       try { // sign new token
          e = dao.pr_login(us, pw);
+
          if (e != null) {
             username = e.getUsername();
-            req.login(username, e.getPassword()); // servlet login
+            // req.login(username, e.getPassword()); // servlet login
             return ResponseEntity.ok(jwt.sign(username)); // create token
          } else {
             return ResponseEntity.status(401).body("account is empty!");
