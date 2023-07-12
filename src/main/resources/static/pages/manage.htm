@@ -1,0 +1,15 @@
+<div style="margin-top: 5rem;"></div>
+<div class="container-xxl border-0 border-start border-end text-white">
+   <h2 class="text-xl-start text-md-center">management data</h2>
+   <!-- Tabs navs -->
+   <ul class="nav nav-tabs justify-content-xl-end justify-content-sm-center" id="tabs">
+      <li class="nav-item">
+         <a class="nav-link" href="javascript:void(0)" ng-click="srctab='components/manage/_list.htm'">list data</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="javascript:void(0)" ng-click="srctab='components/manage/_myself.htm'">my self</a>
+      </li>
+   </ul>
+   <!-- show content ./components/manage/{filename} -->
+   <ng-include src="srctab"></ng-include>
+</div>

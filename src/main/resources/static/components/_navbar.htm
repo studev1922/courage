@@ -16,6 +16,7 @@
             <li class="nav-item">
                <a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#setting">customize layout</a>
             </li>
+            <!-- target page -->
             <li class="nav-item dropdown">
                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                   aria-expanded="false">
@@ -30,7 +31,21 @@
                   <li>
                      <hr class="dropdown-divider">
                   </li>
-                  <li><a class="dropdown-item text-danger" href="" onclick="if(confirm('reload this page?'))location.reload();">reload</a></li>
+                  <li><a class="dropdown-item text-danger" href=""
+                        onclick="if(confirm('reload this page?'))location.reload();">reload</a></li>
+               </ul>
+            </li>
+            <!-- access control -->
+            <li class="nav-item dropdown">
+               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  management
+               </a>
+               <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#!manage/">manager</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="!#manage/me">about me</a></li>
+                  <li><a class="dropdown-item" href="!#manage/list">list user</a></li>
                </ul>
             </li>
          </ul>

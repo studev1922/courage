@@ -47,8 +47,23 @@ app.config(($routeProvider) => {
    $routeProvider
       .when('/', { templateUrl: "pages/main.htm" })
       .when('/detail/:id', { templateUrl: "pages/detail.htm", controller: 'detailcontrol' })
+      .when('/manage', { templateUrl: "pages/manage.htm", controller: 'usercontrol' })
+      .when('/manage/**', { redirectTo: '/manage' })
       .otherwise({ redirectTo: '/' });
-})
+});
+
+// usercontrol
+app.controller('usercontrol', function ($scope) {
+   $scope.srctab = 'components/manage/_myself.htm'
+   let items = tabs.querySelectorAll('.nav-link');
+   
+   // handle nav-tabs event clicked
+   items.forEach(item => item.addEventListener('click', _ => {
+      items.forEach(e => e.classList?.remove('active')) // remove all active
+      item.classList.add('active'); // add new active
+   }))
+});
+
 
 // Show detail controller
 app.controller('detailcontrol', function ($scope, $routeParams) {
@@ -88,7 +103,6 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
    })();
 });
 
-
 // MAIN APP CONTROLLER
 app.controller('control', ($scope, $http) => {
    $scope.dynamic_src = 'js/test.js'
@@ -103,7 +117,7 @@ app.controller('control', ($scope, $http) => {
    };
 
    // fetch api
-   let crud = {
+   $scope.crud = {
       /**
        * 
        * @param {String} path to get api
@@ -193,10 +207,10 @@ app.controller('control', ($scope, $http) => {
    // fetch api
    $scope.onloadData = async () => {
       let [roles, accesses, platforms] = [
-         await crud.get('roles'),
-         await crud.get('accesses'),
-         await crud.get('platforms'),
-         await crud.get('accounts', 'data')
+         await $scope.crud.get('roles'),
+         await $scope.crud.get('accesses'),
+         await $scope.crud.get('platforms'),
+         await $scope.crud.get('accounts', 'data')
       ];
 
       $scope.ur = { // set map data references
@@ -207,7 +221,7 @@ app.controller('control', ($scope, $http) => {
    }
 
    $scope.$watch('$stateChangeSuccess', async () => {
-      await $scope.onloadData(); // await for load all data
+      // await $scope.onloadData(); // await for load all data
       $scope.setting(); // setting display
    });
 });
