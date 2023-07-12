@@ -203,19 +203,5 @@ app.controller('control', ($scope, $http) => {
    $scope.$watch('$stateChangeSuccess', async () => {
       await $scope.onloadData(); // await for load all data
       $scope.setting(); // setting display
-
-      let data = $scope.data;
-      ((sup) => { // clone data for test
-         for (let i = 0; i < sup; i++) {
-            let append = [];
-            data.forEach(e => {
-               let x = { ...e };
-               x.uid += data.length
-               x.username += data.length
-               append.push(x);
-            })
-            data.push(...append)
-         }
-      })(5);
    });
 });
