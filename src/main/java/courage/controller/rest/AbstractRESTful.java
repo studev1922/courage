@@ -30,25 +30,24 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 	// @formatter:off
 	@Autowired protected FileUpload file;
-	protected final boolean devide;
+	protected final boolean isDevide;
 	protected final String directory; // image storage folder
 	protected abstract K getKey(E e); // entity's key
 	protected abstract String[] filesExist(E e, String...prevents);
 	protected abstract void setFiles(E e, Set<String> images);
 
 	/**
-	 * @param devide folder by entity's id
+	 * @param isDevide folder by entity's id
 	 * @param directory is archive folder
 	 */
-	AbstractRESTful(boolean devide, String directory) {
-		this.devide = devide;
+	AbstractRESTful(boolean isDevide, String directory) {
+		this.isDevide = isDevide;
 		this.directory = directory;
 	}
-	// @formatter:on
 
+	// save one with multipart file
 	@RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
 	public ResponseEntity<?> save(E entity, @RequestBody(required = false) MultipartFile... files) {
-		System.out.println(entity);
 		try {
 			entity = this.updateEntity(entity, files);
 			return ResponseEntity.ok(entity);
@@ -58,18 +57,27 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 		}
 	}
 
+	// save all without multipart file
+	@RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
+   public ResponseEntity<?> save(Iterable<E> entities) {
+      try { // save all data
+         return ResponseEntity.ok(rep.saveAll(entities));
+      } catch (Exception e) {
+         e.printStackTrace();
+         return ResponseEntity.status(400).body(e.getMessage());
+      }
+   }
+
 	@DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
 	public ResponseEntity<?> delete(@PathVariable(required = false) K id) {
-		String folder = this.devide ? directory + '/' + id : directory;
+		String folder = this.isDevide ? directory + '/' + id : directory;
 		if (id != null)
 			try {
 				Optional<E> o = rep.findById(id);
 				if (o.isPresent()) {
-					rep.deleteById(id);
-					if (this.devide) // delete folder
-						file.deleteFile(folder);
-					else // delete each file
-						file.deleteFiles(filesExist(o.get()), folder);
+					rep.deleteById(id); // delete entity
+					if (this.isDevide) file.deleteFile(folder); // delete folder
+					else file.deleteFiles(filesExist(o.get()), folder); // delete each file
 				}
 				return ResponseEntity.ok().build();
 			} catch (Exception e) {
@@ -90,7 +98,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 		Optional<E> o = rep.findById(key);
 		if(o.isPresent()) { // delete previous images not in the new images
-			folder = this.devide ? directory+'/'+key : directory; // previous
+			folder = this.isDevide ? directory+'/'+key : directory; // previous
 			String[] fileNames = filesExist(o.get(), prevents);
 			if(fileNames.length > 0) file.deleteFiles(fileNames, folder);
 		}
@@ -99,11 +107,9 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 		return hasFiles
 			? handleFiles(e, prevents, files) // save entity with images
 			: this.rep.save(e); // save entity without images
-		
-		// @formatter:on
 	}
 
-	/**@formatter:off
+	/**
 	 * @param e is entity for update with files
 	 * @param prevents all file's names for prevent file deletion
 	 * @param files to save all
@@ -132,7 +138,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 		i = 0; // reset index at for save file
 		length = files.length; // reset length of files
 		if (null != (e = this.rep.save(e))) { // save all files when successfully
-			folder = this.devide ? directory+'/'+getKey(e) : directory; // next
+			folder = this.isDevide ? directory+'/'+getKey(e) : directory; // next
 			while (i < length) file.saveFile(images[i], files[i++], folder);
 		}
 

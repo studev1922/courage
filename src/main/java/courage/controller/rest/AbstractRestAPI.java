@@ -25,7 +25,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_Read<E, K> {
 
 	// @formatter:off
    @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
-	public ResponseEntity<?> saveOne(@RequestBody E entity) {
+	public ResponseEntity<?> save(E entity) {
 		try { // save one data
 			return ResponseEntity.ok(rep.save(entity));
 		} catch (Exception e) {
@@ -34,7 +34,7 @@ public abstract class AbstractRestAPI<E, K> extends AbstractAPI_Read<E, K> {
 	}
 
    @RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
-   public ResponseEntity<?> saveAll(Iterable<E> entities) {
+   public ResponseEntity<?> save(Iterable<E> entities) {
       try { // save all data
          return ResponseEntity.ok(rep.saveAll(entities));
       } catch (Exception e) {
