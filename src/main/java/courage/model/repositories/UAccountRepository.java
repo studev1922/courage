@@ -1,14 +1,17 @@
 package courage.model.repositories;
 
 import java.sql.SQLException;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import courage.model.entities.UAccount;
 
-public interface UAccountRepository extends JpaRepository<UAccount, Long> {
+public interface UAccountRepository extends JpaRepository<UAccount, Long>, JpaSpecificationExecutor<UAccount> {
 
-   UAccount findByEmail(String email) throws Exception;
-   UAccount findByUsername(String username) throws Exception;
+   UAccount findByEmail(String email);
+
+   UAccount findByUsername(String username);
 
    @Query(value = "EXEC pr_login :unique, :password", nativeQuery = true)
    UAccount pr_login(String unique, String password) throws Exception;
