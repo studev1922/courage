@@ -39,7 +39,10 @@
       </div>
       <!-- detail information -->
       <div class="p-1 col-12 col-md-8 text-xl-end text-md-center text-sm-start">
-         <h3>show detail <span class="text-warning">{{e.username}}</span></h3>
+         <div>
+            <h3 class="d-inline">show detail <span class="text-warning">{{e.username}}</span></h3>
+            <span class="badge bg-warning" ng-bind="e._access.uaName"></span>
+         </div>
          <hr>
          <div hidden aria-hidden="true">
             {{e.uid}}
