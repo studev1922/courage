@@ -1,2 +1,47 @@
 <h3>for manager list</h3>
-{{data}}
+<div class="overflow-auto">
+   <p>{{}}</p>
+   <table class="table text-white bg-dark bg-opacity-25">
+      <thead>
+         <td>No</td>
+         <th>username</th>
+         <th>email</th>
+         <th>fullname</th>
+         <th>access</th>
+         <th>roles</th>
+         <th>platform</th>
+         <th>images</th>
+      </thead>
+      <tbody>
+         <tr ng-repeat="(i,e) in data">
+            <td class="text-center">
+               <span ng-bind="i"></span>
+               <input type="hidden" ng-value="e.uid">
+            </td>
+            <td ng-bind="e.username"></td>
+            <td ng-bind="e.email"></td>
+            <td ng-bind="e.fullname"></td>
+            <td>
+               <!-- <select class="btn btn-secondary">
+                  <option value=""></option>
+               </select> -->
+            </td>
+            <td>
+               <div class="dropdown">
+                  <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                     aria-expanded="false">
+                     roles ({{e.roles.length}})
+                  </a>
+                  <ul class="dropdown-menu">
+                     <li><a class="dropdown-item" href="#">Action</a></li>
+                     <li><a class="dropdown-item" href="#">Another action</a></li>
+                     <li><a class="dropdown-item" href="#">Something else here</a></li>
+                  </ul>
+               </div>
+            </td>
+            <td ng-bind="e.platform"></td>
+            <td ng-bind="e.images"></td>
+         </tr>
+      </tbody>
+   </table>
+</div>
