@@ -3,6 +3,7 @@ package courage.controller.rest;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,6 +39,10 @@ public abstract class AbstractAPI_Read<E, K> {
       }
    }
 
+   protected Example<E> getExample() {
+      return null; // default find all by pageable
+   };
+
    /**
     * @param p number of page
     * @param s size of data
@@ -53,11 +58,15 @@ public abstract class AbstractAPI_Read<E, K> {
       @RequestParam(required = false) String...f
    ) {
       boolean isSort = f != null && f.length > 0;
-      PageRequest fil = isSort 
+      PageRequest pageable = isSort 
          ? PageRequest.of(p, s, Sort.by(o, f)) 
          : PageRequest.of(p, s);
+      Example<E> example = this.getExample();
          
-      return ResponseEntity.ok(rep.findAll(fil));
+      return ResponseEntity.ok(example != null 
+         ? rep.findAll(example, pageable) 
+         : rep.findAll(pageable)
+      );
    }
 
    @GetMapping("/{id}") // read by single id
