@@ -35,7 +35,7 @@ public class UAccount {
    public final static String DIRECTORY = "account"; // file storage in folder
 
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long uid = -1L;
+   private Long uid;
    @Column(unique = true)
    private String username;
    @Column(unique = true)
@@ -46,10 +46,10 @@ public class UAccount {
    private String password;
    private String fullname;
    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.SSS")
-	@ObtainVia @Column(name = "regtime")
-   private Date regTime = new Date();
-   @ObtainVia @Column(name = "ua_id")
-   private Integer access = 0; // default AWAITING for access
+	@Column(name = "regtime", updatable = false)
+   private Date regTime; // register time
+   @Column(name = "ua_id")
+   private Integer access; // default AWAITING for access
 
    // user's images
    @ElementCollection(fetch = FetchType.EAGER)
