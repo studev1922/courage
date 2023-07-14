@@ -54,9 +54,9 @@ app.config(($routeProvider) => {
 
 // usercontrol
 app.controller('usercontrol', function ($scope) {
-   $scope.srctab = 'components/manage/_myself.htm'
+   $scope.srctab = 'components/manage/_list.htm'
    let items = tabs.querySelectorAll('.nav-link');
-   
+
    // handle nav-tabs event clicked
    items.forEach(item => item.addEventListener('click', _ => {
       items.forEach(e => e.classList?.remove('active')) // remove all active
@@ -71,35 +71,49 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
    /**
     * get map from to set data
     * 
-    * @param {String} from data
-    * @param {Map} map to get element
+    * @param {String} from data is references id (key)
+    * @param {Array} array to get element
     * @param {String} to set data
     * @param {Object} e element to set data
+    * @param {String} by key of element
     * @param  {...String} deletes any fields
     */
-   function set(from, map, to, e, ...deletes) {
-      e[to] = [];
+   function set(from, array, to, e, by, ...deletes) {
+      // delete fields
+      let move_fileds = (x) => {
+         if (x) for (let del of deletes) delete x[del];
+      }
+
+      // set single value
+      if(!Array.isArray(e[from])) {
+         if (deletes?.length) {
+            e[to] = array.find(x => x[by] == e[from]);
+            move_fileds(e[to]);
+         } else e[to] = array.find(x => x[by] == e[from]);
+         return;
+      }
+
+      e[to] = []; // set multiple values
       let values = e[from], { length } = values;
 
       if (deletes?.length) {
          for (let i = 0; i < length; i++) {
-            e[to].push({ ...map.get(values[i]) });
-            if (e[to][i]) for (let del of deletes)
-               delete e[to][i][del]; // delete fields
+            e[to].push({ ...array.find(x => x[by] == values[i]) });
+            move_fileds(e[to][i]);
          }
       } else for (let i = 0; i < length; i++)
-         e[to].push({ ...map.get(values[i]) });
+         e[to].push({ ...array.find(x => x[by] == values[i]) });
    }
 
    (async () => {
       if (!$scope.ur) location.href = '';
 
       let id = $routeParams['id'];
-      let e = $scope.e = Object.assign({}, $scope.data.find(x => x.uid == id)) || {};
+      let e = $scope.e = angular.copy($scope.data.find(x => x.uid == id)) || {};
       // relationships
-      e.access = $scope.ur.accesses?.get(e.access);
-      set('roles', $scope.ur.roles, '_roles', e, 'accounts');
-      set('platforms', $scope.ur.platforms, '_platforms', e, 'accounts');
+      set('access', $scope.ur.accesses, '_access', e, 'uaid', 'accounts');
+      set('roles', $scope.ur.roles, '_roles', e, 'urid', 'accounts');
+      set('platforms', $scope.ur.platforms, '_platforms', e, 'upid', 'accounts');
    })();
 });
 
@@ -212,16 +226,11 @@ app.controller('control', ($scope, $http) => {
          await $scope.crud.get('platforms'),
          await $scope.crud.get('accounts', 'data')
       ];
-
-      $scope.ur = { // set map data references
-         roles: new Map(roles.map(e => [e['urid'], e])),
-         accesses: new Map(accesses.map(e => [e['urid'], e])),
-         platforms: new Map(platforms.map(e => [e['upid'], e]))
-      }
+      $scope.ur = { roles, accesses, platforms };
    }
 
    $scope.$watch('$stateChangeSuccess', async () => {
-      // await $scope.onloadData(); // await for load all data
       $scope.setting(); // setting display
+      await $scope.onloadData(); // await for load all data
    });
 });

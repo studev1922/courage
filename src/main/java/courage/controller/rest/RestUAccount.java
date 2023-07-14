@@ -8,21 +8,36 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 import courage.model.services.JwtService;
+import lombok.AllArgsConstructor;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping({ "/api/accounts" })
 public class RestUAccount extends AbstractRESTful<UAccount, Long> {
+
+   @AllArgsConstructor
+   protected enum ACCESS {
+      AWAITING(0), LOCK(1),
+      PRIVATE(2), PROTECTED(3), PUBLIC(4);
+
+      public int uaid;
+   }
 
    // @formatter:off
    @Autowired private JwtService jwt;
@@ -34,7 +49,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    public ResponseEntity<?> login() {
       UAccountRepository dao = ((UAccountRepository) super.rep);
       String token = req.getHeader("authorization");
-      
+
       return (token != null && !token.isEmpty())
             ? this.handleToken(dao, token) // login by token
             : this.handleLogin(dao); // login by username and password
@@ -65,6 +80,28 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
          return ResponseEntity.status(500).body(ex.getMessage());
       }
    }
+
+   @Override
+   @GetMapping("/page") // @formatter:off
+   public ResponseEntity<Page<UAccount>> getData(
+      @RequestParam(required = false, defaultValue = "0") Integer p,
+      @RequestParam(required = false, defaultValue = "20") Integer s,
+      @RequestParam(required = false, defaultValue = "ASC") Sort.Direction o,
+      @RequestParam(required = false) String...f
+   ) {
+      boolean isAdmin = false;
+      boolean isSort = f != null && f.length > 0;
+      PageRequest pageable = isSort 
+         ? PageRequest.of(p, s, Sort.by(o, f)) 
+         : PageRequest.of(p, s);
+         
+      if(isAdmin) return ResponseEntity.ok(rep.findAll(pageable));
+      else {
+         Example<UAccount> example = null;
+         // TODO ... filter by access has uid > 2 (PROTECTED && PUBLIC)
+         return ResponseEntity.ok(rep.findAll(example, pageable));
+      }
+   } // @formatter:on
 
    @Override
    protected Long getKey(UAccount e) {
@@ -112,7 +149,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
       try { // sign new token
          e = dao.pr_login(us, pw);
-         
+
          if (e != null) {
             username = e.getUsername();
             // TODO... req.login(username, e.getPassword()); // servlet login
