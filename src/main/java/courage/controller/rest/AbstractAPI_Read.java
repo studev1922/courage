@@ -39,6 +39,10 @@ public abstract class AbstractAPI_Read<E, K> {
       }
    }
 
+   /**
+    * @see AbstractAPI_Read#getData(Integer, Integer, org.springframework.data.domain.Sort.Direction, String...)
+    * @return Example to find data
+    */
    protected Example<E> getExample() {
       return null; // default find all by pageable
    };

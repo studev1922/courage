@@ -49,7 +49,7 @@ public class UAccount {
 	@Column(name = "regtime", updatable = false)
    private Date regTime; // register time
    @Column(name = "ua_id")
-   private Integer access; // default AWAITING for access
+   private Integer access = 0; // default AWAITING for access
 
    // user's images
    @ElementCollection(fetch = FetchType.EAGER)

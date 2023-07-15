@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileUpload {
 
 	static final String DEFAULT_FOLDER = "/uploads";
-	static final String NOT_DELETE = "default.(\\w)*";;
+	static final String NOT_DELETE = "default.(\\w)*";
 
 	/**
 	 * hash code array String EX: ["a", 1, 3, x.jpg] => "...60b24251e1cef181.jpg"

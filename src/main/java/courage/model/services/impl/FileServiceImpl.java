@@ -66,10 +66,7 @@ public class FileServiceImpl implements FileUpload {
 	public String saveFile(String fileName, MultipartFile file, String... directories) {
 		try {
 			String directory = mkdirs(directories).getAbsolutePath();
-			// check fileName
-			boolean check = fileName == null;
-			if (!check)
-				check = fileName.isEmpty();
+			boolean check = fileName == null || fileName.isEmpty();
 
 			Path path = Paths.get(directory, check ? file.getOriginalFilename() : fileName);
 			if (!path.toFile().exists()) {
@@ -95,46 +92,35 @@ public class FileServiceImpl implements FileUpload {
 		List<String> list = new ArrayList<>(files.length);
 		String directory = mkdirs(directories).getAbsolutePath();
 		String fileName;
-		Path path;
 
 		if (isHashName)
 			for (MultipartFile file : files) {
-				try {
-					fileName = FileUpload.hashFileName(System.currentTimeMillis(), file.getOriginalFilename());
-					path = Paths.get(directory, fileName);
-					if (!path.toFile().exists()) {
-						file.transferTo(path);
-						list.add(fileName);
-					} else
-						System.err.println("File name's " + fileName + " already exists, cannot be saved.");
-				} catch (IllegalStateException | IOException e) {
-					e.printStackTrace();
-				}
+				fileName = FileUpload.hashFileName(
+						System.currentTimeMillis(),
+						file.getOriginalFilename());
+				this.transferTo(directory, fileName, file, list);
 			}
 		else
 			for (MultipartFile file : files) {
-				try {
-					fileName = file.getOriginalFilename();
-					path = Paths.get(directory, fileName);
-					if (!path.toFile().exists()) {
-						file.transferTo(path);
-						list.add(fileName);
-					} else
-						System.err.println("File name's " + fileName + " already exists, cannot be saved.");
-				} catch (IllegalStateException | IOException e) {
-					e.printStackTrace();
-				}
+				fileName = file.getOriginalFilename();
+				this.transferTo(directory, fileName, file, list);
 			}
 		return list;
 	}
 
-	@Override // delete file
-	public void deleteFile(String...uries) throws IOException {
-		if (uries == null  || uries.length ==0) return;
+	@Override // doesn't delete file matches NOT_DELETE && start with http...
+	public void deleteFile(String... uries) throws IOException {
+		if (uries == null || uries.length == 0)
+			return; // empty source
+		else if (uries[uries.length - 1].startsWith("http"))
+			return; // is embeded from other source
+
 		File file = new File(context.getRealPath(uri(uries)));
-		if (!file.getPath().matches(NOT_DELETE))
+		String path = file.getPath();
+		if (!path.matches(NOT_DELETE)) // delete and again if failed
 			if (!file.delete())
 				FileUtils.deleteDirectory(file);
+		// delete file || delete directory
 	}
 
 	@Override // delete all files're name
@@ -173,6 +159,19 @@ public class FileServiceImpl implements FileUpload {
 		if (!file.exists())
 			file.mkdirs();
 		return file;
+	}
+
+	private void transferTo(String directory, String fileName, MultipartFile file, List<String> list) {
+		try {
+			Path path = Paths.get(directory, fileName);
+			if (!path.toFile().exists()) {
+				file.transferTo(path);
+				list.add(fileName);
+			} else
+				System.err.println("File name's " + fileName + " already exists, cannot be saved.");
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

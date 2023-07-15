@@ -21,37 +21,37 @@ import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 import courage.model.services.JwtService;
 
+/**
+ * @see RestUAccount.R enumeration of roles
+ * @see RestUAccount.A enumeration of accesses
+ * @see RestUAccount.P enumeration of platforms
+ */
 @RestController
 @CrossOrigin("*")
 @RequestMapping({ "/api/accounts" })
 public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
-   enum R { // roles
-      USER, STAFF, ADMIN, PARTNER
-   }
-
-   enum A { // accesses
-      AWAITING, LOCK, PRIVATE, PROTECTED, PUBLIC
-   }
-
-   enum P { // platforms
-      SYSTEM, GOOGLE, FACEBOOK
-   }
-
    // @formatter:off
+   enum R { USER, STAFF, ADMIN, PARTNER } // roles
+   enum A { AWAITING, LOCK, PRIVATE, PROTECTED, PUBLIC } // accesses
+   enum P { SYSTEM, GOOGLE, FACEBOOK } // platforms
+
    @Autowired private JwtService jwt;
    @Autowired private HttpServletRequest req;
    public RestUAccount() { super(UAccount.DIVIDE, UAccount.DIRECTORY);}
-   // @formatter:on
 
    @PostMapping("/login")
-   public ResponseEntity<?> login() {
-      UAccountRepository dao = ((UAccountRepository) super.rep);
-      String token = req.getHeader("authorization");
+   public ResponseEntity<?> login() { // login by token or (username && password)
+      final UAccountRepository dao = ((UAccountRepository) super.rep);
+      final String token = req.getHeader("authorization");
+      String us = req.getParameter("username");
+      String pw = req.getParameter("password");
+      if(us == null || us.isEmpty()) us = req.getParameter("unique");
 
+      // return login
       return (token != null && !token.isEmpty())
-            ? this.handleToken(dao, token) // login by token
-            : this.handleLogin(dao); // login by username and password
+            ? this.handleToken(dao, token) // by token
+            : this.handleLogin(dao, us, pw); // by username and password
    }
 
    @RequestMapping("/logout")
@@ -63,10 +63,9 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       }
    }
 
-   // @PreAuthorize
+   // TODO @PreAuthorize, check login session if(isLogin) {...}
    @RequestMapping(value = "/update-passowrd", method = { RequestMethod.PUT, RequestMethod.PATCH })
    public ResponseEntity<?> updatePassword() {
-      // TODO check login session if(isLogin) {...}
       UAccountRepository dao = ((UAccountRepository) super.rep);
       String unique = req.getParameter("unique");
       String password = req.getParameter("password");
@@ -89,7 +88,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
        */
       Principal principal = req.getUserPrincipal();
       UAccount account = new UAccount(); // by default, only public content is read
-      account.setAccess(A.PUBLIC.ordinal()); // ua_id > 2 (PROTECTED:3 || PUBLIC:4)
+      account.setAccess(A.PUBLIC.ordinal());
 
       if (principal != null) {
          UAccount logged = ((UAccountRepository) rep).findByUsername(principal.getName());
@@ -106,8 +105,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    @Override
    protected String[] filesExist(UAccount e, String... prevents) {
-      if (e == null)
-         return new String[0];
+      if (e == null) return new String[0];
       Set<String> images = e.getImages();
       images.removeAll(Arrays.asList(prevents));
       return images.toArray(new String[0]);
@@ -119,34 +117,28 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    }
 
    private ResponseEntity<?> handleToken(UAccountRepository dao, String token) {
-      String username;
-      UAccount e;
+      UAccount e; String username; // get UAccount by username
 
       try {
          token = token.substring(token.lastIndexOf(" "));
          username = jwt.verify(token); // find username by token
-         e = dao.findByUsername(username);
-         // TODO req.login(username, e.getPassword()); // servlet login
 
-         return e != null
-               ? ResponseEntity.ok(e)
-               : ResponseEntity.status(401).body("account is empty!");
+         if((e = dao.findByUsername(username)) != null) {
+            // TODO req.login(username, e.getPassword()); // servlet login
+            return ResponseEntity.ok(e);
+         } else 
+            return ResponseEntity.status(401).body("account is empty!");
       } catch (Exception ex) {
          ex.printStackTrace();
          return ResponseEntity.status(401).body(ex.getMessage());
       }
    }
 
-   private ResponseEntity<?> handleLogin(UAccountRepository dao) {
-      String us = req.getParameter("username");
-      String pw = req.getParameter("password");
-      String username;
-      UAccount e;
+   private ResponseEntity<?> handleLogin(UAccountRepository dao, String us, String pw) {
+      UAccount e; String username; // get UAccount by username
 
       try { // sign new token
-         e = dao.pr_login(us, pw);
-
-         if (e != null) {
+         if ((e = dao.pr_login(us, pw)) != null) {
             username = e.getUsername();
             // TODO req.login(username, e.getPassword()); // servlet login
             return ResponseEntity.ok(jwt.sign(username)); // create token
@@ -158,5 +150,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
          return ResponseEntity.status(401).body(ex.getMessage());
       }
    }
+
+   // @formatter:on
 
 }
