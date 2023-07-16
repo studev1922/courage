@@ -1,10 +1,6 @@
 // usercontrol
 app.controller('usercontrol', function ($scope, $routeParams) {
     let path = "accounts", dataName = 'mdata', key = 'uid';
-    let config = {
-        TransformRequest: angular.identity,
-        headers: { 'content-Type': undefined }
-    };
 
     const u = {
         uid: -1, username: undefined, email: undefined,
@@ -39,14 +35,19 @@ app.controller('usercontrol', function ($scope, $routeParams) {
         }
     })();
 
+    function getData() {
+        let obj = $scope.user;
+        let input = formControl.querySelector('input[type="file"]');
+        delete obj.regTime;
+        return util.getFormData(obj, input?.files);
+    }
+
     $scope.control = {
         insert: () => {
-            let data = new FormData(formControl);
-            $scope.crud.post(path, dataName, data, config);
+            $scope.crud.post(path, dataName, getData());
         },
         update: () => {
-            let data = new FormData(formControl);
-            $scope.crud.put(path, dataName, data, config);
+            $scope.crud.put(path, dataName, getData());
         },
         delete: () => $scope.crud.post(path, dataName, $scope.user[uid], key),
         clear: () => {
