@@ -98,6 +98,21 @@ let local = {
 const util = {
 
    /**
+    * @param {Object} obj 
+    * @param {Array} files 
+    * @returns {FormData}
+    */
+   getFormData: (obj, files) => {
+      if(!obj) throw new Error('input object must be not null!');
+      // Create a new FormData object
+      var fd = new FormData();
+      // Loop through the object keys and append them to the form data
+      for (let k in obj) fd.append(k, obj[k]);
+      if(files) for (let f of files) fd.append('files', f);
+      return fd;
+   },
+
+   /**
     * 
     * @param {Array} arr find in array
     * @param {Array} values all condition values
