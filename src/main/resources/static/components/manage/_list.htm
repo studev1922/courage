@@ -3,7 +3,7 @@
    <div hidden>
       <input type="hidden" ng-model="o.temr">
       <input type="hidden" ng-model="o.temp">
-   </div>r.uid
+   </div>
    <table class="table text-white bg-dark bg-opacity-25">
       <thead>
          <td>No</td>
@@ -16,6 +16,7 @@
          <th>images</th>
       </thead>
       <tbody style="vertical-align: middle;">
+         <!-- each fields -->
          <tr ng-repeat="(i,e) in mdata" ng-dblclick="detailControl(e)">
             <td class="text-center">
                <span ng-bind="i"></span>
@@ -30,6 +31,7 @@
             <td>
                <input class="text-center custom-input" type="text" ng-model="e.fullname">
             </td>
+            <!-- access -->
             <td>
                <select class="form-control" ng-model="e.access"
                   style="background: var(--bgr-linear-dark); color: var(--bs-info);">
@@ -37,8 +39,9 @@
                      style="background: var(--bgr-linear-dark);"></option>
                </select>
             </td>
+            <!-- roles -->
             <td>
-               <button type="button" class="btn btn-outline-light" data-bs-toggle="popover" target="roleof{{e.uid}}"
+               <button type="button" class="btn btn-outline-light" data-bs-toggle="popover" target="#roleof{{e.uid}}"
                   style="background: var(--bgr-linear-dark); color: var(--bs-info);">roles
                   ({{e.roles.length}})
                </button>
@@ -48,21 +51,28 @@
                      <div class="form-check" ng-repeat="(i,r) in ur.roles">
                         <input class="form-check-input" type="checkbox" id="{{o.temr=e.uid+'_'+r.urid}}"
                            ng-checked="e.roles.includes(r.urid)" ng-click="toggleChecks(r.urid, e.roles)">
-                        <label class="form-check-label text-nowrap" for="{{o.temr}}">{{r.role}}</label>
+                        <label class="form-check-label text-nowrap" for="{{o.temr}}">
+                           <strong>{{r.role}}</strong>
+                        </label>
                      </div>
                   </div>
                </div>
             </td>
+            <!-- platforms -->
             <td>
-               <button type="button" class="btn btn-outline-light" data-bs-toggle="popover" target="platof{{e.uid}}"
-                  style="background: var(--bgr-linear-dark); color: var(--bs-info);">roles
+               <button type="button" class="btn btn-outline-light" data-bs-toggle="popover"
+                  data-bs-trigger="hover focus" target="#platof{{e.uid}}"
+                  style="background: var(--bgr-linear-dark); color: var(--bs-info);">platforms
                   ({{e.platforms.length}})
                </button>
                <div class="disabled" hidden>
                   <div id="platof{{e.uid}}" class="border rounded-3"
                      style="padding: .5rem; background: var(--bgr-linear-dark);">
-                     <div ng-repeat="(i,p) in ur.platforms" ng-if="e.platforms.includes(p.upid)">
-                        <span ng-bind="p.upName"></span>
+                     <div ng-repeat="(i,p) in ur.platforms" ng-if="o.check = e.platforms.includes(p.upid)">
+                        <span class="badge bg-warning" ng-bind="p.upName"></span>
+                     </div>
+                     <div ng-if="!e.platforms.length" class="text-center">
+                        <strong>Hasn't any role</strong>
                      </div>
                   </div>
                </div>

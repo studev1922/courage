@@ -30,13 +30,15 @@ const bsfw = {
    /**
     * create all popover from attribute's target
     */
-   loadPopover: () => {
-      let append = (popover) => {
-         let target = document.getElementById(popover.getAttribute('target'));
-         new bootstrap.Popover(popover, {
-            html: true, content: target
-         });
+   loadPopovers: () => {
+      let append = (element) => {
+         let target = element.getAttribute('target');
+         bsfw.showPopover(element, target);
       };
       document.querySelectorAll('[data-bs-toggle="popover"]').forEach(append);
+   },
+   showPopover: (element, target) => {
+      let content = document.querySelector(target);
+      new bootstrap.Popover(element, { html: true, content });
    }
 }

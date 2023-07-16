@@ -60,7 +60,7 @@ app.controller('usercontrol', function ($scope, $routeParams) {
       let items = tabs.querySelectorAll('.nav-link');
       items.forEach(item => item.addEventListener('click', _ => {
          items.forEach(e => e.classList?.remove('active')) // remove all active
-         item.classList.add('active'); // add new active
+         item.classList.add('active'); // show new active
       }));
 
       $scope.user = {
@@ -75,24 +75,23 @@ app.controller('usercontrol', function ($scope, $routeParams) {
          items[0].click();
       }
 
-      function switchPage(value) {
-         switch (value) {
-            case 'one':
-               $scope.srctab = 'components/manage/_one.htm'
-               break;
-            case 'list': default:
-               $scope.srctab = 'components/manage/_list.htm'
-               break;
-         }
+      switch ($routeParams['page']) {
+         case 'one':
+            $scope.srctab = 'components/manage/_one.htm'
+            break;
+         case 'list': default:
+            $scope.srctab = 'components/manage/_list.htm'
+            break;
       }
-
-      switchPage($routeParams['page']);
    })()
+
+   $scope.$watch('srctab', function () { // load all component
+      $scope.$watch('$stateChangeSuccess', setTimeout(bsfw.loadPopovers, 500))
+   }) // await 500 miliseconds to load popovers
 
    $scope.$watch('$stateChangeSuccess', async () => {
       if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
       await $scope.crud.get('accounts', 'mdata'); // load all data
-      bsfw.loadPopover(); // load all popover check box references
    });
 });
 
