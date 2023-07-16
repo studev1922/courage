@@ -46,24 +46,108 @@ function setting(customize = {}) {
 app.config(($routeProvider) => {
    $routeProvider
       .when('/', { templateUrl: "pages/main.htm" })
+      .when('/author', { templateUrl: "pages/author.htm" })
       .when('/detail/:id', { templateUrl: "pages/detail.htm", controller: 'detailcontrol' })
       .when('/manage', { templateUrl: "pages/manage.htm", controller: 'usercontrol' })
-      .when('/manage/**', { redirectTo: '/manage' })
+      .when('/manage/:page', { templateUrl: "pages/manage.htm", controller: 'usercontrol' })
       .otherwise({ redirectTo: '/' });
 });
 
 // usercontrol
-app.controller('usercontrol', function ($scope) {
-   $scope.srctab = 'components/manage/_list.htm'
-   let items = tabs.querySelectorAll('.nav-link');
+app.controller('usercontrol', function ($scope, $routeParams) {
+   (() => {
+      // handle nav-tabs event clicked
+      let items = tabs.querySelectorAll('.nav-link');
+      items.forEach(item => item.addEventListener('click', _ => {
+         items.forEach(e => e.classList?.remove('active')) // remove all active
+         item.classList.add('active'); // add new active
+      }));
 
-   // handle nav-tabs event clicked
-   items.forEach(item => item.addEventListener('click', _ => {
-      items.forEach(e => e.classList?.remove('active')) // remove all active
-      item.classList.add('active'); // add new active
-   }))
+      switch ($routeParams['page']) {
+         case 'list':
+            $scope.srctab = 'components/manage/_list.htm'
+            break;
+         case 'one':
+         default:
+            $scope.srctab = 'components/manage/_one.htm'
+            break;
+      }
+   })()
+
+   $scope.user = {
+      roles: [0]
+   }
+
+   // Define the uploadFiles function to handle multiple file upload
+   $scope.uploadFiles = function (files) {
+      // Convert the files object to an array
+      var filesArray = Array.from(files);
+
+      // Loop through the files array and add them to the user.images array
+      filesArray.forEach(function (file) {
+         $scope.user.images.push(file.name);
+      });
+   };
+
+   // Define the updateRoles function to handle the selection change of roles
+   $scope.updateRoles = function () {
+      console.log($scope.selectedRoles);
+   };
+
+   // Define the saveChanges function to handle the form submission
+   $scope.saveChanges = function () {
+      // Check if the form is valid using the myform.$valid property of scope
+      if (!$scope.myform.$valid) {
+         // If not valid, alert an error message and return
+         alert('Please fill in all required fields.');
+         return;
+      }
+
+      // If valid, send a POST request to a server endpoint with the user object as data
+      $http.post('/saveUser', JSON.stringify($scope.user))
+         .then(function (response) {
+            // If successful, alert a success message with the response data
+            alert('User saved successfully. Response data: ' + response.data);
+         })
+         .catch(function (error) {
+            // If failed, alert an error message with the error status and data
+            alert('User save failed. Error status: ' + error.status + '. Error data: ' + error.data);
+         });
+   };
+
+   $scope.$watch('$stateChangeSuccess', async () => {
+      if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
+      await $scope.crud.get('accounts', 'mdata'); // load all data
+      $scope.selectedRoles = $scope.ur.roles
+         ?.filter(r => $scope.user.roles.includes(r.role));
+
+      bsfw.loadPopover(); // load all popover check box references
+   });
 });
 
+
+// Define a custom directive to handle multiple file upload
+app.directive('ngFiles', function ($parse) {
+   return {
+      link: function (scope, element, attrs) {
+         // Get the expression from the ng-files attribute value
+
+         var expression = $parse(attrs.ngFiles);
+
+         // Add a change event listener to the element
+         element.on('change', function (event) {
+            // Get the files object from the event target
+            var files = event.target.files;
+
+            // Invoke the expression with the files object as an argument
+            expression(scope, { $files: files });
+
+            // Apply the scope changes
+            scope.$apply();
+         });
+      }
+   };
+});
 
 // Show detail controller
 app.controller('detailcontrol', function ($scope, $routeParams) {
@@ -85,7 +169,7 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
       }
 
       // set single value
-      if(!Array.isArray(e[from])) {
+      if (!Array.isArray(e[from])) {
          if (deletes?.length) {
             e[to] = array.find(x => x[by] == e[from]);
             move_fileds(e[to]);
@@ -105,16 +189,20 @@ app.controller('detailcontrol', function ($scope, $routeParams) {
          e[to].push({ ...array.find(x => x[by] == values[i]) });
    }
 
-   (async () => {
-      if (!$scope.ur) location.href = '';
+   $scope.$watch('$stateChangeSuccess', async () => {
+      if (!$scope.ur) {
+         await $scope.loadRelationships(); // await for load all data
+         await $scope.crud.get('accounts/page', 'data', '?.content');
+      }
 
       let id = $routeParams['id'];
       let e = $scope.e = angular.copy($scope.data.find(x => x.uid == id)) || {};
+
       // relationships
       set('access', $scope.ur.accesses, '_access', e, 'uaid', 'accounts');
       set('roles', $scope.ur.roles, '_roles', e, 'urid', 'accounts');
       set('platforms', $scope.ur.platforms, '_platforms', e, 'upid', 'accounts');
-   })();
+   });
 });
 
 // MAIN APP CONTROLLER
@@ -130,17 +218,28 @@ app.controller('control', ($scope, $http) => {
       }
    };
 
+   $scope.toggleChecks = function (id, arr) {
+      let i = arr.findIndex(x => x == id);
+      if (i < 0) arr.push(id);
+      else arr.splice(i, 1);
+   };
+
    // fetch api
    $scope.crud = {
       /**
        * 
        * @param {String} path to get api
        * @param {String} to is set to variable in scope
+       * @param {String} content get content of response.data
        * @returns {Promise<Array<Object>>} data gotten
        */
-      get: (path, to) => $http
+      get: (path, to, content) => $http
          .get(`${server}/${path}`)
-         .then(r => to ? $scope[to] = r.data : r.data)
+         .then(r => {
+            let { data } = r;
+            if (content) data = eval(`data${content}`);
+            return to ? $scope[to] = data : data;
+         })
          .catch(e => console.error(e)),
       /**
        * 
@@ -198,9 +297,7 @@ app.controller('control', ($scope, $http) => {
    $scope.getImage = (img, ...paths) => img ? `${server}/${paths.join('/')}/${img}` : $scope.defaultImg;
 
    // show detail content
-   $scope.detail = (e) => {
-      location = `#!detail/${e.uid}`
-   }
+   $scope.detail = (e) => location = `#!detail/${e.uid}`;
 
    // get page api and append to data
    $scope.appendContents = (p, s, o, ...f) => {
@@ -219,18 +316,18 @@ app.controller('control', ($scope, $http) => {
    $scope.updateCustom = () => local.write('customize', $scope.customize);
 
    // fetch api
-   $scope.onloadData = async () => {
+   $scope.loadRelationships = async () => {
       let [roles, accesses, platforms] = [
          await $scope.crud.get('roles'),
          await $scope.crud.get('accesses'),
          await $scope.crud.get('platforms'),
-         await $scope.crud.get('accounts', 'data')
       ];
       $scope.ur = { roles, accesses, platforms };
    }
 
    $scope.$watch('$stateChangeSuccess', async () => {
       $scope.setting(); // setting display
-      await $scope.onloadData(); // await for load all data
+      await $scope.loadRelationships(); // await for load all data
+      await $scope.crud.get('accounts/page', 'data', '?.content');
    });
 });

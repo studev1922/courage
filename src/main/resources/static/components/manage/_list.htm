@@ -1,6 +1,9 @@
 <h3>for manager list</h3>
 <div class="overflow-auto">
-   <p>{{}}</p>
+   <div hidden>
+      <input type="hidden" ng-model="o.temr">
+      <input type="hidden" ng-model="o.temp">
+   </div>
    <table class="table text-white bg-dark bg-opacity-25">
       <thead>
          <td>No</td>
@@ -12,35 +15,61 @@
          <th>platform</th>
          <th>images</th>
       </thead>
-      <tbody>
-         <tr ng-repeat="(i,e) in data">
+      <tbody style="vertical-align: middle;">
+         <tr ng-repeat="(i,e) in mdata">
             <td class="text-center">
                <span ng-bind="i"></span>
                <input type="hidden" ng-value="e.uid">
             </td>
-            <td ng-bind="e.username"></td>
-            <td ng-bind="e.email"></td>
-            <td ng-bind="e.fullname"></td>
             <td>
-               <!-- <select class="btn btn-secondary">
-                  <option value=""></option>
-               </select> -->
+               <input class="text-center custom-input" style="width: 10rem;" type="text" ng-model="e.username">
             </td>
             <td>
-               <div class="dropdown">
-                  <a class="btn btn-outline-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                     aria-expanded="false">
-                     roles ({{e.roles.length}})
-                  </a>
-                  <ul class="dropdown-menu">
-                     <li><a class="dropdown-item" href="#">Action</a></li>
-                     <li><a class="dropdown-item" href="#">Another action</a></li>
-                     <li><a class="dropdown-item" href="#">Something else here</a></li>
-                  </ul>
+               <input class="text-center custom-input" type="email" ng-model="e.email">
+            </td>
+            <td>
+               <input class="text-center custom-input" type="text" ng-model="e.fullname">
+            </td>
+            <td>
+               <select class="form-control" ng-model="e.access"
+                  style="background: var(--bgr-linear-dark); color: var(--bs-info);">
+                  <option ng-repeat="a in ur.accesses" ng-value="a.uaid" ng-bind="a.uaName"
+                     style="background: var(--bgr-linear-dark);"></option>
+               </select>
+            </td>
+            <td>
+               <button type="button" class="btn btn-outline-light" data-bs-toggle="popover" target="roleof{{e.uid}}"
+                  style="background: var(--bgr-linear-dark); color: var(--bs-info);">roles
+                  ({{e.roles.length}})
+               </button>
+               <div class="disabled" hidden>
+                  <div id="roleof{{e.uid}}" class="border rounded-3"
+                     style="padding: .5rem; background: var(--bgr-linear-dark);">
+                     <div class="form-check" ng-repeat="(i,r) in ur.roles">
+                        <input class="form-check-input" type="checkbox" id="{{o.temr=e.uid+'_'+r.urid}}"
+                           ng-checked="e.roles.includes(r.urid)" ng-click="toggleChecks(r.urid, e.roles)">
+                        <label class="form-check-label text-nowrap" for="{{o.temr}}">{{r.role}}</label>
+                     </div>
+                  </div>
                </div>
             </td>
-            <td ng-bind="e.platform"></td>
-            <td ng-bind="e.images"></td>
+            <td>
+               <button type="button" class="btn btn-outline-light" data-bs-toggle="popover" target="platof{{e.uid}}"
+                  style="background: var(--bgr-linear-dark); color: var(--bs-info);">roles
+                  ({{e.platforms.length}})
+               </button>
+               <div class="disabled" hidden>
+                  <div id="platof{{e.uid}}" class="border rounded-3"
+                     style="padding: .5rem; background: var(--bgr-linear-dark);">
+                     <div ng-repeat="(i,p) in ur.platforms" ng-if="e.platforms.includes(p.upid)">
+                        <span ng-bind="p.upName"></span>
+                     </div>
+                  </div>
+               </div>
+            </td>
+            <td>
+               <div ng-repeat="img in e.images" ng-bind="img"></div>
+            </td>
          </tr>
       </tbody>
    </table>

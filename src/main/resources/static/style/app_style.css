@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 :root {
+   --bgr-linear-dark: linear-gradient(180deg, #00000079, #000000cd);
    --bgr-linear1: linear-gradient(-45deg, #00000000 25%, #e7c53c50, #23a6d550, #ba23d550);
    --bgr-linear2: linear-gradient(-45deg, #00000000 25%, #23a6d550, #ba23d550, #e7c53c50);
    --bgr-linear3: linear-gradient(-45deg, #00000000 25%, #ba23d550, #e7c53c50, #23a6d550);
@@ -51,7 +52,7 @@ body {
    border-bottom: 1px solid #00b8ff;
    color: white;
    font-weight: bolder;
-   text-shadow: 0 0 1rem #ff0000;
+   text-shadow: 0 0 1rem #e5ff00;
 }
 
 .custom-field {
@@ -192,5 +193,13 @@ body {
          1em -0.125em 0.5em #ffbb3300,
          -1em 0.125em 0.5em #33bbff00;
    }
+}
 
+/* BOOTSTRAP OVERRIDE */
+.popover, .popover * {
+   background-color: transparent;
+   color: var(--bs-white);
+}
+.popover-body {
+   padding: 0;
 }

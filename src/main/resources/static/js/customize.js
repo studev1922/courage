@@ -24,3 +24,19 @@ const textTyping = (e, interval = 10) => {
       }, interval || 15);
    }
 }
+
+// bootstrap framework
+const bsfw = {
+   /**
+    * create all popover from attribute's target
+    */
+   loadPopover: () => {
+      let append = (popover) => {
+         let target = document.getElementById(popover.getAttribute('target'));
+         new bootstrap.Popover(popover, {
+            html: true, content: target
+         });
+      };
+      document.querySelectorAll('[data-bs-toggle="popover"]').forEach(append);
+   }
+}
