@@ -1,8 +1,8 @@
-<div class="row">
+<form class="row" id="formControl">
     <h3 class="text-center text-xl-end">user <span class="text-warning">{{user.username}}</span></h3>
-    
+
     <!-- show images -->
-    <div id="f{{user.username}}" class="col-xl-5 col-md-3 col-12 p-1 carousel slide">
+    <div id="f{{user.username}}" class="col-md-5 col-sm-12 p-1 carousel slide">
         <div class="carousel-inner">
             <!-- each in items -->
             <div class="carousel-item {{i?'':'active'}}" ng-repeat="(i,img) in user.images track by $index">
@@ -38,9 +38,12 @@
                 <span class="visually-hidden">Next</span>
             </button>
         </tag>
+
+        <input type="file" class="form-control custom-input" name="files" multiple accept="image/*"
+            style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
     </div>
     <!-- show detail control -->
-    <div class="m-auto col-xl-6 col-md-8 col-12">
+    <div class="m-auto col-md-7 col-sm-12">
         <div class="mt-1">
             <label class="custom-label">username</label>
             <input type="text" class="custom-input" ng-model="user.username" placeholder="input your username">
@@ -84,7 +87,7 @@
                                 ({{user.roles.length}})
                             </button>
                             <div class="disabled" hidden>
-                                <div id="froleof{{user.uid}}" class="border rounded-3"
+                                <div id="froleof{{user.uid}}" class="border rounded-3 fs-3"
                                     style="padding: .5rem; background: var(--bgr-linear-dark);">
                                     <div class="form-check" ng-repeat="(i,r) in ur.roles">
                                         <input class="form-check-input" type="checkbox"
@@ -106,6 +109,40 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <!-- button controls -->
+    <div class="mt-1 d-flex flex-wrap gap-1 justify-content-md-end justify-content-sm-center">
+        <button type="button" class="btn border-bottom" data-bs-toggle="popover" data-bs-trigger="hover focus"
+            style="background: var(--bgr-linear-dark); color: var(--bs-info);" target="#showInputImages">
+            <img width="32px" src="assets/imgIcon/loupe.png">&nbsp;show input images
+        </button>
+        <div class="me-auto"></div>
+
+        <button type="button" class="btn border-bottom fill-size"
+            style="background: var(--bgr-linear-dark); color: var(--bs-info);" ng-click="control.insert()">
+            <img width="32px" src="assets/imgIcon/insert.png">&nbsp;insert
+        </button>
+        <button type="button" class="btn border-bottom fill-size"
+            style="background: var(--bgr-linear-dark); color: var(--bs-warning);" ng-click="control.update()">
+            <img width="32px" src="assets/imgIcon/arrow.png">&nbsp;update
+        </button>
+        <button type="button" class="btn border-bottom fill-size"
+            style="background: var(--bgr-linear-dark); color: var(--bs-danger);" ng-click="control.delete()">
+            <img width="32px" src="assets/imgIcon/close.png">&nbsp;delete
+        </button>
+        <button type="button" class="btn border fw-bolder fill-size"
+            style="background: var(--bgr-linear-dark); color: var(--bs-secondary);" ng-click="control.clear()">
+            <img width="32px" src="assets/imgIcon/eraser.png">&nbsp;clear
+        </button>
+    </div>
+</form>
+<div hidden>
+    <div id="showInputImages" class="border rounded-3 fs-3" style="min-width: 250px; padding: .5rem; background: var(--bgr-linear-dark);">
+        <h3>images input</h3>
+        <hr>
+        <div class="d-flex flex-wrap">
+            <h4 style="background: var(--bgr-linear1);">No photos selected!</h4>
         </div>
     </div>
 </div>
