@@ -1,5 +1,11 @@
 // usercontrol
 app.controller('usercontrol', function ($scope, $routeParams) {
+    let path = "accounts", dataName = 'mdata', key = 'uid';
+    let config = {
+        TransformRequest: angular.identity,
+        headers: { 'content-Type': undefined }
+    };
+
     const u = {
         uid: -1, username: undefined, email: undefined,
         fullname: undefined, regTime: new Date(), images: [],
@@ -36,15 +42,13 @@ app.controller('usercontrol', function ($scope, $routeParams) {
     $scope.control = {
         insert: () => {
             let data = new FormData(formControl);
-
+            $scope.crud.post(path, dataName, data, config);
         },
         update: () => {
             let data = new FormData(formControl);
-
+            $scope.crud.put(path, dataName, data, config);
         },
-        delete: () => {
-
-        },
+        delete: () => $scope.crud.post(path, dataName, $scope.user[uid], key),
         clear: () => {
             if (confirm(`clear form data ${$scope.user.username || 'user'}`)) {
                 formControl.reset() // reset html form
@@ -61,7 +65,7 @@ app.controller('usercontrol', function ($scope, $routeParams) {
 
     $scope.$watch('$stateChangeSuccess', async () => {
         if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
-        await $scope.crud.get('accounts', 'mdata'); // load all data
+        await $scope.crud.get(path, dataName); // load all data
 
         let input = formControl.querySelector('input[type="file"]');
         let flex = showInputImages.querySelector('.d-flex');

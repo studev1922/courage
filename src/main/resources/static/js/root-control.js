@@ -37,7 +37,7 @@ app.controller('control', ($scope, $http) => {
             if (content) data = eval(`data${content}`);
             return to ? $scope[to] = data : data;
          })
-         .catch(e => console.error(e)),
+         .catch(e => {throw e}),
       /**
        * 
        * @param {String} path to save api
@@ -52,7 +52,7 @@ app.controller('control', ($scope, $http) => {
             $scope[to].push(r.data);
             return r.data;
          })
-         .catch(e => console.error(e)),
+         .catch(e => {throw e}),
       /**
        * 
        * @param {string} path to update api
@@ -65,13 +65,14 @@ app.controller('control', ($scope, $http) => {
          .put(`${server}/${path}`, data, config)
          .then(r => $scope[to]
             .forEach(e => { // update element in array
-               if (e === data) {
-                  Object.assign(e, r.data)
+               if (e === data) { 
+                  // copy response data to client data
+                  Object.assign(e, r.data) 
                   return e; // return element assigned
                }
             })
          )
-         .catch(e => console.error(e)),
+         .catch(e => {throw e}),
       /**
        * 
        * @param {String} path to delete api
@@ -88,7 +89,7 @@ app.controller('control', ($scope, $http) => {
                return r.data; // number of deleted on server
             }
          }))
-         .catch(e => console.error(e))
+         .catch(e => {throw e})
    }
 
    $scope.getImage = (img, ...paths) => img
