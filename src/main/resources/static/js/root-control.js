@@ -3,6 +3,11 @@ const server = 'http://DESKTOP-JSSB55N:8080/api';
 
 // MAIN APP CONTROLLER
 app.controller('control', ($scope, $http) => {
+   let httpConfig = {
+      transformRequest: angular.identity,
+      headers: { 'Content-Type': undefined }
+   };
+
    $scope.defaultImg = 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg';
    $scope.fil = { page: 0, size: 10 }; // filter contents
    $scope.customize = local.read('customize') || {
@@ -37,7 +42,7 @@ app.controller('control', ($scope, $http) => {
             if (content) data = eval(`data${content}`);
             return to ? $scope[to] = data : data;
          })
-         .catch(e => {throw e}),
+         .catch(e => { throw e }),
       /**
        * 
        * @param {String} path to save api
@@ -46,13 +51,13 @@ app.controller('control', ($scope, $http) => {
        * @param {Object} config config post data
        * @returns {Promise<Object>} data inserted
        */
-      post: (path, to, data, config) => $http
+      post: (path, to, data, config = httpConfig) => $http
          .post(`${server}/${path}`, data, config)
          .then(r => {
             $scope[to].push(r.data);
             return r.data;
          })
-         .catch(e => {throw e}),
+         .catch(e => { throw e }),
       /**
        * 
        * @param {string} path to update api
@@ -61,18 +66,18 @@ app.controller('control', ($scope, $http) => {
        * @param {Object} config config put data
        * @returns {Promise<Object>} data updated
        */
-      put: (path, to, data, config) => $http
+      put: (path, to, data, config = httpConfig) => $http
          .put(`${server}/${path}`, data, config)
          .then(r => $scope[to]
             .forEach(e => { // update element in array
-               if (e === data) { 
+               if (e === data) {
                   // copy response data to client data
-                  Object.assign(e, r.data) 
+                  Object.assign(e, r.data)
                   return e; // return element assigned
                }
             })
          )
-         .catch(e => {throw e}),
+         .catch(e => { throw e }),
       /**
        * 
        * @param {String} path to delete api
@@ -89,7 +94,7 @@ app.controller('control', ($scope, $http) => {
                return r.data; // number of deleted on server
             }
          }))
-         .catch(e => {throw e})
+         .catch(e => { throw e })
    }
 
    $scope.getImage = (img, ...paths) => img
@@ -122,20 +127,16 @@ app.controller('control', ($scope, $http) => {
       };
       try {
          local.write('customize', $scope.customize);
-         message.body = `updated successfully.`
-      } catch(err) {
+         message.body = `updated thenfully.`
+      } catch (err) {
          message.body = err.message;
          console.error(err);
       }
 
-      if($scope.customize.isAlert) {
+      if ($scope.customize.isAlert) {
          $scope.messages.push(message);
       } else alert(message.body);
    };
-
-   $scope.removeMes = (_mes, i) => {
-      $scope.messages.splice(i,1);
-   }
 
    // fetch api
    $scope.loadRelationships = async () => {
@@ -147,9 +148,30 @@ app.controller('control', ($scope, $http) => {
       $scope.ur = { roles, accesses, platforms };
    }
 
-   $scope.$watch('$stateChangeSuccess', async () => {
+   $scope.removeMes = (_mes, i) => {
+      $scope.messages.splice(i, 1);
+   }
+
+   $scope.pushMessage = (message, time) => {
+      if (typeof (message) == 'string') {
+         message = {
+            heading: `alert message`,
+            body: message,
+            time: new Date()
+         }
+      }
+
+      $scope.messages.push(message);
+      if (time) setTimeout(() => {
+            $scope.messages.splice(0, 1);
+            $scope.$apply(); // update the view
+      }, time);
+   }
+
+   $scope.$watch('$stateChangethen', async () => {
       $scope.setting(); // setting display
       await $scope.loadRelationships(); // await for load all data
       await $scope.crud.get('accounts/page', 'data', '?.content');
+      $scope.pushMessage('load all data successfully!', 3000);
    });
 });
