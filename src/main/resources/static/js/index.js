@@ -63,64 +63,35 @@ app.controller('usercontrol', function ($scope, $routeParams) {
          item.classList.add('active'); // add new active
       }));
 
-      switch ($routeParams['page']) {
-         case 'list':
-            $scope.srctab = 'components/manage/_list.htm'
-            break;
-         case 'one':
-         default:
-            $scope.srctab = 'components/manage/_one.htm'
-            break;
+      $scope.user = {
+         access: 0,
+         roles: [0, 2],
+         platforms: [0],
+         regTime: new Date()
       }
+
+      $scope.detailControl = (e) => {
+         $scope.user = e;
+         items[0].click();
+      }
+
+      function switchPage(value) {
+         switch (value) {
+            case 'one':
+               $scope.srctab = 'components/manage/_one.htm'
+               break;
+            case 'list': default:
+               $scope.srctab = 'components/manage/_list.htm'
+               break;
+         }
+      }
+
+      switchPage($routeParams['page']);
    })()
-
-   $scope.user = {
-      roles: [0]
-   }
-
-   // Define the uploadFiles function to handle multiple file upload
-   $scope.uploadFiles = function (files) {
-      // Convert the files object to an array
-      var filesArray = Array.from(files);
-
-      // Loop through the files array and add them to the user.images array
-      filesArray.forEach(function (file) {
-         $scope.user.images.push(file.name);
-      });
-   };
-
-   // Define the updateRoles function to handle the selection change of roles
-   $scope.updateRoles = function () {
-      console.log($scope.selectedRoles);
-   };
-
-   // Define the saveChanges function to handle the form submission
-   $scope.saveChanges = function () {
-      // Check if the form is valid using the myform.$valid property of scope
-      if (!$scope.myform.$valid) {
-         // If not valid, alert an error message and return
-         alert('Please fill in all required fields.');
-         return;
-      }
-
-      // If valid, send a POST request to a server endpoint with the user object as data
-      $http.post('/saveUser', JSON.stringify($scope.user))
-         .then(function (response) {
-            // If successful, alert a success message with the response data
-            alert('User saved successfully. Response data: ' + response.data);
-         })
-         .catch(function (error) {
-            // If failed, alert an error message with the error status and data
-            alert('User save failed. Error status: ' + error.status + '. Error data: ' + error.data);
-         });
-   };
 
    $scope.$watch('$stateChangeSuccess', async () => {
       if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
       await $scope.crud.get('accounts', 'mdata'); // load all data
-      $scope.selectedRoles = $scope.ur.roles
-         ?.filter(r => $scope.user.roles.includes(r.role));
-
       bsfw.loadPopover(); // load all popover check box references
    });
 });
@@ -148,6 +119,8 @@ app.directive('ngFiles', function ($parse) {
       }
    };
 });
+
+app.filter('has', () => (arr, values, key) => arr?.filter(x => values?.includes(x[key])));
 
 // Show detail controller
 app.controller('detailcontrol', function ($scope, $routeParams) {
@@ -294,7 +267,10 @@ app.controller('control', ($scope, $http) => {
          .catch(e => console.error(e))
    }
 
-   $scope.getImage = (img, ...paths) => img ? `${server}/${paths.join('/')}/${img}` : $scope.defaultImg;
+   $scope.getImage = (img, ...paths) => img
+      ? img.startsWith('http') || img.startsWith('blob')
+         ? img : `${server}/${paths.join('/')}/${img}`
+      : $scope.defaultImg;
 
    // show detail content
    $scope.detail = (e) => location = `#!detail/${e.uid}`;

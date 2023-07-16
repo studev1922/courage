@@ -3,7 +3,7 @@
    <div hidden>
       <input type="hidden" ng-model="o.temr">
       <input type="hidden" ng-model="o.temp">
-   </div>
+   </div>r.uid
    <table class="table text-white bg-dark bg-opacity-25">
       <thead>
          <td>No</td>
@@ -16,7 +16,7 @@
          <th>images</th>
       </thead>
       <tbody style="vertical-align: middle;">
-         <tr ng-repeat="(i,e) in mdata">
+         <tr ng-repeat="(i,e) in mdata" ng-dblclick="detailControl(e)">
             <td class="text-center">
                <span ng-bind="i"></span>
                <input type="hidden" ng-value="e.uid">

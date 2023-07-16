@@ -1,90 +1,111 @@
-<h3>for defail</h3>
 <div class="row">
-    <h4>TEST...</h4>
-    <!-- Display the user object as JSON -->
-    <div class="col-xl-5 col-md-3 col-12">
-        <pre>{{user | json}}</pre>
+    <h3 class="text-center text-xl-end">user <span class="text-warning">{{user.username}}</span></h3>
+    
+    <!-- show images -->
+    <div id="f{{user.username}}" class="col-xl-5 col-md-3 col-12 p-1 carousel slide">
+        <div class="carousel-inner">
+            <!-- each in items -->
+            <div class="carousel-item {{i?'':'active'}}" ng-repeat="(i,img) in user.images track by $index">
+                <img ng-src="{{getImage(img, 'uploads/account', user.uid)}}" class="fit-img-block"
+                    style="aspect-ratio: 5/3; object-fit: contain;" alt="{{img}}">
+            </div>
+            <!-- default image : show when images is empty -->
+            <div class="carousel-item active" ng-if="!user.images.length">
+                <img ng-src="{{defaultImg}}" class="fit-img-block" style="aspect-ratio: 5/3;" alt="default image">
+                <h3 style="position: absolute; bottom: 0; right: 0;">default image</h3>
+            </div>
+        </div>
+        <!-- thumbnail -->
+        <div class="d-flex border overflow-auto scroll-s1" style="width: 100%; z-index: 1000;"
+            ng-if="user.images.length>1">
+            <div type="button" class="p-1 col-2 col-xl-3 col-md-4 {{i?'':'active'}}"
+                data-bs-target="#f{{user.username}}" data-bs-slide-to="{{i}}"
+                ng-repeat="(i,img) in user.images track by $index">
+                <img ng-src="{{getImage(img, 'uploads/account/'+user.uid)}}" class="fit-img-block" alt="{{img}}"
+                    style="aspect-ratio: 2/1; height: auto;">
+            </div>
+        </div>
+        <!-- carousel-control buttons : show when size of images > 0 -->
+        <tag ng-if="user.images.length > 1">
+            <button class="carousel-control-prev" type="button" data-bs-target="#f{{user.username}}"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#f{{user.username}}"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </tag>
     </div>
+    <!-- show detail control -->
     <div class="m-auto col-xl-6 col-md-8 col-12">
-        <form>
-            <div class="mb-3">
-                <label for="uid" class="form-label">UID</label>
-                <!-- Add ng-model directive to bind the input element to the user object in the model -->
-                <input type="number" class="form-control" id="uid" ng-model="user.uid" readonly>
-            </div>
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" ng-model="user.username">
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" ng-model="user.email">
-            </div>
-            <div class="mb-3">
-                <label for="fullname" class="form-label">Full name</label>
-                <input type="text" class="form-control" id="fullname" ng-model="user.fullname">
-            </div>
-            <div class="mb-3">
-                <label for="regTime" class="form-label">Registration time</label>
-                <input type="datetime-local" class="form-control" id="regTime" ng-model="user.regTime">
-            </div>
-            <div class="mb-3">
-                <label for="access" class="form-label">Access level</label>
-                <input type="range" class="form-range" id="access" min="0" max="4" ng-model="user.access">
-            </div>
-            <div class="mb-3">
-                <label for="images" class="form-label">Images</label>
-                <!-- Add ng-files directive to handle multiple file upload -->
-                <!-- Add uploadFiles function to upload the selected files -->
-                <!-- Add accept attribute to limit the file types -->
-                <input type="file" class="form-control" id="images" ng-files='uploadFiles($files)' multiple>
-            </div>
-            <div class="mb-3">
-                <label for="roles" class="form-label">Roles</label>
-                <select id="roles" class="form-select" ng-model='selectedRoles' ng-change='updateRoles()' multiple>
-                    <option ng-repeat='r in ur.roles' ng-value="r.urid" ng-bind="r.role"></option>
-                </select>
-            </div>
-            <div class='mb-3'>
-                <!-- Web platform checkbox -->
-                <div class='d-inline-flex align-items-center me-2'>
-                    <input type='checkbox' id='web' name='platforms' value=0 checked disabled class='form-check-input'>
-                    <label for='web' class='form-check-label'>Web</label>
-                </div>
-
-                <!-- Mobile platform checkbox -->
-                <div class='d-inline-flex align-items-center me-2'>
-                    <!-- Add ng-model directive to bind the checkbox value to the user.platforms array -->
-                    <!-- Add true-value and false-value attributes to specify the values when checked or unchecked -->
-                    <!-- Add ng-true-value and ng-false-value directives for AngularJS compatibility -->
-                    <input type='checkbox' id='mobile' name='platforms' value=1 ng-model='user.platforms[1]'
-                        true-value=1 false-value=0 ng-true-value=1 ng-false-value=0 class='form-check-input'>
-                    <label for='mobile' class='form-check-label'>Mobile</label>
-                </div>
-
-                <!-- Desktop platform checkbox -->
-                <div class='d-inline-flex align-items-center me-2'>
-                    <input type='checkbox' id='desktop' name='platforms' value=2 ng-model='user.platforms[2]'
-                        true-value=2 false-value=0 ng-true-value=2 ng-false-value=0 class='form-check-input'>
-                    <label for='desktop' class='form-check-label'>Desktop</label>
-                </div>
-
-                <!-- Tablet platform checkbox -->
-                <div class='d-inline-flex align-items-center me-2'>
-                    <input type='checkbox' id='tablet' name='platforms' value=3 ng-model='user.platforms[3]'
-                        true-value=3 false-value=0 ng-true-value=3 ng-false-value=0 class='form-check-input'>
-                    <label for='tablet' class='form-check-label'>Tablet</label>
-                </div>
-
-            </div>
-
-            <!-- Add a submit button -->
-            <!-- Add ng-click directive to call the saveChanges function when clicked -->
-            <div class='mb-3'>
-                <button type='submit' class='btn btn-primary' ng-click='saveChanges()'>Save changes</button>
-            </div>
-
-        </form>
-
+        <div class="mt-1">
+            <label class="custom-label">username</label>
+            <input type="text" class="custom-input" ng-model="user.username" placeholder="input your username">
+        </div>
+        <div class="mt-1">
+            <label class="custom-label">email</label>
+            <input type="email" class="custom-input" ng-model="user.email" placeholder="input your email">
+        </div>
+        <div class="mt-1">
+            <label class="custom-label">fullname</label>
+            <input type="text" class="custom-input" ng-model="user.fullname" placeholder="input your fullname">
+        </div>
+        <div class="mt-1">
+            <label class="custom-label">register time</label>
+            <div class="custom-field" ng-bind="user.regTime | date:'EEEE, MMMM d, y'"></div>
+        </div>
+        <div class="mt-1">
+            <table class="table table-striped-columns text-white">
+                <thead>
+                    <tr>
+                        <th>access</th>
+                        <th>roles</th>
+                        <th>platforms register</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <!-- access -->
+                        <td>
+                            <select class="w-100 btn custom-label" ng-model="user.access"
+                                style="background: var(--bgr-linear-dark); color: var(--bs-info);">
+                                <option ng-repeat="a in ur.accesses" ng-value="a.uaid" ng-bind="a.uaName"
+                                    style="background: var(--bgr-linear-dark);"></option>
+                            </select>
+                        </td>
+                        <!-- roles -->
+                        <td>
+                            <button type="button" class="w-100 btn custom-label" data-bs-toggle="popover"
+                                target="froleof{{user.uid}}"
+                                style="background: var(--bgr-linear-dark); color: var(--bs-info);">roles
+                                ({{user.roles.length}})
+                            </button>
+                            <div class="disabled" hidden>
+                                <div id="froleof{{user.uid}}" class="border rounded-3"
+                                    style="padding: .5rem; background: var(--bgr-linear-dark);">
+                                    <div class="form-check" ng-repeat="(i,r) in ur.roles">
+                                        <input class="form-check-input" type="checkbox"
+                                            id="f{{o.temr=user.uid+'_'+r.urid}}"
+                                            ng-checked="user.roles.includes(r.urid)"
+                                            ng-click="toggleChecks(r.urid, user.roles)">
+                                        <label class="form-check-label text-nowrap" for="f{{o.temr}}">{{r.role}}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <!-- platform login -->
+                        <td>
+                            <div class="d-inline">
+                                <span class="m-1 badge bg-gradient bg-warning" ng-bind="p.upName"
+                                    ng-repeat="p in (ur.platforms | has:user.platforms:'upid')"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

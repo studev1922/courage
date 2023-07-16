@@ -46,24 +46,34 @@ body {
    width: .5rem;
 }
 
+.custom-label {
+   font-weight: bolder;
+   border-bottom: 1px solid #005cf0;
+}
+
 .custom-input {
+   text-align: end;
+   width: 100%;
    background: transparent;
    border: none;
-   border-bottom: 1px solid #00b8ff;
+   border-bottom: 1px solid #008bc1;
    color: white;
-   font-weight: bolder;
+   font-weight: bold;
    text-shadow: 0 0 1rem #e5ff00;
 }
 
 .custom-field {
-   display: block;
+   text-align: end;
+   width: 100%;
+   background: transparent;
    border: none;
-   background: none;
-   border-bottom: 1px solid #00aaff;
-   text-shadow: 0 0 5px #ffee00;
+   border-bottom: 1px solid #984118;
+   color: #cecece;
+   font-weight: bold;
+   text-shadow: 0 0 1rem #0062ff;
 }
 
-.custom-field:hover {
+.custom-input:hover {
    animation: lights 5s 750ms linear infinite;
 }
 
