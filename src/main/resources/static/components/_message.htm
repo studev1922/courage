@@ -1,0 +1,19 @@
+<div class="fixed-top col-12 col-md-6 col-xl-4" style="padding: .5rem; left: auto; right: 0; top: auto; bottom: 0;"
+    ng-if="customize.isAlert">
+    <div class="d-flex flex-wrap flex-wrap-reverse gap-1">
+        <div class="alert fade show w-100 m-0 p-3 border" role="alert" style="background: var(--bgr-linear1); cursor: help;"
+            ng-repeat="(i,mes) in messages">
+            <!-- data-bs-dismiss="alert" aria-label="Close" -->
+            <button class="btn" style="position: absolute; right: .5rem; top: .5rem;" type="button" ng-click="removeMes(mes, i)">
+                <img src="assets/icon/close-circle.svg">
+            </button>
+            <h5 class="text-warning" ng-bind="mes.heading"></h5>
+            <hr class="m-0">
+            <p class="text-white" ng-bind="mes.body"></p>
+            <hr class="m-0">
+            <div class="text-secondary text-end">
+                <em style="font-size: .9rem;" class="text-end" ng-bind="mes.time | date:'MMM d, y h:mm:ss a'"></em>
+            </div>
+        </div>
+    </div>
+</div>
