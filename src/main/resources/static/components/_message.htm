@@ -7,9 +7,9 @@
             <button class="btn" style="position: absolute; right: .5rem; top: .5rem;" type="button" ng-click="removeMes(mes, i)">
                 <img src="assets/icon/close-circle.svg">
             </button>
-            <h5 class="text-warning" ng-bind="mes.heading"></h5>
+            <h5 class="{{mes.htype || 'text-warning'}}" ng-bind="mes.heading"></h5>
             <hr class="m-0">
-            <p class="text-white" ng-bind="mes.body"></p>
+            <p class="{{mes.btype || 'text-white'}}" ng-bind="mes.body"></p>
             <hr class="m-0">
             <div class="text-secondary text-end">
                 <em style="font-size: .9rem;" class="text-end" ng-bind="mes.time | date:'MMM d, y h:mm:ss a'"></em>

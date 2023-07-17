@@ -88,6 +88,8 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
        */
       Principal principal = req.getUserPrincipal();
       UAccount account = new UAccount(); // by default, only public content is read
+      account.setUid(null);
+      account.setRegTime(null);
       account.setAccess(A.PUBLIC.ordinal());
 
       if (principal != null) {

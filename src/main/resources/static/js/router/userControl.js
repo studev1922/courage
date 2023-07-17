@@ -43,47 +43,89 @@ app.controller('usercontrol', function ($scope, $routeParams) {
     }
 
     $scope.control = {
-        insert: () => {
-            $scope.crud.post(path, dataName, getData());
-        },
-        update: () => {
-            $scope.crud.put(path, dataName, getData());
-        },
-        delete: () => $scope.crud.post(path, dataName, $scope.user[uid], key),
+        insert: () => $scope.crud
+            .post(path, dataName, getData())
+            .then(
+                r => $scope.pushMessage({
+                    heading: 'insert success',
+                    body: `insert ${r.username} successfully`
+                }, 3000)
+            ).catch(
+                e => $scope.pushMessage({
+                    htype: 'text-danger',
+                    heading: 'insert data failed',
+                    body: e.message
+                }, 3000)
+            ),
+        update: () => $scope.crud
+            .put(path, dataName, getData())
+            .then(r => {
+                $scope.pushMessage({
+                    heading: 'update success',
+                    body: `update ${r.username} successfully`
+                }, 3000);
+            }).catch(
+                e => $scope.pushMessage({
+                    htype: 'text-danger',
+                    heading: 'update failed',
+                    body: e.message
+                }, 3000)
+            ),
+        delete: () => $scope.crud
+            .delete(path, dataName, $scope.user[key], key)
+            .then(
+                _ => $scope.pushMessage({
+                    heading: 'delete success',
+                    body: `delete successfully`
+                }, 3000)
+            ).catch(
+                e => $scope.pushMessage({
+                    htype: 'text-danger',
+                    heading: 'delete failed',
+                    body: e.message
+                }, 3000)
+            ),
         clear: () => {
             if (confirm(`clear form data ${$scope.user.username || 'user'}`)) {
                 formControl.reset() // reset html form
                 let input = formControl.querySelector('input[type="file"]');
                 for (let type of ['text', 'file']) input.setAttribute('type', type);
                 $scope.user = angular.copy(u); // reset binding
+                $scope.pushMessage({
+                    heading: 'Clear form data',
+                    body: `clear form data finshed!`
+                }, 3000)
             }
         }
     }
 
     $scope.$watch('srctab', function () { // load all component
-        $scope.$watch('$stateCngeSuccess', setTimeout(bsfw.loadPopovers, 500))
+        $scope.$watch('$stateCngeSuccess', setTimeout(() => {
+            bsfw.loadPopovers();
+            if (document.querySelector('#formControl')) {
+                let input = formControl.querySelector('input[type="file"]');
+                let flex = showInputImages.querySelector('.d-flex');
+
+                input.addEventListener('change', _ => {
+                    let childs = [], src;
+
+                    // remove all old images
+                    while (flex.lastChild) flex.removeChild(flex.firstChild);
+                    // add new images
+                    if (input.files?.length)
+                        for (let f of input.files) {
+                            src = URL.createObjectURL(f);
+                            childs.push(`<div class="custom-img"><span>size: ${f.size}</span><img src="${src}"alt="${f.name}"><h5>${f.name}</h5></div>`);
+                        }
+                    else childs.push(`<h4 style="background: var(--bgr-linear1);">No photos selected!</h4>`);
+                    flex.innerHTML = childs.join('');
+                });
+            }
+        }, 500))
     }) // await 500 miliseconds to load popovers
 
     $scope.$watch('$stateChangeSuccess', async () => {
         if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
         await $scope.crud.get(path, dataName); // load all data
-
-        let input = formControl.querySelector('input[type="file"]');
-        let flex = showInputImages.querySelector('.d-flex');
-
-        input.addEventListener('change', _ => {
-            let childs = [], src;
-
-            // remove all old images
-            while (flex.lastChild) flex.removeChild(flex.firstChild);
-            // add new images
-            if (input.files?.length)
-                for (let f of input.files) {
-                    src = URL.createObjectURL(f);
-                    childs.push(`<div class="custom-img"><span>size: ${f.size}</span><img src="${src}"alt="${f.name}"><h5>${f.name}</h5></div>`);
-                }
-            else childs.push(`<h4 style="background: var(--bgr-linear1);">No photos selected!</h4>`);
-            flex.innerHTML = childs.join('');
-        });
     });
 });

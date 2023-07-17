@@ -53,10 +53,11 @@ app.controller('control', ($scope, $http) => {
        */
       post: (path, to, data, config = httpConfig) => $http
          .post(`${server}/${path}`, data, config)
-         .then(r => {
-            $scope[to].push(r.data);
-            return r.data;
-         })
+         .then(r => $scope[to]
+            .filter(e => { // copy response data to client data
+               if (e === data) return Object.assign(e, r.data);
+            })
+         )
          .catch(e => { throw e }),
       /**
        * 
@@ -69,12 +70,8 @@ app.controller('control', ($scope, $http) => {
       put: (path, to, data, config = httpConfig) => $http
          .put(`${server}/${path}`, data, config)
          .then(r => $scope[to]
-            .forEach(e => { // update element in array
-               if (e === data) {
-                  // copy response data to client data
-                  Object.assign(e, r.data)
-                  return e; // return element assigned
-               }
+            .filter(e => { // copy response data to client data
+               if (e === data) return Object.assign(e, r.data);
             })
          )
          .catch(e => { throw e }),
@@ -159,12 +156,12 @@ app.controller('control', ($scope, $http) => {
             body: message,
             time: new Date()
          }
-      }
+      } else if (!message.time) message.time = new Date();
 
       $scope.messages.push(message);
       if (time) setTimeout(() => {
-            $scope.messages.splice(0, 1);
-            $scope.$apply(); // update the view
+         $scope.messages.splice(0, 1);
+         $scope.$apply(); // update the view
       }, time);
    }
 
@@ -172,6 +169,5 @@ app.controller('control', ($scope, $http) => {
       $scope.setting(); // setting display
       await $scope.loadRelationships(); // await for load all data
       await $scope.crud.get('accounts/page', 'data', '?.content');
-      $scope.pushMessage('load all data successfully!', 3000);
    });
 });

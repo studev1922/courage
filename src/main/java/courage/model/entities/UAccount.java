@@ -35,7 +35,7 @@ public class UAccount {
    public final static String DIRECTORY = "account"; // file storage in folder
 
    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-   private Long uid;
+   private Long uid = -1L;
    @Column(unique = true)
    private String username;
    @Column(unique = true)
@@ -45,9 +45,9 @@ public class UAccount {
    @ColumnTransformer(write = "PWDENCRYPT(?)")
    private String password;
    private String fullname;
-   @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.SSS")
 	@Column(name = "regtime", updatable = false)
-   private Date regTime; // register time
+   @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.SSS")
+   private Date regTime = new Date(); // register time
    @Column(name = "ua_id")
    private Integer access = 0; // default AWAITING for access
 
