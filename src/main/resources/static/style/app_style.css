@@ -5,6 +5,7 @@
    --bgr-linear1: linear-gradient(-45deg, #00000000 25%, #e7c53c50, #23a6d550, #ba23d550);
    --bgr-linear2: linear-gradient(-45deg, #00000000 25%, #23a6d550, #ba23d550, #e7c53c50);
    --bgr-linear3: linear-gradient(-45deg, #00000000 25%, #ba23d550, #e7c53c50, #23a6d550);
+   --bgr-linear4: linear-gradient(45deg, #00000065 25%, #e7c53c70, #23a6d585, #d800ff90);
    --bgr-linear: linear-gradient(-45deg, #e7c53c50, #23a6d550, #ba23d550, #23a6d550, #ba23d550, #e7c53c50, #ba23d550, #e7c53c50, #23a6d550);
 }
 
