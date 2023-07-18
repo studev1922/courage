@@ -1,12 +1,11 @@
 package courage.controller.rest;
 
 import java.security.Principal;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import courage.model.entities.UAccount;
@@ -63,23 +61,6 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       }
    }
 
-   // TODO @PreAuthorize, check login session if(isLogin) {...}
-   @RequestMapping(value = "/update-passowrd", method = { RequestMethod.PUT, RequestMethod.PATCH })
-   public ResponseEntity<?> updatePassword() {
-      UAccountRepository dao = ((UAccountRepository) super.rep);
-      String unique = req.getParameter("unique");
-      String password = req.getParameter("password");
-
-      try {
-         return (password = dao.update_password(unique, password)) != null
-               ? ResponseEntity.ok(password)
-               : ResponseEntity.status(500).body("update password failed!");
-      } catch (SQLException ex) {
-         ex.printStackTrace();
-         return ResponseEntity.status(500).body(ex.getMessage());
-      }
-   }
-
    @Override
    public Example<UAccount> getExample() {
       /**
@@ -94,7 +75,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
       if (principal != null) {
          UAccount logged = ((UAccountRepository) rep).findByUsername(principal.getName());
-         if (logged != null && logged.getRoles().contains(R.ADMIN.ordinal()))
+         // if (logged != null && logged.getRoles().contains(R.ADMIN.ordinal()))
             return null; // is logged && is admin, return null to read all
       }
       return Example.of(account);
@@ -140,9 +121,9 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       UAccount e; String username; // get UAccount by username
 
       try { // sign new token
-         if ((e = dao.pr_login(us, pw)) != null) {
+         // TODO req.login(username, e.getPassword()); // servlet login
+         if ((e = ((UAccountRepository) rep).findByUsername(us)) != null) { 
             username = e.getUsername();
-            // TODO req.login(username, e.getPassword()); // servlet login
             return ResponseEntity.ok(jwt.sign(username)); // create token
          } else {
             return ResponseEntity.status(401).body("account is empty!");

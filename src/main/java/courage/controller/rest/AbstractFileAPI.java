@@ -1,8 +1,5 @@
 package courage.controller.rest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
@@ -16,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import courage.model.services.FileUpload;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -44,7 +43,7 @@ public abstract class AbstractFileAPI {
    /**
 	 * @param directory is archive folder
 	 */
-	AbstractFileAPI(String directory) { this.directory = directory; }
+	protected AbstractFileAPI(String directory) { this.directory = directory; }
 
    /**
     * @see AbstractFileAPI.OptionFile

@@ -28,8 +28,6 @@ GO
    │  └──[US_UR]: user has multiple roles | one-many
    │
    └──[#PROCEDURES]
-      ├──[pr_login]: login by (username or email) and password: parameters(@unique, @password)
-      └──[pr_update_pass]: update password by (username or email): parameters(@unique, @password)
 */
 -- ---------------------------------------------------------------------------------------------------- #TABLES
 
@@ -69,7 +67,7 @@ CREATE TABLE [UACCOUNT] (
    [uid] bigint identity primary key,
    [username] varchar(20) null unique, -- username for login
    [email] varchar(50) unique not null, -- email for contact
-   [password] binary(70) not null, -- size of PWDENCRYPT is 70
+   [password] varchar(79) not null,
    [fullname] nvarchar(50) not null,
    [regTime] datetime default GETDATE(),
    [ua_id] tinyint foreign key references [UACCESS]([uaid]) default 0 not null
@@ -106,51 +104,4 @@ CREATE TABLE [US_UR] ( -- USER ROLES (authorization)
    primary key ([u_id], [ur_id]) -- BCNF
 );
 GO
-
--- ---------------------------------------------------------------------------------------------------- #PROCEDURES
--- Create procedure pr_login >>> login by (username or email) and password
-IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_login') DROP PROC pr_login
-GO
-CREATE PROCEDURE pr_login
-   @unique varchar(256), @password varchar(256)
-AS
-BEGIN
-   DECLARE @error nvarchar(255);
-   IF @unique is null OR LEN(@password) = 0 RAISERROR('username is empty',15,1);
-   IF @password is null OR LEN(@unique) = 0 RAISERROR('password is empty',15,1);
-
-   SELECT u.* INTO #USER FROM UACCOUNT u
-   WHERE 
-      (username = @unique OR email = @unique) 
-      AND PWDCOMPARE(@password, password) = 1;
-
-   IF NOT EXISTS(SELECT [uid] FROM #USER) BEGIN
-      SET @error = CONCAT('username:', @unique, ' and password:', @password, ' is incorrect');
-      RAISERROR(@error, 15,1);
-   END ELSE IF ((SELECT ua_id FROM #USER) > 1)
-      SELECT * FROM #USER -- GET UACCOUNT & UACCESS ONE-TO-ONE
-   ELSE RAISERROR('This account is not activated yet!!!', 15,1);
-END
-GO
-
--- Create procedure pr_update_pass >>> update password by username or email
-IF EXISTS (SELECT [object_id] FROM sys.procedures WHERE name = N'pr_update_pass') DROP PROC pr_update_pass
-GO
-CREATE PROCEDURE pr_update_pass
-   @unique varchar(256), @password varchar(256)
-AS
-BEGIN
-   DECLARE @err nvarchar(256);
-   DECLARE @id bigint = (SELECT [uid] FROM UACCOUNT WHERE @unique IN ([username], [email]));
-
-   IF @id IS NOT NULL BEGIN -- update password if uid already exist.
-      UPDATE UACCOUNT SET [password]=PWDENCRYPT(@password) WHERE [uid]=@id;
-      SELECT [password] FROM UACCOUNT WHERE [uid]=@id;
-   END ELSE BEGIN
-      SET @err = CONCAT(@unique, ' does not exist, cannot update this password:', @password)
-      RAISERROR(@err, 15,1);
-   END
-END
-GO
-
 USE master

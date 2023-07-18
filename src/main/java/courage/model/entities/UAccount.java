@@ -5,25 +5,21 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-import org.hibernate.annotations.ColumnTransformer;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Builder.ObtainVia;
 
 @Data // @formatter:off
 @NoArgsConstructor
@@ -41,9 +37,7 @@ public class UAccount {
    @Column(unique = true)
    private String email;
    @JsonIgnore // igrore password for read api
-   @Column(updatable = false) // avoid update password
-   @ColumnTransformer(write = "PWDENCRYPT(?)")
-   private String password;
+   private String password; // ColumnTransformer
    private String fullname;
 	@Column(name = "regtime", updatable = false)
    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.SSS")
@@ -52,27 +46,21 @@ public class UAccount {
    private Integer access = 0; // default AWAITING for access
 
    // user's images
-   @ElementCollection(fetch = FetchType.EAGER)
+   @ElementCollection
    @Column(name = "image")
-   @CollectionTable( name = "UIMAGE", 
-      joinColumns = @JoinColumn(name = "u_id")
-   )
+   @CollectionTable(name = "UIMAGE", joinColumns = @JoinColumn(name = "u_id"))
    private Set<String> images = new HashSet<>();
 
    // user's roles (authorization)
-   @ObtainVia
    @ElementCollection 
    @Column(name = "ur_id")
-   @CollectionTable( name = "US_UR", 
-      joinColumns = @JoinColumn(name = "u_id")
-   )
+   @CollectionTable(name = "US_UR", joinColumns = @JoinColumn(name = "u_id"))
    private Set<Integer> roles = new HashSet<>(Arrays.asList(0));
 
    // user's platforms (credentials)
-   @ObtainVia
    @ElementCollection
    @Column(name = "up_id")
-   @CollectionTable( name = "US_UP", 
-      joinColumns = @JoinColumn(name = "u_id")
-   ) private Set<Integer> platforms = new HashSet<>(Arrays.asList(0));
+   @CollectionTable(name = "US_UP", joinColumns = @JoinColumn(name = "u_id"))
+   private Set<Integer> platforms = new HashSet<>(Arrays.asList(0));
+   
 }

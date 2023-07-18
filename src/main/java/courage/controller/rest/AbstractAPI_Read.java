@@ -66,7 +66,7 @@ public abstract class AbstractAPI_Read<E, K> {
          ? PageRequest.of(p, s, Sort.by(o, f)) 
          : PageRequest.of(p, s);
       Example<E> example = this.getExample();
-         
+
       return ResponseEntity.ok(example != null 
          ? rep.findAll(example, pageable) 
          : rep.findAll(pageable)
