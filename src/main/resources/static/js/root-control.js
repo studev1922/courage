@@ -53,24 +53,25 @@ app.controller('control', ($scope, $http) => {
        */
       post: (path, to, data, config = httpConfig) => $http
          .post(`${server}/${path}`, data, config)
-         .then(r => $scope[to]
-            .filter(e => { // copy response data to client data
-               if (e === data) return Object.assign(e, r.data);
-            })
-         )
+         .then(r => {
+            $scope[to].unshift(r.data)
+            return r.data;
+         })
          .catch(e => { throw e }),
       /**
        * 
        * @param {string} path to update api
        * @param {String} to variable update data
        * @param {Object} data for update
+       * @param {Number} index of element
        * @param {Object} config config put data
        * @returns {Promise<Object>} data updated
        */
-      put: (path, to, data, config = httpConfig) => $http
+      put: (path, to, data, index, config = httpConfig) => $http
          .put(`${server}/${path}`, data, config)
-         .then(r => $scope[to]
-            .filter(e => { // copy response data to client data
+         .then(r => index != undefined
+            ? $scope[to][index] = r.data
+            : $scope[to].filter(e => { // copy response data to client data
                if (e === data) return Object.assign(e, r.data);
             })
          )
@@ -85,12 +86,13 @@ app.controller('control', ($scope, $http) => {
        */
       delete: (path, to, id, key = 'id') => $http
          .delete(`${server}/${path}/${id}`)
-         .then(r => $scope[to].forEach((e, i) => {
-            if (e[key] == id) {
-               $scope[to].splice(i, 1);
-               return r.data; // number of deleted on server
-            }
-         }))
+         .then(r => {
+            let data = r.data; // number deleted on server
+            $scope[to].forEach((e, i) => {
+               if (e[key] === id) $scope[to].splice(i, 1);
+            }) 
+            return data;
+         })
          .catch(e => { throw e })
    }
 
