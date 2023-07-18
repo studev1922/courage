@@ -1,5 +1,5 @@
 const app = angular.module('app', ['ngRoute']);
-const server = 'http://DESKTOP-JSSB55N:8080/api';
+const server = 'http://localhost:8080/api';
 
 // MAIN APP CONTROLLER
 app.controller('control', ($scope, $http) => {
