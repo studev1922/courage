@@ -113,7 +113,7 @@ public class FileServiceImpl implements FileUpload {
 		if (uries == null || uries.length == 0)
 			return; // empty source
 		else if (uries[uries.length - 1].startsWith("http"))
-			return; // is embeded from other source
+			return; // not delete  embeded from other source
 
 		File file = new File(context.getRealPath(uri(uries)));
 		String path = file.getPath();

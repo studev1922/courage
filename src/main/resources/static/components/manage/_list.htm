@@ -17,9 +17,9 @@
       </thead>
       <tbody style="vertical-align: middle;">
          <!-- each fields -->
-         <tr ng-repeat="(i,e) in mdata" ng-dblclick="detailControl(e)">
+         <tr ng-repeat="(i,e) in mdata" ng-dblclick="control.read(e)">
             <td class="text-nowrap">
-               <button class="text-white btn" style="background: var(--bgr-linear2);" role="button" ng-click="detailControl(e)">
+               <button class="text-white btn" style="background: var(--bgr-linear2);" role="button" ng-click="control.read(e)">
                   <img width="32px" src="assets/imgIcon/loupe.png">
                </button>
                <input type="hidden" ng-value="e.uid">
