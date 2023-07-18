@@ -80,7 +80,7 @@ GO
 IF OBJECT_ID('UIMAGE', 'U') IS NOT NULL DROP TABLE [UIMAGE]
 GO
 CREATE TABLE [UIMAGE] (
-   [image] varchar(100) primary key, -- photo has only one user(hash file's name to MD5)
+   [image] varchar(256) primary key, -- photo has only one user(hash file's name to MD5)
    [u_id] bigint foreign key references
    [UACCOUNT]([uid]) on delete cascade not null
 );
