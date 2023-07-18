@@ -3,7 +3,9 @@ const server = 'http://localhost:8080/api';
 
 // MAIN APP CONTROLLER
 app.controller('control', ($scope, $http) => {
-   let httpConfig = {
+   var pageFilter = {
+      p: 0, s: 10, o: 'ASC', f: 'regTime,uid'
+   }, httpConfig = {
       transformRequest: angular.identity,
       headers: { 'Content-Type': undefined }
    };
@@ -90,7 +92,7 @@ app.controller('control', ($scope, $http) => {
             let data = r.data; // number deleted on server
             $scope[to].forEach((e, i) => {
                if (e[key] === id) $scope[to].splice(i, 1);
-            }) 
+            })
             return data;
          })
          .catch(e => { throw e })
@@ -105,9 +107,19 @@ app.controller('control', ($scope, $http) => {
    $scope.detail = (e) => location = `#!detail/${e.uid}`;
 
    // get page api and append to data
-   $scope.appendContents = (p, s, o, ...f) => {
-      console.log(p, s, o, ...f);
-      // TODO call api, append to data
+   $scope.appendContents = async () => {
+      let { p, s, o, f } = pageFilter;
+      let path = `accounts/page?p=${++p}&s=${s}&o=${o}&f=${f}`
+      
+      $scope.crud.get(path)
+         .then(r => {
+            let { content } = r;
+            if (content?.length) {
+               $scope['data'].push(...content);
+               $scope.pushMessage(`get new ${s} data from ${p}.`, 3e3)
+            } else $scope.pushMessage('data has run out', 3e3, --p);
+         })
+         .catch(err => console.error(err))
    }
 
    // seting display
