@@ -1,10 +1,22 @@
+// show passowd
+function togglePassword(block, img) {
+   let input = block.querySelector('input[type]');
+   let isPass = input.getAttribute('type') == 'password';
+   if(isPass) {
+      input.setAttribute('type', 'text');
+      img.setAttribute('src', 'assets/imgIcon/hide.png')
+   } else {
+      input.setAttribute('type', 'password');      
+      img.setAttribute('src', 'assets/imgIcon/view.png')
+   }
+}
+
 // clear tooltip
 function removeElements(selector = '.fade') {
    if (!selector) return;
    let elements = document.querySelectorAll(selector);
    for (let e of elements) document.body.removeChild(e);
 }
-
 
 // seting user-inteface
 function setting(customize = {}) {
@@ -113,22 +125,20 @@ const util = {
    },
 
    /**
-    * 
     * @param {Array} arr find in array
     * @param {Array} values all condition values
     * @param {String} key named
-    * @returns 
+    * @returns {Array} array filter by[key] includes values
     */
    has: (arr, values, key) => arr?.filter(x => values?.includes(x[key])),
 
    /**
-    * 
     * @param {Array} _ array data to sort
     * @param {String} col is condition to sort
-    * @param {Boolean} desc descending or ascending sort
+    * @param {Boolean} isDesc descending or ascending sort
     * @returns {Array} _ array sorted
     */
-   sort: (_, col, desc) => eval(`_?.sort((${desc ? 'o1,o2' : 'o2,o1'}) => o1.${col}.localeCompare(o2.${col}))`),
+   sort: (_, col, isDesc) => eval(`_?.sort((${isDesc ? 'o1,o2' : 'o2,o1'}) => o1.${col}.localeCompare(o2.${col}))`),
 
    /**
     * @param {Array} arr sum of array
