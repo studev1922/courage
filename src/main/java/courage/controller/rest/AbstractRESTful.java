@@ -59,7 +59,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 	// save all without multipart file
 	@RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
-   public ResponseEntity<?> save(Iterable<E> entities) {
+    public ResponseEntity<?> save(Iterable<E> entities) {
       try { // save all data
          return ResponseEntity.ok(rep.saveAll(entities));
       } catch (Exception e) {

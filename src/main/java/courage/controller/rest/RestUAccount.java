@@ -9,9 +9,14 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
@@ -29,6 +34,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // @formatter:off
 
+   @Autowired private PasswordEncoder encode;
    @Autowired private HttpServletRequest req;
    public RestUAccount() { super(UAccount.DIVIDE, UAccount.DIRECTORY);}
    
@@ -68,4 +74,25 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // @formatter:on
 
+   // save one with multipart file
+   @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
+   public ResponseEntity<?> save(UAccount entity, @RequestBody(required = false) MultipartFile... files) {
+      this.setPwEncode(Arrays.asList(entity)); // encode password
+      return super.save(entity, files);
+   }
+
+   // save all without files
+   @RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.PUT })
+   public ResponseEntity<?> save(Iterable<UAccount> entities) {
+      this.setPwEncode(entities);
+      return super.save(entities);
+   }
+
+   private void setPwEncode(Iterable<UAccount> entities) {
+      String pass;
+      for (UAccount e : entities) { // encode password
+         if ((pass = e.getPassword()) != null)
+            e.setPassword(encode.encode(pass));
+      }
+   }
 }
