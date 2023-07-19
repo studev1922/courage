@@ -1,0 +1,39 @@
+.box-border {
+    /* your existing styles */
+    background: linear-gradient(180deg, #00000079, #000000cd);
+    color: #ffffff;
+}
+
+.box-border:hover, .box-border:focus {
+    /* add an animation that changes the box shadow over time */
+    animation: light-effect 3s infinite;
+}
+
+.text-hover:hover, .text-hover:focus {
+    animation: lights 5s 750ms linear infinite;
+}
+
+/* define the animation keyframes */
+@keyframes light-effect {
+
+    0% {
+        box-shadow: 0 0 .5em #ffffff39;
+    }
+
+    25% {
+        box-shadow: 0 0 1rem #ffff0039;
+    }
+
+    50% {
+        box-shadow: 0 0 .5rem #00ff0039;
+    }
+
+    75% {
+        box-shadow: 0 0 1rem #00ffff39;
+    }
+
+    100% {
+        box-shadow: 0 0 .5rem #ffffff39;
+    }
+
+}

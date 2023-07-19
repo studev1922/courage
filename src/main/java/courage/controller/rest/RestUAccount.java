@@ -31,30 +31,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    @Autowired private HttpServletRequest req;
    public RestUAccount() { super(UAccount.DIVIDE, UAccount.DIRECTORY);}
-
-   // @PostMapping("/login")
-   // public ResponseEntity<?> login() { // login by token or (username && password)
-   //    final UAccountRepository dao = ((UAccountRepository) super.rep);
-   //    final String token = req.getHeader("authorization");
-   //    String us = req.getParameter("username");
-   //    String pw = req.getParameter("password");
-   //    if(us == null || us.isEmpty()) us = req.getParameter("unique");
-
-   //    // return login
-   //    return (token != null && !token.isEmpty())
-   //          ? this.handleToken(dao, token) // by token
-   //          : this.handleLogin(dao, us, pw); // by username and password
-   // }
-
-   @RequestMapping("/logout")
-   public void logout() {
-      try {
-         req.logout();
-      } catch (ServletException e) {
-         e.printStackTrace();
-      }
-   }
-
+   
    @Override
    public Example<UAccount> getExample() {
       /**
@@ -76,9 +53,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    }
 
    @Override
-   protected Long getKey(UAccount e) {
-      return e.getUid();
-   }
+   protected Long getKey(UAccount e) { return e.getUid(); }
 
    @Override
    protected String[] filesExist(UAccount e, String... prevents) {
@@ -89,44 +64,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    }
 
    @Override
-   protected void setFiles(UAccount e, Set<String> images) {
-      e.setImages(images);
-   }
-
-   // private ResponseEntity<?> handleToken(UAccountRepository dao, String token) {
-   //    UAccount e; String username; // get UAccount by username
-
-   //    try {
-   //       token = token.substring(token.lastIndexOf(" "));
-   //       username = jwt.verify(token); // find username by token
-
-   //       if((e = dao.findByUsername(username)) != null) {
-   //          // TODO req.login(username, e.getPassword()); // servlet login
-   //          return ResponseEntity.ok(e);
-   //       } else 
-   //          return ResponseEntity.status(401).body("account is empty!");
-   //    } catch (Exception ex) {
-   //       ex.printStackTrace();
-   //       return ResponseEntity.status(401).body(ex.getMessage());
-   //    }
-   // }
-
-   // private ResponseEntity<?> handleLogin(UAccountRepository dao, String us, String pw) {
-   //    UAccount e; String username; // get UAccount by username
-
-   //    try { // sign new token
-   //       if ((e = ((UAccountRepository) rep).findByUsername(us)) != null) { 
-   //          username = e.getUsername();
-   //          // req.login(username, e.getPassword());
-   //          return ResponseEntity.ok(jwt.sign(username)); // create token
-   //       } else {
-   //          return ResponseEntity.status(401).body("account is empty!");
-   //       }
-   //    } catch (Exception ex) {
-   //       ex.printStackTrace();
-   //       return ResponseEntity.status(401).body(ex.getMessage());
-   //    }
-   // }
+   protected void setFiles(UAccount e, Set<String> images) { e.setImages(images); }
 
    // @formatter:on
 

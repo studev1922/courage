@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>SERVER TEST DATA</title>
+   <title>Expansive System</title>
+   <link rel="icon" th:href="@{assets/imgIcon/favicon.png}">
+
+   <!-- cascading style sheets -->
+   <link rel="stylesheet" th:href="@{style/bootstrap-v5.1.3.min.css}">
+   <link rel="stylesheet" th:href="@{style/app_style.css}">
+   <link rel="stylesheet" th:href="@{style/customize.css}">
 </head>
-<body>
-   <h1>THIS IS FROM SERVER</h1>
+
+<body style="background-image: url(https://images4.alphacoders.com/115/thumb-1920-115716.jpg);">
+   <div class="container-xxl d-flex"
+      style="font-size: 1.2rem; background: var(--bgr-linear-dark); color: var(--bs-white); min-height: 100vh;">
+      <th:block th:fragment="dynamic(view)">
+         <!-- thymeleaf will be replace content at here -->
+         <div th:replace="${view}"></div>
+      </th:block>
+   </div>
+
+   <!-- bootstrap version 5.1.3 -->
+   <script src="js/bootstrap-v5.1.3.bundle.min.js"></script>
 </body>
+
 </html>
