@@ -9,15 +9,13 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
-import courage.model.services.JwtService;
+import courage.model.util.Authorization;
 
 /**
  * @see RestUAccount.R enumeration of roles
@@ -30,27 +28,23 @@ import courage.model.services.JwtService;
 public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // @formatter:off
-   enum R { USER, STAFF, ADMIN, PARTNER } // roles
-   enum A { AWAITING, LOCK, PRIVATE, PROTECTED, PUBLIC } // accesses
-   enum P { SYSTEM, GOOGLE, FACEBOOK } // platforms
 
-   @Autowired private JwtService jwt;
    @Autowired private HttpServletRequest req;
    public RestUAccount() { super(UAccount.DIVIDE, UAccount.DIRECTORY);}
 
-   @PostMapping("/login")
-   public ResponseEntity<?> login() { // login by token or (username && password)
-      final UAccountRepository dao = ((UAccountRepository) super.rep);
-      final String token = req.getHeader("authorization");
-      String us = req.getParameter("username");
-      String pw = req.getParameter("password");
-      if(us == null || us.isEmpty()) us = req.getParameter("unique");
+   // @PostMapping("/login")
+   // public ResponseEntity<?> login() { // login by token or (username && password)
+   //    final UAccountRepository dao = ((UAccountRepository) super.rep);
+   //    final String token = req.getHeader("authorization");
+   //    String us = req.getParameter("username");
+   //    String pw = req.getParameter("password");
+   //    if(us == null || us.isEmpty()) us = req.getParameter("unique");
 
-      // return login
-      return (token != null && !token.isEmpty())
-            ? this.handleToken(dao, token) // by token
-            : this.handleLogin(dao, us, pw); // by username and password
-   }
+   //    // return login
+   //    return (token != null && !token.isEmpty())
+   //          ? this.handleToken(dao, token) // by token
+   //          : this.handleLogin(dao, us, pw); // by username and password
+   // }
 
    @RequestMapping("/logout")
    public void logout() {
@@ -71,11 +65,11 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       UAccount account = new UAccount(); // by default, only public content is read
       account.setUid(null);
       account.setRegTime(null);
-      account.setAccess(A.PUBLIC.ordinal());
+      account.setAccess(Authorization.A.PUBLIC.ordinal());
 
       if (principal != null) {
          UAccount logged = ((UAccountRepository) rep).findByUsername(principal.getName());
-         // if (logged != null && logged.getRoles().contains(R.ADMIN.ordinal()))
+         // if (logged != null && logged.getRoles().contains(Authorization.R.ADMIN.ordinal()))
             return null; // is logged && is admin, return null to read all
       }
       return Example.of(account);
@@ -99,40 +93,40 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
       e.setImages(images);
    }
 
-   private ResponseEntity<?> handleToken(UAccountRepository dao, String token) {
-      UAccount e; String username; // get UAccount by username
+   // private ResponseEntity<?> handleToken(UAccountRepository dao, String token) {
+   //    UAccount e; String username; // get UAccount by username
 
-      try {
-         token = token.substring(token.lastIndexOf(" "));
-         username = jwt.verify(token); // find username by token
+   //    try {
+   //       token = token.substring(token.lastIndexOf(" "));
+   //       username = jwt.verify(token); // find username by token
 
-         if((e = dao.findByUsername(username)) != null) {
-            // TODO req.login(username, e.getPassword()); // servlet login
-            return ResponseEntity.ok(e);
-         } else 
-            return ResponseEntity.status(401).body("account is empty!");
-      } catch (Exception ex) {
-         ex.printStackTrace();
-         return ResponseEntity.status(401).body(ex.getMessage());
-      }
-   }
+   //       if((e = dao.findByUsername(username)) != null) {
+   //          // TODO req.login(username, e.getPassword()); // servlet login
+   //          return ResponseEntity.ok(e);
+   //       } else 
+   //          return ResponseEntity.status(401).body("account is empty!");
+   //    } catch (Exception ex) {
+   //       ex.printStackTrace();
+   //       return ResponseEntity.status(401).body(ex.getMessage());
+   //    }
+   // }
 
-   private ResponseEntity<?> handleLogin(UAccountRepository dao, String us, String pw) {
-      UAccount e; String username; // get UAccount by username
+   // private ResponseEntity<?> handleLogin(UAccountRepository dao, String us, String pw) {
+   //    UAccount e; String username; // get UAccount by username
 
-      try { // sign new token
-         // TODO req.login(username, e.getPassword()); // servlet login
-         if ((e = ((UAccountRepository) rep).findByUsername(us)) != null) { 
-            username = e.getUsername();
-            return ResponseEntity.ok(jwt.sign(username)); // create token
-         } else {
-            return ResponseEntity.status(401).body("account is empty!");
-         }
-      } catch (Exception ex) {
-         ex.printStackTrace();
-         return ResponseEntity.status(401).body(ex.getMessage());
-      }
-   }
+   //    try { // sign new token
+   //       if ((e = ((UAccountRepository) rep).findByUsername(us)) != null) { 
+   //          username = e.getUsername();
+   //          // req.login(username, e.getPassword());
+   //          return ResponseEntity.ok(jwt.sign(username)); // create token
+   //       } else {
+   //          return ResponseEntity.status(401).body("account is empty!");
+   //       }
+   //    } catch (Exception ex) {
+   //       ex.printStackTrace();
+   //       return ResponseEntity.status(401).body(ex.getMessage());
+   //    }
+   // }
 
    // @formatter:on
 
