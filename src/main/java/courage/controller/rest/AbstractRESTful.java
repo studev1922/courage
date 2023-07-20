@@ -60,12 +60,14 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 	// save all without multipart file
 	@RequestMapping(value = "/all", method = {RequestMethod.POST, RequestMethod.PUT})
     public ResponseEntity<?> save(Iterable<E> entities) {
-      try { // save all data
-         return ResponseEntity.ok(rep.saveAll(entities));
-      } catch (Exception e) {
-         e.printStackTrace();
-         return ResponseEntity.status(400).body(e.getMessage());
-      }
+		try { 
+			for(E e : entities) deletePreviousImages(e); // delete all old images
+			Iterable<E> iterable = rep.saveAll(entities); // save all data
+			return ResponseEntity.ok(iterable);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(400).body(e.getMessage());
+		}
    }
 
 	@DeleteMapping({ "", "/{id}" }) // Delete method to remove entity
@@ -91,17 +93,8 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 	// save file images | e1: previous entity & e2: next entity
 	protected E updateEntity(E e, MultipartFile... files) throws Exception {
 		// @formatter:off
-		K key = getKey(e);
 		boolean hasFiles = files != null;
-		String[] prevents = filesExist(e);
-		String folder = null;
-
-		Optional<E> o = rep.findById(key);
-		if(o.isPresent()) { // delete previous images not in the new images
-			folder = this.isDevide ? directory+'/'+key : directory; // previous
-			String[] fileNames = filesExist(o.get(), prevents);
-			if(fileNames.length > 0) file.deleteFiles(fileNames, folder);
-		}
+		String[] prevents = this.deletePreviousImages(e);
 		
 		// add new all files
 		return hasFiles
@@ -143,5 +136,24 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 		}
 
 		return e;
-	} // @formatter:on
+	}
+
+	// return all images of new entity
+	private String[] deletePreviousImages(E e) {
+		String folder;
+		K key = getKey(e);
+		String[] prevents = filesExist(e);
+		Optional<E> o = rep.findById(key);
+		String[] fileNames;
+
+		if (o.isPresent()) { // delete previous images not in entity's images
+			folder = this.isDevide ? directory + '/' + key : directory; // previous
+			fileNames = filesExist(o.get(), prevents);
+			if (fileNames.length > 0) file.deleteFiles(fileNames, folder);
+		}
+
+		return prevents;
+	}
+
+	// @formatter:on
 }
