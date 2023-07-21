@@ -11,7 +11,7 @@ public interface Authorization {
     // @formatter:on
 
     // @formatter:off
-    String[] PERMIT_ALL = {
+    String[] PERMIT_ANOMYNOUS = {
         "/index.html", // this is path client render uses angularjs v1.8
         "/server", // view display on the
         "/api/**",
@@ -55,7 +55,7 @@ public interface Authorization {
                 R.ADMIN.name()
             );
 
-            auth.anyRequest().permitAll(); //.authenticated();
+            auth.anyRequest().permitAll();
         });
 
         return http;
@@ -78,4 +78,5 @@ public interface Authorization {
             .authorizationEndpoint()
             .baseUri("/security/login/oauth2");
     }
+    
 }
