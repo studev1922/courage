@@ -4,11 +4,11 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Set;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,9 +23,9 @@ import courage.model.repositories.UAccountRepository;
 import courage.model.util.Authorization;
 
 /**
- * @see RestUAccount.R enumeration of roles
- * @see RestUAccount.A enumeration of accesses
- * @see RestUAccount.P enumeration of platforms
+ * @see Authorization.R enumeration of roles
+ * @see Authorization.A enumeration of accesses
+ * @see Authorization.P enumeration of platforms
  */
 @RestController
 @CrossOrigin("*")
@@ -33,28 +33,24 @@ import courage.model.util.Authorization;
 public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // @formatter:off
-
    @Autowired private PasswordEncoder encode;
    @Autowired private HttpServletRequest req;
    public RestUAccount() { super(UAccount.DIVIDE, UAccount.DIRECTORY);}
    
    @Override
    public Example<UAccount> getExample() {
-      /**
-       * TODO replace principal by final Authentication
-       * SecurityContextHolder.getContext().getAuthentication();
-       */
       Principal principal = req.getUserPrincipal();
-      UAccount account = new UAccount(); // by default, only public content is read
-      account.setUid(null);
-      account.setRegTime(null);
-      account.setAccess(Authorization.A.PUBLIC.ordinal());
+      UAccount account;
 
       if (principal != null) {
-         UAccount logged = ((UAccountRepository) rep).findByUsername(principal.getName());
-         // if (logged != null && logged.getRoles().contains(Authorization.R.ADMIN.ordinal()))
+         account = ((UAccountRepository) rep).findByUnique(principal.getName());
+         if (account != null && account.getRoles().contains(Authorization.R.ADMIN.ordinal()))
             return null; // is logged && is admin, return null to read all
       }
+
+      account = new UAccount(); // by default, only public content is read
+      account.setUid(null); account.setRegTime(null);
+      account.setAccess(Authorization.A.PUBLIC.ordinal());
       return Example.of(account);
    }
 
@@ -72,25 +68,35 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    @Override
    protected void setFiles(UAccount e, Set<String> images) { e.setImages(images); }
 
-   // @formatter:on
-
    // save one with multipart file
-   @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
+   @Override @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
    public ResponseEntity<?> save(UAccount entity, @RequestBody(required = false) MultipartFile... files) {
       this.setPwEncode(Arrays.asList(entity)); // encode password
       return super.save(entity, files);
    }
 
    // save all without files
-   @RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.PUT })
+   @Override @RequestMapping(value = "/all", method = { RequestMethod.POST, RequestMethod.PUT })
    public ResponseEntity<?> save(Iterable<UAccount> entities) {
       this.setPwEncode(entities);
       return super.save(entities);
    }
 
+   @RequestMapping(value = "/update-pass", method = { RequestMethod.PUT, RequestMethod.PATCH })
+   public ResponseEntity<?> updatePassword(String password) {
+      try {
+         Principal principal = req.getUserPrincipal();
+         // TODO: token = token.substring(token.indexOf(" "));
+         ((UAccountRepository) super.rep).updatePassword(principal.getName(), encode.encode(password));
+         return ResponseEntity.ok().build();
+      } catch (Exception e) {
+         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+      }
+   }
+
    private void setPwEncode(Iterable<UAccount> entities) {
-      String pass;
-      for (UAccount e : entities) { // encode password
+      String pass; // encode password
+      for (UAccount e : entities) {
          if ((pass = e.getPassword()) != null)
             e.setPassword(encode.encode(pass));
       }
