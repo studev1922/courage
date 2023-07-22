@@ -1,7 +1,7 @@
 package courage.model.util;
 
-public class util {
-    
+public interface util {
+
     static String[] merger(Object[]... data) {
         // get the total length of the merged array
         int length = 0;
