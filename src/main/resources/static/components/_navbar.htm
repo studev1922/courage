@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
    <div class="container-fluid">
-      <a class="navbar-brand" href="/server">
+      <a class="navbar-brand" href="http://localhost:8080/server">
          <img src="assets/icon/code.svg" alt="courage" width="48px" style="color: #ffffff;" />
          Expansive System
       </a>
@@ -46,15 +46,20 @@
                </a>
                <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#!manage/">manager</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#!manage/one">about me</a></li>
+                  <li>
+                     <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="#!manage/one">detail control</a></li>
                   <li><a class="dropdown-item" href="#!manage/list">list user</a></li>
                </ul>
             </li>
          </ul>
          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <span class="custom-label" ng-if="authenticated">{{authenticated.username}}</span>
+            <button type="button" class="btn border-bottom fill-size" ng-click="login()"
+               style="background: var(--bgr-linear-dark); color: var(--bs-info);" ng-if="!authenticated">
+               <img width="32px" src="assets/icon/code.svg">&nbsp;login
+            </button>
          </form>
       </div>
    </div>

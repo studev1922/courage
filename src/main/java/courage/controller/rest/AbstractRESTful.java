@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
-import courage.model.services.FileUpload;
+import courage.model.services.UploadService;
 
 /**
  * <h2 style='text-align: center'>POST PUT FORM DATA WITH FILES</h2>
@@ -29,7 +29,7 @@ import courage.model.services.FileUpload;
 public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 	// @formatter:off
-	@Autowired protected FileUpload file;
+	@Autowired protected UploadService file;
 	protected final boolean isDevide;
 	protected final String directory; // image storage folder
 	protected abstract K getKey(E e); // entity's key
@@ -115,7 +115,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 		// create hash names
 		while (i < length) {
-			images[i] = FileUpload.hashFileName(
+			images[i] = UploadService.hashFileName(
 				folder,
 				System.currentTimeMillis(),
 				files[i++].getOriginalFilename()

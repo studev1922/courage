@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * implements this code ༼ つ ◕_◕ ༽つ
  */
-public interface FileUpload {
+public interface UploadService {
 
 	static final String DEFAULT_FOLDER = "/uploads";
 	static final String NOT_DELETE = "default.(\\w)*";
@@ -25,7 +25,7 @@ public interface FileUpload {
 	static String hashFileName(Object... values) {
 		// @formatter:off | the last parameter must be the file type
 		if(values==null || values.length == 0) 
-			return FileUpload.digesToString(
+			return UploadService.digesToString(
 				String.valueOf(System.currentTimeMillis()), "MD5"
 			);
 		
@@ -35,12 +35,12 @@ public interface FileUpload {
 		type = dotAt>-1 ? type.substring(dotAt).trim() : new String();
 
 		for (Object name : values) str.append(name); // append file
-		return FileUpload.digesToString(str.toString(), "MD5")+type; // @formatter:on
+		return UploadService.digesToString(str.toString(), "MD5")+type; // @formatter:on
 	}
 
 	/**
 	 * @param input String to hash
-	 * @return text hashing as MD5
+	 * @return text hashing as algorithm
 	 */
 	static String digesToString(String input, String algorithm) {
 		try {

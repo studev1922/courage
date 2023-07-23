@@ -57,8 +57,8 @@ app.controller('usercontrol', function ($scope, $routeParams) {
         let user = $scope[entity], id = user[key];
         $scope[dataName].forEach((e, i) => {
             if (e[key] === id) index = i; // find index by id(key)
-            if (e.username === user.username && user!==e) exist.username = user.username;
-            if (e.email === user.email && user!==e) exist.email = user.email;
+            if (e.username === user.username && user !== e) exist.username = user.username;
+            if (e.email === user.email && user !== e) exist.email = user.email;
         });
         return { id, index, exist };
     }
@@ -111,7 +111,7 @@ app.controller('usercontrol', function ($scope, $routeParams) {
         },
         update: () => {
             delete $scope[entity].password; //doesn's update password
-            let {id, index, exist} = checkUnique();
+            let { id, index, exist } = checkUnique();
             let notExecute = exist.username || exist.email;
             let mesWarning = {
                 htype: 'bg-warning text-danger',
@@ -170,7 +170,17 @@ app.controller('usercontrol', function ($scope, $routeParams) {
     }) // await 500 miliseconds to load popovers
 
     $scope.$watch('$stateChangeSuccess', async () => {
+        let token = local.read("token") || $scope.authenticated?.token;
+        if(!token) await $scope.login().then(res => {
+            token=res;
+            console.log($scope.authenticated);
+        });
+        let config = token ? { headers: { 'Authorization': token } } : undefined;
         if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
-        await $scope.crud.get(path, dataName); // load all data
+        $scope.crud.get(path, dataName, undefined, config) // load all data
+            .catch(err => {
+                console.error(err);
+                $scope.pushMessage(err.message, 1.5e4)
+            })
     });
 });

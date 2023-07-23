@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import courage.model.services.FileUpload;
+import courage.model.services.UploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -35,7 +35,7 @@ public abstract class AbstractFileAPI {
       String[] fileNames;
    }
 
-   @Autowired protected FileUpload file;
+   @Autowired protected UploadService file;
    @Autowired protected HttpServletRequest req;
    @Autowired protected HttpServletResponse res;
 	protected final String directory; // image storage folder

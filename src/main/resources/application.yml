@@ -1,9 +1,5 @@
 server:
     port: 8080
-    jwt:
-        algorithm: HS256
-        secret: U1RVREVWLUNPVVJBR0U #STUDEV-COURAGE
-        expiration: 600000 #10 minutes
 spring:
     datasource:
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -20,6 +16,7 @@ spring:
         show-sql: false
     mail:
         host: smtp.gmail.com
+        username: '[your email]'
         password: '[your email is password]'
         port: 587
         properties:
@@ -28,7 +25,6 @@ spring:
                     auth: true
                     starttls:
                         enable: true
-        username: '[your email]'
     security:
         oauth2:
             client:
@@ -42,6 +38,11 @@ spring:
                     google: #(Authorized redirect URIs: http://localhost:8080/login/oauth2/code/google)
                         client-id: 537360767428-p1ju5l6rutjk34qocc8a4anlqh2hqhsp.apps.googleusercontent.com
                         client-secret: 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
+            resourceserver:
+                    jwt:
+                        issuer-uri: https://idp.example.com/issuer
+                        jwk-set-uri: https://idp.example.com/jwks
+
     servlet:
         multipart:
             max-file-size: 20MB

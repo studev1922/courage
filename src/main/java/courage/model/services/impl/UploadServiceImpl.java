@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import courage.model.services.FileUpload;
+import courage.model.services.UploadService;
 
 @Service
-public class FileServiceImpl implements FileUpload {
+public class UploadServiceImpl implements UploadService {
 
 	@Autowired
 	private ServletContext context;
@@ -95,7 +95,7 @@ public class FileServiceImpl implements FileUpload {
 
 		if (isHashName)
 			for (MultipartFile file : files) {
-				fileName = FileUpload.hashFileName(
+				fileName = UploadService.hashFileName(
 						System.currentTimeMillis(),
 						file.getOriginalFilename());
 				this.transferTo(directory, fileName, file, list);

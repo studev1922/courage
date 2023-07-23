@@ -1,4 +1,4 @@
-package courage.model.util;
+package courage.model.authHandle;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -11,11 +11,12 @@ public interface Authorization {
     // @formatter:on
 
     // @formatter:off
-    String[] PERMIT_ANOMYNOUS = {
-        "/index.html", // this is path client render uses angularjs v1.8
-        "/server", // view display on the
-        "/api/**",
-        "/security/**"
+    String[] AUTHENTICATED = {
+        "/api/accounts/**"
+    };
+
+    String[] PERMIT_ALL = {
+        "/api/accounts/page"
     };
     
     String[] PERMIT_USER = {
@@ -35,7 +36,7 @@ public interface Authorization {
         "/amdin"
     };
 
-    static HttpSecurity authenticate(HttpSecurity http) throws Exception {
+    default HttpSecurity authorities(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
             // USER: any
             auth.requestMatchers(PERMIT_USER).hasAnyRole(
@@ -55,28 +56,31 @@ public interface Authorization {
                 R.ADMIN.name()
             );
 
+            auth.requestMatchers(PERMIT_ALL).permitAll();
+            auth.requestMatchers(AUTHENTICATED).authenticated();
             auth.anyRequest().permitAll();
         });
 
         return http;
     }
 
-    static void securityConfig(HttpSecurity http) throws Exception {
+    default void authenticate(HttpSecurity http) throws Exception {
         http.formLogin()
             .loginPage("/server?view=security/_signin.htm")
             .loginProcessingUrl("/security/login") // default [/login]
-            .defaultSuccessUrl("/server", false);
-
-        http.logout()
-            .logoutUrl("/security/logout") // default [/logout]
-            .logoutSuccessUrl("/index.html");
+            .defaultSuccessUrl("/server", false)
+            .failureForwardUrl("/server?view=security/_error.htm");
 
         http.oauth2Login()
-            .failureUrl("/")
+            .failureUrl("/server?view=security/_error.htm")
             .loginPage("/server?view=security/_signin.htm")
             .defaultSuccessUrl("/server", false)
             .authorizationEndpoint()
             .baseUri("/security/login/oauth2");
+
+        http.logout()
+            .logoutUrl("/security/logout") // default [/logout]
+            .logoutSuccessUrl("/index.html");
     }
     
 }

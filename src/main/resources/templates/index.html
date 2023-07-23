@@ -16,10 +16,7 @@
 <body style="background-image: url(https://images4.alphacoders.com/115/thumb-1920-115716.jpg);">
    <div class="container-xxl d-flex"
       style="font-size: 1.2rem; background: var(--bgr-linear-dark); color: var(--bs-white); min-height: 100vh;">
-      <th:block th:fragment="dynamic(view)">
-         <!-- thymeleaf will be replace content at here -->
-         <div th:replace="${view}"></div>
-      </th:block>
+      <th:block th:replace="~{${view}}"></th:block>
    </div>
 
    <!-- bootstrap version 5.1.3 -->

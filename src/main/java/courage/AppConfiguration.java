@@ -1,18 +1,31 @@
 package courage;
 
+import java.io.IOException;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import courage.model.util.Authorization;
+import courage.model.authHandle.Authorization;
+import courage.model.authHandle.JwtAuthenticationFilter;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 
 @Configuration
 @EnableWebSecurity
-public class AppConfiguration {
+public class AppConfiguration implements Authorization, WebMvcConfigurer {
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -20,10 +33,29 @@ public class AppConfiguration {
     }
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().disable();
-        Authorization.authenticate(http);
-        Authorization.securityConfig(http);
-        return http.build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
+
+    @Bean // @formatter:off
+    SecurityFilterChain filterChain (
+        HttpSecurity http,
+        JwtAuthenticationFilter filter
+    ) throws Exception {
+        // TODO: DefaultHandlerExceptionResolver
+        http.csrf().disable().cors().disable();
+        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+        this.authorities(http);
+        this.authenticate(http);
+        return http.build();
+    } // @formatter:on
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*")
+                .allowedHeaders("*");
+    }
+
 }

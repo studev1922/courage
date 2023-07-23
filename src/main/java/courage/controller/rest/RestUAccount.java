@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import courage.model.authHandle.Authorization;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
-import courage.model.util.Authorization;
 
 /**
  * @see Authorization.R enumeration of roles
@@ -44,8 +44,9 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
       if (principal != null) {
          account = ((UAccountRepository) rep).findByUnique(principal.getName());
-         if (account != null && account.getRoles().contains(Authorization.R.ADMIN.ordinal()))
+         if (account != null && account.getRoles().contains(Authorization.R.ADMIN.ordinal())) {
             return null; // is logged && is admin, return null to read all
+         }
       }
 
       account = new UAccount(); // by default, only public content is read
@@ -86,7 +87,6 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    public ResponseEntity<?> updatePassword(String password) {
       try {
          Principal principal = req.getUserPrincipal();
-         // TODO: token = token.substring(token.indexOf(" "));
          ((UAccountRepository) super.rep).updatePassword(principal.getName(), encode.encode(password));
          return ResponseEntity.ok().build();
       } catch (Exception e) {

@@ -1,7 +1,8 @@
-<h2 class="text-center text-warning">this home page</h2>
 <div class="w-100">
+    <h2 class="text-center text-warning">this home page</h2>
+
     <!-- show client side rendering -->
-    <a href="/index.html" target="_blank" class="btn border-bottom fill-size"
+    <a href="/index.html" class="btn border-bottom fill-size"
         style="background: var(--bgr-linear-dark); color: var(--bs-info);">
         <img width="32px" src="assets/icon/code.svg">
         &nbsp;<span>view on client</span>
@@ -17,9 +18,6 @@
     </th:block>
     <!-- is logged -->
     <th:block sec:authorize="isAuthenticated()">
-        <h3 class="text-warning text-center" sec:authentication="principal.username"></h3>
-        <p sec:authentication="principal.authorities"></p>
-        
         <a href="/server?view=security/_signout.htm" class="btn border-bottom fill-size"
             style="background: var(--bgr-linear-dark); color: var(--bs-info);">
             <img width="32px" src="assets/imgIcon/close.png">
@@ -30,5 +28,7 @@
             <img width="32px" src="assets/imgIcon/loupe.png">
             &nbsp;<span>show principal</span>
         </a>
+        <h3 class="text-warning text-center" sec:authentication="principal.username"></h3>
+        <p sec:authentication="principal.authorities"></p>
     </th:block>
 </div>

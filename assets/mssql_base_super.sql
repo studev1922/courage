@@ -17,15 +17,15 @@ GO
    ------------------------------ USER AND AUTHORIZATIONS ------------------------------
    - CRM
    ├──[#TABLES]
-   │  ├──[UACCOUNT]: user is primary
-   │  ├──[UIMAGE]: user's images | one-many
+   │  ├──[UACCESS]:one-many:[UACCOUNT]
+   │  ├──[UPLATFORM]:many-many:[UACCOUNT] | login platform information
+   │  ├──[UROLE]:many-many:[UACCOUNT] | role for user
    │  │
-   │  ├──[UACCESS]: access for user
-   │  ├──[UPLATFORM]: login platform information
-   │  ├──[UROLE]: role for user
+   │  ├──[UACCOUNT]:many-one:[UACCESS] | access range
+   │  ├──[UIMAGE]:many-one:[UACCESS]| user's images
    │  │
-   │  ├──[US_UP]: user references platform | one-many
-   │  └──[US_UR]: user has multiple roles | one-many
+   │  ├──[UACCOUNT]:[US_UP]:[UPLATFORM] | many-many | user references platform
+   │  └──[UACCOUNT]:[US_UR]:[UROLE] | many-many | user has multiple roles | one-many
    │
    └──[#PROCEDURES]
 */
@@ -78,7 +78,7 @@ GO
 IF OBJECT_ID('UIMAGE', 'U') IS NOT NULL DROP TABLE [UIMAGE]
 GO
 CREATE TABLE [UIMAGE] (
-   [image] varchar(256) primary key, -- photo has only one user(hash file's name to MD5)
+   [image] varchar(256) primary key, -- (hash file's name to MD5) || embed link (EX: http...)
    [u_id] bigint foreign key references
    [UACCOUNT]([uid]) on delete cascade not null
 );

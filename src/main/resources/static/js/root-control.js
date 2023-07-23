@@ -28,6 +28,26 @@ app.controller('control', ($scope, $http) => {
       else arr.splice(i, 1);
    };
 
+   $scope.login = () => {
+      //TODO: UPDATE IN THE FUTURE
+      let username = prompt("input your username");
+      let password = prompt("input your password");
+      //TODO: POST PARAM => BODY
+      return $http.post(`${server}/oauth/login?username=${username}&password=${password}`)
+         .then(res => {
+            $scope.authenticated = res.data;
+            if(res.data) {
+               $scope.authenticated['token'] = res.headers('Authorization')
+               $scope.pushMessage(`${res.data['username']} logged.`, 3.5e3);
+               return $scope.authenticated['token'];
+            }
+         })
+         .catch(err => {
+            console.error(err);
+            $scope.pushMessage(err.message);
+         })
+   }
+
    // fetch api
    $scope.crud = {
       /**
@@ -35,10 +55,11 @@ app.controller('control', ($scope, $http) => {
        * @param {String} path to get api
        * @param {String} to is set to variable in scope
        * @param {String} content get content of response.data
+       * @param {Object} config config header
        * @returns {Promise<Array<Object>>} data gotten
        */
-      get: (path, to, content) => $http
-         .get(`${server}/${path}`)
+      get: (path, to, content, config) => $http
+         .get(`${server}/${path}`, config)
          .then(r => {
             let { data } = r;
             if (content) data = eval(`data${content}`);
@@ -110,7 +131,7 @@ app.controller('control', ($scope, $http) => {
    $scope.appendContents = async () => {
       let { p, s, o, f } = pageFilter;
       let path = `accounts/page?p=${++p}&s=${s}&o=${o}&f=${f}`
-      
+
       $scope.crud.get(path)
          .then(r => {
             let { content } = r;
