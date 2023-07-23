@@ -7,27 +7,6 @@ Java Spring-boot source system management
 
 ## JAVA MAIN CLASS
 Run file [open Application.java](src/main/java/courage/Application.java#L9)
-
-<hr>
-
-## ABSTRACT API CONTROLLER
-- [AbstractAPI_Read.java](src/main/java/courage/controller/rest/AbstractAPI_Read.java)
-  + [read all or by list id](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L31)
-  + [read by page](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L49)
-  + [read one by id](src/main/java/courage/controller/rest/AbstractAPI_Read.java#L63)
-- [AbstractRESTful.java](src/main/java/courage/controller/rest/AbstractRESTful.java)
-  + [save one data with files](src/main/java/courage/controller/rest/AbstractRESTful.java#L50)
-  + [delete data and files by path id](src/main/java/courage/controller/rest/AbstractRESTful.java#L62)
-- [AbstractRestAPI.java](src/main/java/courage/controller/rest/AbstractRestAPI.java)
-  + [save one data](src/main/java/courage/controller/rest/AbstractRestAPI.java#L28)
-  + [save all by array json](src/main/java/courage/controller/rest/AbstractRestAPI.java#L37)
-  + [delete one by id](src/main/java/courage/controller/rest/AbstractRestAPI.java#L47)
-- [AbstractFileAPI.java](src/main/java/courage/controller/rest/AbstractFileAPI.java)
-  + [getFiles](src/main/java/courage/controller/rest/AbstractFileAPI.java#L57)
-  + [saveFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L74)
-  + [deleteFile](src/main/java/courage/controller/rest/AbstractFileAPI.java#L87)
-- [RestFileControl.java](src/main/java/courage/controller/rest/RestFileControl.java)
-  + [RestFileControl$UAccessApi](src/main/java/courage/controller/rest/RestFileControl.java#L19)
 <hr>
 
 ## TEST CONTROLLER
