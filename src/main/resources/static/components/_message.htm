@@ -5,7 +5,7 @@
             ng-repeat="(i,mes) in messages">
             <!-- data-bs-dismiss="alert" aria-label="Close" -->
             <img src="assets/icon/close-circle.svg" style="position: absolute; right: 0; top: 0;" ng-click="removeMes(mes, i)">
-            <h5 class="border-bottom {{mes.htype || 'text-white'}}" ng-bind="mes.heading" style="padding: .25em .5em;"></h5>
+            <h5 class="border-bottom {{mes.htype || 'text-white'}}" ng-bind="mes.heading" style="margin: 0; padding: .25em .5em;"></h5>
             <p class="{{mes.btype || 'text-white'}}" ng-bind="mes.body" style="margin: 0; padding: .25em;"></p>
             <div class="text-end border-bottom {{mes.ftype || 'text-white'}}" style="padding: .25em .5em;">
                 <em style="font-size: .9rem;" class="text-end" ng-bind="mes.time | date:'MMM d, y h:mm:ss a'"></em>

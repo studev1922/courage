@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,9 +29,13 @@ import courage.model.services.JwtService;
 public class JwtServiceImpl implements JwtService {
 
     // studev-courage-1922 as MD5 => 256 bits
-    private final byte[] secret = "13513d8e52501d43b64a336e296b6cde".getBytes();
-    private final JWSAlgorithm algorithm = JWSAlgorithm.HS256;
-    private final Long age = 3600000L; // 1h
+    @Value("server.jwt.secret")
+    private byte[] secret = "13513d8e52501d43b64a336e296b6cde".getBytes();
+    @Value("server.jwt.algorithm")
+    private JWSAlgorithm algorithm = JWSAlgorithm.HS256;
+    @Value("server.jwt.age")
+    private String maxAge = "3600000"; // 1h
+    private Long age = Long.parseLong(maxAge);
 
     @Override
     public String sign(UserDetails details) throws KeyLengthException, JOSEException {

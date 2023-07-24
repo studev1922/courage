@@ -1,5 +1,9 @@
 server:
     port: 8080
+    jwt:
+        secret: 13513d8e52501d43b64a336e296b6cde #studev-courage-1922 as MD5 => 256 bits
+        algorithm: HS256
+        age: 3600000 # 1 hour 
 spring:
     datasource:
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver

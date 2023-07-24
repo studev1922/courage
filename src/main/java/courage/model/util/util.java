@@ -20,4 +20,8 @@ public interface util {
         // return the merged array
         return merged;
     }
+
+    static String jsonMessage(String key, String message) {
+        return new StringBuilder("{\"").append(key).append("\":\"").append(message).append("\"}").toString();
+    }
 }

@@ -4,7 +4,7 @@
       <input type="hidden" ng-model="o.temr">
       <input type="hidden" ng-model="o.temp">
    </div>
-   <table class="table text-white bg-dark bg-opacity-25">
+   <table class="table text-white bg-dark bg-opacity-25" ng-if="mdata.length">
       <thead>
          <td>No</td>
          <th>username</th>
@@ -17,7 +17,7 @@
       </thead>
       <tbody style="vertical-align: middle;">
          <!-- each fields -->
-         <tr ng-repeat="(i,e) in mdata" ng-dblclick="control.read(e)">
+         <tr ng-repeat="(i,e) in mdata track by e.uid" ng-dblclick="control.read(e)">
             <td class="text-nowrap">
                <button class="text-white btn" style="background: var(--bgr-linear2);" role="button" ng-click="control.read(e)">
                   <img width="32px" src="assets/imgIcon/loupe.png">

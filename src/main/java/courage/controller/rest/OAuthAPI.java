@@ -11,20 +11,22 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimbusds.jose.JOSEException;
 
+import courage.model.dto.UserLogin;
+import courage.model.entities.UAccount;
 import courage.model.services.JwtService;
+import courage.model.services.UAccountDAO;
+import courage.model.util.util;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/oauth")
 public class OAuthAPI {
@@ -34,21 +36,30 @@ public class OAuthAPI {
     // @Autowired private HttpServletRequest req;
     @Autowired private HttpServletResponse res;
     @Autowired private JwtService jwt;
+    @Autowired private UAccountDAO dao;
+
+    @RequestMapping("/register")
+    public ResponseEntity<?> register(UAccount account) {
+        account = dao.register(account);
+        return account == null
+            ? ResponseEntity.badRequest()
+                .body(util.jsonMessage("message", "create user failed!"))
+            : ResponseEntity.ok(account);
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(
-        @RequestParam String username,
-        @RequestParam String password
-    ) throws IOException, ServletException {
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
+    public ResponseEntity<?> login(@RequestBody UserLogin account) throws IOException, ServletException {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+            account.getUsername(), account.getPassword()
+        );
         try {
             Authentication authentication = authenticationManager.authenticate(authToken);
             String token = jwt.sign((UserDetails) authentication.getPrincipal());
-            res.setHeader("Authorization", "Bearer "+token);
-            return ResponseEntity.ok(authentication.getPrincipal());
+            res.setHeader("Authorization", "Bearer " + token);
+            return ResponseEntity.ok(util.jsonMessage("token", token));
         } catch (JOSEException | AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("\"message\":\""+e.getMessage()+"\"");
+                .body(util.jsonMessage("message", e.getMessage()));
         }
     }
 

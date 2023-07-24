@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import courage.model.authHandle.Authorization.*;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 import courage.model.repositories.user.*;
@@ -57,5 +58,22 @@ public class UAccountDAOImpl implements UAccountDAO {
     @Override
     public Set<String> findPlatformsByUid(Long uid) {
         return this.prep.findPlatformsByUid(uid);
+    }
+
+    @Override
+    public UAccount register(UAccount account) {
+        return this.pass(account) ? this.save(account) : null;
+    }
+
+    private boolean pass(UAccount account) {
+        boolean ispn = account.getRoles().contains(R.PARTNER.ordinal());
+        account.setAccess(A.AWAITING);
+        account.setRoles(ispn ? R.PARTNER : R.USER);
+
+        if (account.getPlatforms().size() == 0)
+            account.setPlatforms(P.SYSTEM);
+        if (account.getPassword() == null || account.getUsername() == null)
+            return false;
+        return true;
     }
 }

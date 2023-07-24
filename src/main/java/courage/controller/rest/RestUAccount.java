@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import courage.model.authHandle.Authorization;
+import courage.model.authHandle.Authorization.A;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 
@@ -51,7 +52,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
       account = new UAccount(); // by default, only public content is read
       account.setUid(null); account.setRegTime(null);
-      account.setAccess(Authorization.A.PUBLIC.ordinal());
+      account.setAccess(A.PUBLIC);
       return Example.of(account);
    }
 

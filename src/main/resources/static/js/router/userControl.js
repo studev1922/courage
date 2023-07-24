@@ -1,5 +1,5 @@
 // usercontrol
-app.controller('usercontrol', function ($scope, $routeParams) {
+app.controller('usercontrol', function ($scope, $routeParams, security) {
     let path = "accounts", // path api
         dataName = 'mdata', // data
         entity = 'user', // form data
@@ -170,17 +170,17 @@ app.controller('usercontrol', function ($scope, $routeParams) {
     }) // await 500 miliseconds to load popovers
 
     $scope.$watch('$stateChangeSuccess', async () => {
-        let token = local.read("token") || $scope.authenticated?.token;
-        if(!token) await $scope.login().then(res => {
-            token=res;
-            console.log($scope.authenticated);
-        });
-        let config = token ? { headers: { 'Authorization': token } } : undefined;
-        if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
-        $scope.crud.get(path, dataName, undefined, config) // load all data
-            .catch(err => {
-                console.error(err);
-                $scope.pushMessage(err.message, 1.5e4)
-            })
+        if (security.isLoggedIn()) {
+            let token = security.getToken;
+            let config = token ? { headers: { 'Authorization': token } } : undefined;
+            if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
+            $scope.crud.get(path, dataName, undefined, config).catch(console.error) // load all data
+        } else $scope.pushMessage({
+            heading: 'need to login',
+            body: 'This function needs to be logged in and admin',
+            htype: 'bg-danger text-warning',
+            btype: 'bg-dark-gradient text-danger text-center fs-3',
+            ftype: 'bg-danger text-warning',
+        }, 5e3);
     });
 });

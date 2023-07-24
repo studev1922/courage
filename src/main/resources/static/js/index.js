@@ -89,21 +89,21 @@ let local = {
     * @param {String} key 
     * @returns {Object} parse as json
     */
-   read: (key) => JSON.parse(localStorage.getItem(key)),
+   get: (key) => JSON.parse(localStorage.getItem(key)),
 
    /**
     * @param {String} key 
     * @param {Object} value 
     * @returns {void} undefined
     */
-   write: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+   put: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
 
 
    /**
     * @param {String} key 
     * @returns {void} undefined
     */
-   delete: (key) => localStorage.removeItem(key)
+   move: (key) => localStorage.removeItem(key)
 }
 
 // util

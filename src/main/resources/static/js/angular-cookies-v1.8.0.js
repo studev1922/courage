@@ -1,0 +1,6 @@
+/**
+ * @license AngularJS v1.8.0
+ * (c) 2010-2020 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+!function(e,n){function o(e,o,t){var i=t.baseHref(),r=e[0];return function(e,t,u){r.cookie=function(e,t,r){var u,s;s=(r=r||{}).expires,u=n.isDefined(r.path)?r.path:i,n.isUndefined(t)&&(s="Thu, 01 Jan 1970 00:00:00 GMT",t=""),n.isString(s)&&(s=new Date(s));var a=encodeURIComponent(e)+"="+encodeURIComponent(t);a+=u?";path="+u:"",a+=r.domain?";domain="+r.domain:"",a+=s?";expires="+s.toUTCString():"",a+=r.secure?";secure":"";var c=(a+=r.samesite?";samesite="+r.samesite:"").length+1;return c>4096&&o.warn("Cookie '"+e+"' possibly not set or overflowed because it was too large ("+c+" > 4096 bytes)!"),a}(e,t,u)}}n.module("ngCookies",["ng"]).info({angularVersion:"1.8.0"}).provider("$cookies",[function(){var e=this.defaults={};function o(o){return o?n.extend({},e,o):e}this.$get=["$$cookieReader","$$cookieWriter",function(e,t){return{get:function(n){return e()[n]},getObject:function(e){var o=this.get(e);return o?n.fromJson(o):o},getAll:function(){return e()},put:function(e,n,i){t(e,n,o(i))},putObject:function(e,o,t){this.put(e,n.toJson(o),t)},remove:function(e,n){t(e,void 0,o(n))}}}]}]),o.$inject=["$document","$log","$browser"],n.module("ngCookies").provider("$$cookieWriter",(function(){this.$get=o}))}(window,window.angular);

@@ -1,8 +1,8 @@
-const app = angular.module('app', ['ngRoute']);
+const app = angular.module('app', ['ngRoute', 'ngCookies']);
 const server = 'http://localhost:8080/api';
 
 // MAIN APP CONTROLLER
-app.controller('control', ($scope, $http) => {
+app.controller('control', ($scope, $http, security) => {
    var pageFilter = {
       p: 0, s: 10, o: 'ASC', f: 'regTime,uid'
    }, httpConfig = {
@@ -12,7 +12,7 @@ app.controller('control', ($scope, $http) => {
 
    $scope.defaultImg = 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg';
    $scope.fil = { page: 0, size: 10 }; // filter contents
-   $scope.customize = local.read('customize') || {
+   $scope.customize = local.get('customize') || {
       isAlert: true,
       colortrip: false,
       bgr: {
@@ -28,24 +28,23 @@ app.controller('control', ($scope, $http) => {
       else arr.splice(i, 1);
    };
 
-   $scope.login = () => {
-      //TODO: UPDATE IN THE FUTURE
-      let username = prompt("input your username");
-      let password = prompt("input your password");
-      //TODO: POST PARAM => BODY
-      return $http.post(`${server}/oauth/login?username=${username}&password=${password}`)
-         .then(res => {
-            $scope.authenticated = res.data;
-            if(res.data) {
-               $scope.authenticated['token'] = res.headers('Authorization')
-               $scope.pushMessage(`${res.data['username']} logged.`, 3.5e3);
-               return $scope.authenticated['token'];
-            }
-         })
-         .catch(err => {
-            console.error(err);
-            $scope.pushMessage(err.message);
-         })
+   $scope.security = {
+      login : async function () {
+         let auth = security.getAuth();
+         if (!auth) auth = $scope.authenticated = await security.loginByParams();
+         $scope.pushMessage(auth ? `${auth['username']} logged.` : 'loggin failed!', 3.5e3);
+         $scope.$apply();
+      },
+   
+      logout : async function () {
+         let { username } = $scope.authenticated;
+         if (security.logout()) {
+            $scope.pushMessage(`${username} logout successfully!`, 3.5e3);
+            $scope.authenticated = undefined;
+         }
+      },
+      hasRole: security.hasRole,
+      isLoggedIn : security.isLoggedIn,
    }
 
    // fetch api
@@ -158,8 +157,8 @@ app.controller('control', ($scope, $http) => {
          time: new Date()
       };
       try {
-         local.write('customize', $scope.customize);
-         message.body = `updated thenfully.`
+         local.put('customize', $scope.customize);
+         message.body = `updated successfully.`
       } catch (err) {
          message.body = err.message;
          console.error(err);
@@ -187,7 +186,7 @@ app.controller('control', ($scope, $http) => {
    $scope.pushMessage = (message, time) => {
       if (typeof (message) == 'string') {
          message = {
-            heading: `alert message`,
+            heading: `${$scope.title || 'Expansive System'} alert`,
             body: message,
             time: new Date()
          }
@@ -202,6 +201,7 @@ app.controller('control', ($scope, $http) => {
 
    $scope.$watch('$stateChangethen', async () => {
       $scope.setting(); // setting display
+      $scope.authenticated = await security.loadToken();
       await $scope.loadRelationships(); // await for load all data
       await $scope.crud.get('accounts/page', 'data', '?.content');
    });

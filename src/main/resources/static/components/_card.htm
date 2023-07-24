@@ -4,8 +4,8 @@
    </div>
    <div class="card-body">
       <h5 class="card-title">{{e.fullname}}</h5>
-      <div class="ratio" style="aspect-ratio: 4/3;" ng-dblClick="detail(e)">
-         <img class="d-block-dark" style="object-fit: cover;" alt="{{e.images[0]}}"
+      <div class="ratio border" style="aspect-ratio: 4/3;" ng-dblClick="detail(e)">
+         <img class="d-block-dark" style="object-fit: contain;" alt="{{e.images[0]}}"
             ng-src="{{getImage(e.images[0], 'uploads/account', e.uid)}}">
       </div>
       <p class="card-text bg-opacity-25 bg-dark">With supporting text below as a natural lead-in to additional content.</p>
