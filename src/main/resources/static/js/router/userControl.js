@@ -111,7 +111,7 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
         },
         update: () => {
             delete $scope[entity].password; //doesn's update password
-            let { id, index, exist } = checkUnique();
+            let { index, exist } = checkUnique();
             let notExecute = exist.username || exist.email;
             let mesWarning = {
                 htype: 'bg-warning text-danger',
@@ -147,25 +147,7 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
     $scope.$watch('srctab', function (src) { // load all component
         $scope.$watch('$stateCngeSuccess', setTimeout(() => {
             bsfw.loadPopovers();
-            if (src.endsWith('_one.htm')) {
-                let input = formControl.querySelector('input[type="file"]');
-                let flex = showInputImages.querySelector('.d-flex');
-
-                input.addEventListener('change', _ => {
-                    let childs = [], src;
-
-                    // remove all old images
-                    while (flex.lastChild) flex.removeChild(flex.firstChild);
-                    // add new images
-                    if (input.files?.length)
-                        for (let f of input.files) {
-                            src = URL.createObjectURL(f);
-                            childs.push(`<div class="custom-img"><span>size: ${f.size}</span><img src="${src}"alt="${f.name}"><h5>${f.name}</h5></div>`);
-                        }
-                    else childs.push(`<h4 style="background: var(--bgr-linear1);">No photos selected!</h4>`);
-                    flex.innerHTML = childs.join('');
-                });
-            }
+            if (src.endsWith('_one.htm')) bsfw.showImageInput(formControl, showInputImages);
         }, 500))
     }) // await 500 miliseconds to load popovers
 
@@ -174,7 +156,7 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
             let token = security.getToken;
             let config = token ? { headers: { 'Authorization': token } } : undefined;
             if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
-            $scope.crud.get(path, dataName, undefined, config).catch(console.error) // load all data
+            await $scope.crud.get(path, dataName, undefined, config).then(console.log).catch(console.error) // load all data
         } else $scope.pushMessage({
             heading: 'need to login',
             body: 'This function needs to be logged in and admin',

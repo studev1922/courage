@@ -2,11 +2,11 @@
 function togglePassword(block, img) {
    let input = block.querySelector('input[type]');
    let isPass = input.getAttribute('type') == 'password';
-   if(isPass) {
+   if (isPass) {
       input.setAttribute('type', 'text');
       img.setAttribute('src', 'assets/imgIcon/hide.png')
    } else {
-      input.setAttribute('type', 'password');      
+      input.setAttribute('type', 'password');
       img.setAttribute('src', 'assets/imgIcon/view.png')
    }
 }
@@ -80,6 +80,30 @@ const bsfw = {
    showPopover: (element, target) => {
       let content = document.querySelector(target);
       new bootstrap.Popover(element, { html: true, content });
+   },
+   hideModel: (target) => {
+      let close = document.querySelector(`${target} [data-bs-dismiss="modal"]`);
+      close?.click();
+   },
+   showImageInput: (formControl, showInputImages) => {
+      if(!formControl) return;
+      let input = formControl.querySelector('input[type="file"]');
+      let flex = showInputImages.querySelector('.d-flex');
+      if(!input || !flex) return; // break
+
+      input.addEventListener('change', _ => {
+         let childs = [], src;
+         // remove all old images
+         while (flex.lastChild) flex.removeChild(flex.firstChild);
+         // add new images
+         if (input.files?.length)
+            for (let f of input.files) {
+               src = URL.createObjectURL(f);
+               childs.push(`<div class="custom-img"><span>size: ${f.size}</span><img src="${src}"alt="${f.name}"><h5>${f.name}</h5></div>`);
+            }
+         else childs.push(`<h4 style="background: var(--bgr-linear1);">No photos selected!</h4>`);
+         flex.innerHTML = childs.join('');
+      });
    }
 }
 
@@ -115,12 +139,12 @@ const util = {
     * @returns {FormData}
     */
    getFormData: (obj, files) => {
-      if(!obj) throw new Error('input object must be not null!');
+      if (!obj) throw new Error('input object must be not null!');
       // Create a new FormData object
       var fd = new FormData();
       // Loop through the object keys and append them to the form data
       for (let k in obj) fd.append(k, obj[k]);
-      if(files) for (let f of files) fd.append('files', f);
+      if (files) for (let f of files) fd.append('files', f);
       return fd;
    },
 

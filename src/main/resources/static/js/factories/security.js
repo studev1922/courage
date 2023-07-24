@@ -41,26 +41,28 @@ app.factory('security', function ($http, $cookies, $window) {
     };
 
     // Define a public function to log in by params
-    var loginByParams = async function () {
+    var loginByParams = async function (user) {
         let token;
-        // TODO: CREATE FORM LOGIN
-        let username = prompt("input your username");
-        let password = prompt("input your password");
+        if (!user) user = {
+            username: prompt("input your username"),
+            password: prompt("input your password")
+        };
 
         return $http
-            .post(`${server}/oauth/login`, { username, password })
+            .post(`${server}/oauth/login`, user)
             .then(res => {
                 token = res.headers('Authorization') || res.data.token;
-                $cookies.put(TOKEN_KEY, token);
-                return authenticated = parseJwt(token);
+                authenticated = parseJwt(token);
+                $cookies.put(TOKEN_KEY, token, { 'expires': new Date(authenticated.exp * 1e3) });
+                return authenticated;
             }).catch(console.error);
     };
 
     // Define a public function to log out
-    var logout = function () {
+    var logout = function (isAllow) {
         if (authenticated) {
             let { username } = authenticated;
-            if (confirm(`Do you want to logout account "${username}"?`)) {
+            if (isAllow || confirm(`Do you want to logout account "${username}"?`)) {
                 $cookies.remove(TOKEN_KEY);
                 authenticated = undefined;
                 return true;

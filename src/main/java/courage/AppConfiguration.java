@@ -1,7 +1,5 @@
 package courage;
 
-import java.io.IOException;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +15,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import courage.model.authHandle.Authorization;
 import courage.model.authHandle.JwtAuthenticationFilter;
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 
 @Configuration
 @EnableWebSecurity

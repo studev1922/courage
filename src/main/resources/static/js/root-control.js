@@ -2,7 +2,7 @@ const app = angular.module('app', ['ngRoute', 'ngCookies']);
 const server = 'http://localhost:8080/api';
 
 // MAIN APP CONTROLLER
-app.controller('control', ($scope, $http, security) => {
+app.controller('control', ($scope, $http, $location, security) => {
    var pageFilter = {
       p: 0, s: 10, o: 'ASC', f: 'regTime,uid'
    }, httpConfig = {
@@ -29,22 +29,37 @@ app.controller('control', ($scope, $http, security) => {
    };
 
    $scope.security = {
-      login : async function () {
+      login: async function (user, target) {
+         if ($scope.authenticated) return;
          let auth = security.getAuth();
-         if (!auth) auth = $scope.authenticated = await security.loginByParams();
-         $scope.pushMessage(auth ? `${auth['username']} logged.` : 'loggin failed!', 3.5e3);
+         if (!auth) auth = $scope.authenticated = await security.loginByParams(user);
+         $scope.pushMessage(auth ? `${auth['username']} logged in.` : 'failed to loggin!', 3.5e3);
+         Object.assign(user, { username: undefined, password: undefined }); // clear form
+         if (target) bsfw.hideModel(target);
          $scope.$apply();
       },
-   
-      logout : async function () {
+
+      logout: async function (isAllow, target) {
+         if (!$scope.authenticated) return;
          let { username } = $scope.authenticated;
-         if (security.logout()) {
+         if (security.logout(isAllow)) {
             $scope.pushMessage(`${username} logout successfully!`, 3.5e3);
             $scope.authenticated = undefined;
+            $location.path('/');
          }
+         if (target) bsfw.hideModel(target);
+      },
+      register: async function (user, target) {
+         // for (let k of Object.keys(user)) user[k] = undefined; // JSON
+         let data = new FormData(document.querySelector(target)); // FORM DATA
+         $http.post(`${server}/oauth/register`, data,
+            { headers: { 'Content-Type': undefined } }
+         ).then(res => {
+            console.log(res);
+         }).catch(console.error);
       },
       hasRole: security.hasRole,
-      isLoggedIn : security.isLoggedIn,
+      isLoggedIn: security.isLoggedIn,
    }
 
    // fetch api

@@ -1,0 +1,159 @@
+<!-- Modal login -->
+<form class="modal fade text-white" id="formLogin" ng-submit="security.login(user, '#formLogin')" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border" style="background: var(--bgr-linear-dark);">
+            <div class="modal-header">
+                <h2 class="modal-title text-warning">sign in</h2>
+                <img width="32px" style="cursor: pointer;" data-bs-dismiss="modal" src="assets/icon/close-circle.svg">
+            </div>
+            <div class="modal-body">
+                <div class="mt-3 d-md-flex">
+                    <label for="username" class="fw-bold border-bottom">username</label>
+                    <input type="text" id="username" ng-model="user.username" class="custom-input"
+                        placeholder="input your username">
+                </div>
+                <div class="mt-3 d-md-flex">
+                    <label for="password" class="fw-bold border-bottom">password</label>
+                    <input type="password" id="password" ng-model="user.password" name="password" class="custom-input"
+                        placeholder="input your password">
+                </div>
+            </div>
+            <div class="modal-footer justify-content-md-end justify-content-sm-center align-items-end">
+                <div class="me-auto"></div>
+                <button type="reset" class="btn border-bottom fill-size"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-info);">
+                    <img width="32px" src="assets/imgIcon/eraser.png">
+                    &nbsp;<span>clear</span>
+                </button>
+                <button type="submit" class="btn border-bottom fill-size"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-info);">
+                    <img width="32px" src="assets/imgIcon/insert.png">
+                    &nbsp;<span>sign-in</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal logout -->
+<form class="modal fade text-white" id="formLogout" tabindex="-1" aria-hidden="true"
+    ng-submit="security.logout(true, '#formLogout')">
+    <div class="modal-dialog">
+        <div class="modal-content border" style="background: var(--bgr-linear-dark);">
+            <div class="modal-header">
+                <h2 class="modal-title text-warning">
+                    logout account
+                    <span class="custom-label" ng-bind="authenticated.username"></span>
+                </h2>
+                <img width="32px" style="cursor: pointer;" data-bs-dismiss="modal" src="assets/icon/close-circle.svg">
+            </div>
+            <div class="modal-body">
+                <p class="fs-3 text-end text-hover">
+                    <em>Do you want to logout?</em>
+                </p>
+            </div>
+            <div class="modal-footer justify-content-md-end justify-content-sm-center align-items-end">
+                <div class="me-auto"></div>
+                <button type="button" class="btn border-bottom fill-size" data-bs-dismiss="modal"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-info);">
+                    <img width="32px" src="assets/imgIcon/arrow.png">
+                    &nbsp;<span>no</span>
+                </button>
+                <button type="submit" class="btn border-bottom fill-size"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-info);">
+                    <img width="32px" src="assets/imgIcon/insert.png">
+                    &nbsp;<span>yes</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal register -->
+<form class="modal fade text-white" id="formRegister" name="myForm" tabindex="-1" aria-hidden="true"
+    ng-submit="security.register(user, '#formRegister')">
+    <div class="modal-dialog">
+        <div class="modal-content border" style="background: var(--bgr-linear-dark);">
+            <div class="modal-header">
+                <h2 class="modal-title text-warning">register account account</h2>
+                <img width="32px" style="cursor: pointer;" data-bs-dismiss="modal" src="assets/icon/close-circle.svg">
+            </div>
+            <div class="modal-body">
+                <!-- username -->
+                <div class="mt-1">
+                    <div class="d-flex justify-content-between align-items-end">
+                        <label class="custom-label">username</label>
+                        <div class="text-end" style="font-size: .95rem;">
+                            <span class="text-danger" ng-show="myForm.username.$error.pattern">Invalid username!</span>
+                            <span class="text-warning" ng-show="myForm.username.$error.required">Username is
+                                required!</span>
+                        </div>
+                    </div>
+                    <input type="text" class="custom-input" ng-model="user.username" placeholder="input your username"
+                        name="username" ng-pattern="/^[A-Za-z0-9_]+$/" required>
+                </div>
+                <!-- password -->
+                <div class="mt-1">
+                    <div class="d-flex justify-content-between align-items-end">
+                        <label class="custom-label">password</label>
+                        <div class="text-end" style="font-size: .95rem;">
+                            <span class="text-warning" ng-show="myForm.password.$error.required">Password is
+                                required!</span>
+                        </div>
+                    </div>
+                    <input type="password" class="custom-input" ng-model="user.password"
+                        placeholder="input your password" name="password" required>
+                </div>
+                <!-- email -->
+                <div class="mt-1">
+                    <div class="d-flex justify-content-between align-items-end">
+                        <label class="custom-label">email</label>
+                        <div class="text-end" style="font-size: .95rem;">
+                            <span class="text-danger" ng-show="myForm.email.$error.pattern">Invalid email!</span>
+                            <span class="text-warning" ng-show="myForm.email.$error.required">Email is required!</span>
+                        </div>
+                    </div>
+                    <input type="email" class="custom-input" ng-model="user.email" placeholder="input your email"
+                        name="email" ng-pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" required>
+                </div>
+                <!-- fullname -->
+                <div class="mt-1">
+                    <div class="d-flex justify-content-between align-items-end">
+                        <label class="custom-label">fullname</label>
+                        <div class="text-end" style="font-size: .9rem;">
+                            <span class="text-danger" ng-show="myForm.fullname.$error.pattern">Invalid fullname!</span>
+                            <span class="text-warning" ng-show="myForm.fullname.$error.required">Fullname is
+                                required!</span>
+                        </div>
+                    </div>
+                    <input type="text" class="custom-input" ng-model="user.fullname" placeholder="input your fullname"
+                        name="fullname" ng-pattern="/^[A-Za-z ]+$/" required>
+                </div>
+                <!-- role and files -->
+                <div class="mt-2 d-flex">
+                    <!-- roles -->
+                    <select class="btn fill-size" name="roles"
+                        style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
+                        <option value=0>USER</option>
+                        <option value=3>PARTNER</option>
+                    </select>
+                    <!-- files -->
+                    <input type="file" class="form-control custom-input" name="files" multiple accept="image/*"
+                        style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
+                </div>
+            </div>
+            <div class="modal-footer justify-content-md-end justify-content-sm-center align-items-end">
+                <button type="button" class="btn border fw-bolder fill-size"
+                    onclick="confirm('Do you want to reset this form?') ? formControl.reset() : undefined;"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-secondary);">
+                    <img width="32px" src="assets/imgIcon/arrow.png">&nbsp;clear
+                </button>
+                <button type="submit" class="btn border fill-size"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
+                    <img width="32px" src="assets/imgIcon/insert.png">&nbsp;register
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
