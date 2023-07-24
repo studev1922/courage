@@ -85,7 +85,7 @@ public class UAccount {
       for(Authorization.R r : roles) this.roles.add(r.ordinal());
    }
    
-   public void setRoles(Authorization.P ...platforms) {
+   public void setPlatforms(Authorization.P ...platforms) {
       this.roles.clear();
       for(Authorization.P p : platforms) this.roles.add(p.ordinal());
    }
