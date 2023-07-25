@@ -54,9 +54,14 @@ app.controller('control', ($scope, $http, $location, security) => {
          let data = new FormData(document.querySelector(target)); // FORM DATA
          $http.post(`${server}/oauth/register`, data,
             { headers: { 'Content-Type': undefined } }
-         ).then(res => {
-            console.log(res);
-         }).catch(console.error);
+         ).then(async res => {
+            let code = prompt(`${res.message}\nPlease input your code:`);
+            let res2 = await $http.get(`${server}/oauth/confirm-code?code=${code}`);
+            $scope.pushMessage(res2.data.message,5e3);
+         }).catch(err => {
+            console.error(err)
+            $scope.pushMessage(err.message, 5e3);
+         });
       },
       hasRole: security.hasRole,
       isLoggedIn: security.isLoggedIn,

@@ -24,6 +24,10 @@ public interface UAccountRepository extends JpaRepository<UAccount, Long> {
    @Query(value = "SELECT * FROM UAccount WHERE :unique IN (username, email)", nativeQuery = true)
    UAccount findByUnique(String unique);
 
+   @Query(value = 
+      "SELECT case when count(uid)>0 then 'true' else 'false' end FROM UAccount WHERE username=:username OR email=:email"
+   ) Boolean exist(String username, String email);
+
    /**
     * @formatter:off
     * @param unique is username or email
