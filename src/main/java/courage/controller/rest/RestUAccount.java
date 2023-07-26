@@ -12,9 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,8 +28,8 @@ import courage.model.repositories.UAccountRepository;
  * @see Authorization.A enumeration of accesses
  * @see Authorization.P enumeration of platforms
  */
-@RestController
 @CrossOrigin("*")
+@RestController
 @RequestMapping({ "/api/accounts" })
 public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
@@ -72,7 +72,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
    // save one with multipart file
    @Override @RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
-   public ResponseEntity<?> save(UAccount entity, @RequestBody(required = false) MultipartFile... files) {
+   public ResponseEntity<?> save(UAccount entity, @RequestPart(required = false) MultipartFile... files) {
       this.setPwEncode(Arrays.asList(entity)); // encode password
       return super.save(entity, files);
    }
