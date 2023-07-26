@@ -76,7 +76,11 @@
     <div class="modal-dialog">
         <div class="modal-content border" style="background: var(--bgr-linear-dark);">
             <div class="modal-header">
-                <h2 class="modal-title text-warning">register account account</h2>
+                <h2 class="modal-title text-warning">register account</h2>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" ng-model="isLogin">
+                    <label class="form-check-label" for="flexSwitchCheckChecked">with login</label>
+                </div>
                 <img width="32px" style="cursor: pointer;" data-bs-dismiss="modal" src="assets/icon/close-circle.svg">
             </div>
             <div class="modal-body">
@@ -143,13 +147,22 @@
                         style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
                 </div>
             </div>
-            <div class="modal-footer justify-content-md-end justify-content-sm-center align-items-end">
+            <div class="modal-footer flex-nowrap justify-content-md-end justify-content-sm-center align-items-end">
+                <input type="hidden" ng-model="user.time">
+                <span ng-bind="user.time"></span>
+
+                <input type="text" name="code" ng-model="user.code" class="custom-input text-center me-auto" style="width: 10rem;" ng-disabled="!user.time" placeholder="verification">
                 <button type="button" class="btn border fw-bolder fill-size"
-                    onclick="confirm('Do you want to reset this form?') ? formControl.reset() : undefined;"
+                    ng-click="security.clearForm('#formRegister', user, isLogin)"
                     style="background: var(--bgr-linear-dark); color: var(--bs-secondary);">
                     <img width="32px" src="assets/imgIcon/arrow.png">&nbsp;clear
                 </button>
-                <button type="submit" class="btn border fill-size"
+                <button type="button" class="btn border fill-size" ng-if="!user.time"
+                    style="background: var(--bgr-linear-dark); color: var(--bs-warning);"
+                    ng-click="security.verification(user)">
+                    <img width="32px" src="assets/imgIcon/insert.png">&nbsp;get code
+                </button>
+                <button type="submit" class="btn border fill-size" ng-if="user.time"
                     style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
                     <img width="32px" src="assets/imgIcon/insert.png">&nbsp;register
                 </button>
