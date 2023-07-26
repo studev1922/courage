@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,7 +47,7 @@ public abstract class AbstractRESTful<E, K> extends AbstractAPI_Read<E, K> {
 
 	// save one with multipart file
 	@RequestMapping(value = { "", "/one" }, method = { RequestMethod.POST, RequestMethod.PUT })
-	public ResponseEntity<?> save(E entity, @RequestBody(required = false) MultipartFile... files) {
+	public ResponseEntity<?> save(E entity, @RequestPart(required = false) MultipartFile... files) {
 		try {
 			entity = this.updateEntity(entity, files);
 			return ResponseEntity.ok(entity);
