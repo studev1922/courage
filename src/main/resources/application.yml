@@ -2,10 +2,10 @@ server:
     port: 8080
 spring:
     datasource:
-        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-        password: 123
-        url: jdbc:sqlserver://localhost:1433;databaseName=DB_SUPER;trustServerCertificate=true;
         username: sa
+        password: 123
+        driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+        url: jdbc:sqlserver://localhost:1433;databaseName=DB_SUPER;trustServerCertificate=true;
     jpa:
         hibernate:
             ddl-auto: none
@@ -15,9 +15,9 @@ spring:
                 format_sql: true
         show-sql: false
     mail:
+        username: ngoduyhoaname2002@gmail.com #'[your email]'
+        password: ltfsouzeajngwgrj #'[your email is password]'
         host: smtp.gmail.com
-        username: '[your email]'
-        password: '[your email is password]'
         port: 587
         properties:
             mail:
