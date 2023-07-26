@@ -2,8 +2,8 @@ server:
     port: 8080
 spring:
     datasource:
-        username: sa
-        password: 123
+        username: sa # database server username
+        password: 123 # database server password
         driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
         url: jdbc:sqlserver://localhost:1433;databaseName=DB_SUPER;trustServerCertificate=true;
     jpa:
@@ -15,8 +15,8 @@ spring:
                 format_sql: true
         show-sql: false
     mail:
-        username: ngoduyhoaname2002@gmail.com #'[your email]'
-        password: ltfsouzeajngwgrj #'[your email is password]'
+        username: # your email
+        password: # your email is password
         host: smtp.gmail.com
         port: 587
         properties:
