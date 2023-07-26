@@ -10,15 +10,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import courage.model.authHandle.Authorization;
 import courage.model.authHandle.JwtAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-public class AppConfiguration implements Authorization, WebMvcConfigurer {
+public class AppConfiguration implements Authorization {
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -42,13 +40,5 @@ public class AppConfiguration implements Authorization, WebMvcConfigurer {
         this.authenticate(http);
         return http.build();
     } // @formatter:on
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("*")
-                .allowedHeaders("*");
-    }
 
 }
