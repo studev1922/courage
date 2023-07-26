@@ -1,7 +1,5 @@
 package courage.model.services;
 
-import java.util.Map;
-
 import jakarta.servlet.http.Cookie;
 
 public interface CookieService {
@@ -9,7 +7,7 @@ public interface CookieService {
 
     void setCookie(String name, String value, int age);
 
-    void setCookie(String name, String value, int age, Map<String, String> attrs);
+    Cookie createCookie(String name, String value, int age);
 
     void remove(String name);
 }

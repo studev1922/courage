@@ -1,7 +1,5 @@
 package courage.model.services.impl;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +18,7 @@ public class CookieServiceImpl implements CookieService {
 
     @Override
     public Cookie getCookie(String name) {
+        if(req.getCookies() != null && name!=null)
         for (Cookie c : req.getCookies()) {
             if (c.getName().equals(name)) {
                 return c;
@@ -37,18 +36,17 @@ public class CookieServiceImpl implements CookieService {
 
     @Override
     public void setCookie(String name, String value, int age) {
-        this.setCookie(name, value, age, null);
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(age);
+        res.addCookie(cookie);
     }
 
     @Override
-    public void setCookie(String name, String value, int age, Map<String, String> attrs) {
+    public Cookie createCookie(String name, String value, int age) {
         Cookie c = new Cookie(name, value);
         c.setMaxAge(age);
         res.addCookie(c);
-        if (attrs != null)
-            attrs.forEach((k, v) -> {
-                c.setAttribute(k, v);
-            });
+        return c;
     }
 
 }

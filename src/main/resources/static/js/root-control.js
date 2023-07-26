@@ -38,7 +38,6 @@ app.controller('control', ($scope, $http, $location, security) => {
          if (target) bsfw.hideModel(target);
          $scope.$apply();
       },
-
       logout: async function (isAllow, target) {
          if (!$scope.authenticated) return;
          let { username } = $scope.authenticated;
@@ -49,19 +48,55 @@ app.controller('control', ($scope, $http, $location, security) => {
          }
          if (target) bsfw.hideModel(target);
       },
-      register: async function (user, target) {
-         // for (let k of Object.keys(user)) user[k] = undefined; // JSON
-         let data = new FormData(document.querySelector(target)); // FORM DATA
+      register: async function (user, target, isLogin) {
+         let form = document.querySelector(target);
+         let data = new FormData(form); // FORM DATA
          $http.post(`${server}/oauth/register`, data,
             { headers: { 'Content-Type': undefined } }
          ).then(async res => {
-            let code = prompt(`${res.message}\nPlease input your code:`);
-            let res2 = await $http.get(`${server}/oauth/confirm-code?code=${code}`);
-            $scope.pushMessage(res2.data.message,5e3);
+            form.reset(); // clear form
+            Object.assign(user, { time: 0 });
+            bsfw.hideModel(target);
+            $scope.pushMessage(`${res.data.username} register successfull`, 5e3);
+            if (isLogin) {
+               let token = res.headers('Authorization');
+               $scope.authenticated = security.setToken(token); // login
+               $scope.pushMessage(`Welcome ${res.data.username} logged in.`, 5e3);               
+            }
          }).catch(err => {
+            $scope.pushMessage(err.message || err.data?.message, 5e3);
             console.error(err)
-            $scope.pushMessage(err.message, 5e3);
          });
+      },
+      verification: (user) => {
+         if (!user) $scope.pushMessage('please input form data!', 3.5e3);
+         else if (user.email) $http.get(`${server}/oauth/get-code?email=${user.email}`)
+            .then(res => {
+               let { data } = res;
+               $scope.pushMessage(data.message, 3.5e3);
+               user.time = data.time || data.age || 300;
+
+               let interval = setInterval(() => {
+                  user.time = --user.time;
+                  if (user.time < 1) {
+                     user.time = undefined;
+                     clearInterval(interval);
+                  }
+                  $scope.$apply();
+               }, 1e3);
+            }).catch(err => {
+               console.error(err);
+               $scope.pushMessage(err.message || err.data?.message, 5e3);
+            })
+         else $scope.pushMessage("Please input your email to get authentication code!", 5e3);
+      },
+      clearForm: (target, user) => {
+         let form = document.querySelector(target);
+         if (confirm('Do you want to reset this form?')) {
+            form.reset();
+            Object.assign(user, { time: 0 });
+            $scope.pushMessage('form clear succesfully', 3.5e3);
+         }
       },
       hasRole: security.hasRole,
       isLoggedIn: security.isLoggedIn,
@@ -124,10 +159,11 @@ app.controller('control', ($scope, $http, $location, security) => {
        * @param {String} to variable in scope
        * @param {any} id is value of the key
        * @param {String} key default id
+       * @param {Object} config config data
        * @returns {Promise<Object>} number of rows deleted
        */
-      delete: (path, to, id, key = 'id') => $http
-         .delete(`${server}/${path}/${id}`)
+      delete: (path, to, id, key = 'id', config = httpConfig) => $http
+         .delete(`${server}/${path}/${id}`, config)
          .then(r => {
             let data = r.data; // number deleted on server
             $scope[to].forEach((e, i) => {
@@ -159,7 +195,7 @@ app.controller('control', ($scope, $http, $location, security) => {
                $scope.pushMessage(`get new ${s} data from ${p}.`, 3e3)
             } else $scope.pushMessage('data has run out', 3e3, --p);
          })
-         .catch(err => console.error(err))
+         .catch(console.error)
    }
 
    // seting display
@@ -204,7 +240,8 @@ app.controller('control', ($scope, $http, $location, security) => {
    }
 
    $scope.pushMessage = (message, time) => {
-      if (typeof (message) == 'string') {
+      if (!message) return;
+      else if (typeof (message) == 'string') {
          message = {
             heading: `${$scope.title || 'Expansive System'} alert`,
             body: message,

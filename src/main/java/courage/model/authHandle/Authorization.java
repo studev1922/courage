@@ -7,7 +7,7 @@ public interface Authorization {
     // @formatter:off
     enum R { USER, STAFF, ADMIN, PARTNER } // roles
     enum A { AWAITING, LOCK, PRIVATE, PROTECTED, PUBLIC } // accesses
-    enum P { SYSTEM, GOOGLE, FACEBOOK } // platforms
+    enum P { SYSTEM, GOOGLE, FACEBOOK, GITHUB } // platforms
     // @formatter:on
 
     // @formatter:off

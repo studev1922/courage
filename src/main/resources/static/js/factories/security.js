@@ -20,6 +20,13 @@ app.factory('security', function ($http, $cookies, $window) {
             ? authenticated = payload : undefined;
     }
 
+    var setToken = function(token) {
+        if(!token) return;
+        authenticated = parseJwt(token);
+        $cookies.put(TOKEN_KEY, token, { 'expires': new Date(authenticated.exp * 1e3) });
+        return authenticated;
+    }
+
     var getAuth = function () {
         return authenticated || loadToken();
     }
@@ -52,8 +59,7 @@ app.factory('security', function ($http, $cookies, $window) {
             .post(`${server}/oauth/login`, user)
             .then(res => {
                 token = res.headers('Authorization') || res.data.token;
-                authenticated = parseJwt(token);
-                $cookies.put(TOKEN_KEY, token, { 'expires': new Date(authenticated.exp * 1e3) });
+                setToken(token);
                 return authenticated;
             }).catch(console.error);
     };
@@ -78,7 +84,8 @@ app.factory('security', function ($http, $cookies, $window) {
 
     // Return an object with the public functions as properties
     return {
-        loadToken, getAuth, hasRole, isLoggedIn, getToken: $cookies.get(TOKEN_KEY),// load in client
+        loadToken, setToken, getAuth, hasRole, isLoggedIn,
+        getToken: $cookies.get(TOKEN_KEY),// load in client
         loginByParams, logout, refreshToken // call api
     };
 });

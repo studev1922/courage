@@ -1,9 +1,12 @@
 package courage.controller.rest;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
@@ -15,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,68 +33,74 @@ import com.nimbusds.jose.JOSEException;
 import courage.model.dto.UserLogin;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
-import courage.model.services.CookieService;
 import courage.model.services.JwtService;
+import courage.model.services.MailService;
+import courage.model.services.PropertyService;
+import courage.model.util.HtmlTemp;
 import courage.model.util.Utils;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Message.RecipientType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/oauth")
 public class OAuthAPI extends RestUAccount {
 
+    final static long AGE = 300; // 300 seconds
+
     // @formatter:off
     @Autowired private AuthenticationManager authenticationManager;
-    // @Autowired private HttpServletRequest req;
+    @Autowired private PropertyService<String> ps;
     @Autowired private HttpServletResponse res;
-    @Autowired private CookieService cookie;
+    @Autowired private MailService mail;
     @Autowired private JwtService jwt;
 
-    @RequestMapping("/confirm-code")
-    public ResponseEntity<?> confirmCode(@RequestParam(required = false) String code) {
-        try {
-
-            if(code == null) {
-                return ResponseEntity
-                    .status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(Utils.jsonMessage("message", "not allowed code is empty!"));
-            } else if(cookie.getCookie(code) != null) {
-                cookie.remove(code);
-                // TODO: get UAccount from storage
-                // UAccount account = new UAccount();
-                // return super.save(account);
-                System.out.println("confirm code: "+code);
-                ResponseEntity.ok().body(Utils.jsonMessage("message", "ACCOUNT SAVED: "+code));
-            }
-        } catch (DateTimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                .body(Utils.jsonMessage("message", e.getMessage()));
+    @RequestMapping("/get-code")
+    public ResponseEntity<?> getCode(@RequestParam String email) {
+        try { 
+            String code = Utils.generalCode("ES", 9);
+            this.ps.put(code, email, System.currentTimeMillis()+AGE*1000);
+            this.sendEmail(code, email);
+    
+            Map<String, Object> map = new HashMap<>();
+            map.put("time", AGE);
+            map.put("message", Utils.build(
+                "An authentication code has been sent to email ",
+                email, ", check your email for verification codes"
+            ));
+            return ResponseEntity.ok().body(Utils.jsonMessage(map));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(
+                Utils.jsonMessage("message", e.getMessage())
+            );
         }
-        return ResponseEntity.ok().body(Utils.jsonMessage("message", "TODO: SAVE ACCOUNT"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(UAccount account, @RequestBody(required = false) MultipartFile...files) {
-        account.setUid(-1L); // -1 to save new, uid's identity in database
-        String code, us = account.getUsername(), email = account.getEmail();
+    public ResponseEntity<?> register( UAccount account,
+        @RequestParam(required = false) String code,
+        @RequestBody(required = false) MultipartFile...files
+    ) {
+        String message, us, email;
+        boolean isEmail;
+        try {
+            us = account.getUsername();
+            email = account.getEmail();
+            isEmail = this.ps.get(code).equals(email);
 
-        if(((UAccountRepository) super.rep).exist(us, email)) {
-            return ResponseEntity.badRequest().body(
-                Utils.jsonMessage("message",
-                    new StringBuilder(us).append(" or ").append(email)
-                    .append(" already exist!").toString()
-                )
-            );
-        } else { // TODO: storage account and send the code to email
-            code = Utils.generalCode("ES_", 9);
-            Map<String, String> attrs = new HashMap<>();
-            attrs.put("HttpOnly", "true");
-            cookie.setCookie(code, us, 330, attrs); // 5.5 minutes
-
-            System.out.println("get code: "+code);
-            return ResponseEntity.ok(
-                Utils.jsonMessage("message", "A code sent to the email "+account.getEmail())
-            );
+            if(isEmail && ((UAccountRepository) super.rep).exist(us, email)) {
+                message = Utils.jsonMessage("message", Utils.build(us, " or ", email, " already exist!"));
+            } else if (!isEmail) {
+                message = Utils.build("Email ", email , " is not the email that requested the authentication code!");
+                message = Utils.jsonMessage("message", message); // append to json
+            } else return this.handSaved(code, account, files);
+            return ResponseEntity.badRequest().body(message);
+        } catch (DateTimeException e) {
+            return ResponseEntity.badRequest().body(Utils.jsonMessage("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Utils.jsonMessage("message", e.getMessage()));
         }
     }
 
@@ -127,7 +138,33 @@ public class OAuthAPI extends RestUAccount {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
         .body(Utils.jsonMessage(
             "message",
-            "this method not allowed, change the path \"api/oauth\" by \"api/accounts\""
+            "this method not allowed, change the path api/oauth by api/accounts"
         ));
+    }
+
+    private ResponseEntity<?> handSaved(String code, UAccount account, MultipartFile[] files) throws Exception{
+        account.setUid(-1L); // -1 to save new, uid's identity in database
+        ResponseEntity<?> save = super.save(account, files);
+        if(save.getStatusCode() == HttpStatus.OK) {
+            String token = jwt.sign(Utils.from(account));
+            res.setHeader("Authorization", "Bearer " + token);
+            this.ps.move(code); // remove code
+        }
+        return save;
+    }
+    
+    private void sendEmail(String code, String email) throws MessagingException {
+        String subject = "Mã xác nhận đăng ký thông tin tài khoản: "+code;
+        String text = HtmlTemp.emailCode(code);
+        File[] files = null;
+        try {
+            File[] inpFiles = {
+                ResourceUtils.getFile("classpath:properties/code.png")
+            };
+            files = inpFiles;
+        } catch (Exception e) {
+            Logger.getGlobal().log(Level.WARNING, e.getMessage(), e);
+        }
+        this.mail.sendMimeMessage(subject, text, files, RecipientType.TO, email);
     }
 }

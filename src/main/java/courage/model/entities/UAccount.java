@@ -37,7 +37,7 @@ public class UAccount {
    private String username;
    @Column(unique = true)
    private String email;
-   @JsonIgnore // igrore password for read api
+   @JsonIgnore @Column(updatable = false) // igrore password for read api
    private String password; // ColumnTransformer
    private String fullname;
 	@Column(name = "regtime", updatable = false)

@@ -17,6 +17,14 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
         platforms: [0]
     };
 
+    var httpConfig = {
+        transformRequest: angular.identity,
+        headers: { 
+            'Content-Type': undefined,
+            'Authorization': security.getToken,
+        }
+    };
+
     (() => {
         // handle nav-tabs event clicked
         let items = tabs.querySelectorAll('.nav-link');
@@ -104,7 +112,7 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
                 else if (index > -1) { // rare case
                     mesWarning.body = `uid: ${$scope[entity][key]} already exist!`
                     $scope.pushMessage(mesWarning, 5e3); // rare case
-                } else $scope.crud.post(path, dataName, getFormData())
+                } else $scope.crud.post(path, dataName, getFormData(), httpConfig)
                     .then(_promise.success).catch(_promise.exception)
             } else $scope.pushMessage('please input your password', 5000);
 
@@ -125,11 +133,11 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
             else if (index < 0) { // rare case
                 mesWarning.body = `uid: ${$scope[entity][key]} doesn't exist!`
                 $scope.pushMessage(mesWarning, 5e3); // rare case
-            } else $scope.crud.put(path, dataName, getFormData(), index)
+            } else $scope.crud.put(path, dataName, getFormData(), index, httpConfig)
                 .then(_promise.success).catch(_promise.exception)
         },
         delete: () => $scope.crud
-            .delete(path, dataName, $scope[entity][key], key)
+            .delete(path, dataName, $scope[entity][key], key, httpConfig)
             .then(_promise.success).catch(_promise.exception),
         read: (e) => {
             $scope[entity] = e;
@@ -153,10 +161,10 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
 
     $scope.$watch('$stateChangeSuccess', async () => {
         if (security.isLoggedIn()) {
-            let token = security.getToken;
-            let config = token ? { headers: { 'Authorization': token } } : undefined;
+            let head = httpConfig.headers;
+            if(!head.Authorization) head.Authorization = security.getToken;
             if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
-            await $scope.crud.get(path, dataName, undefined, config).then(console.log).catch(console.error) // load all data
+            await $scope.crud.get(path, dataName, undefined, httpConfig).catch(console.error)//.then(console.log)
         } else $scope.pushMessage({
             heading: 'need to login',
             body: 'This function needs to be logged in and admin',
