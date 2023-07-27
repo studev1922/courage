@@ -112,8 +112,9 @@ public class OAuthAPI extends RestUAccount {
         try {
             Authentication authentication = authenticationManager.authenticate(authToken);
             String token = jwt.sign((UserDetails) authentication.getPrincipal());
-            res.setHeader("Authorization", "Bearer " + token);
-            return ResponseEntity.ok(Utils.jsonMessage("token", token));
+            String bearer = "Bearer " + token;
+            res.setHeader("Authorization", bearer);
+            return ResponseEntity.ok(Utils.jsonMessage("token", bearer));
         } catch (JOSEException | AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Utils.jsonMessage("message", e.getMessage()));

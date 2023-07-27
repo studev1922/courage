@@ -17,7 +17,7 @@ import courage.model.authHandle.JwtAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 public class AppConfiguration implements Authorization {
-
+    
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
