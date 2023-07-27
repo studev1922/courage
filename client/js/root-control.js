@@ -5,10 +5,7 @@ const server = 'http://localhost:8080/api';
 app.controller('control', ($scope, $http, $location, security) => {
    var pageFilter = {
       p: 0, s: 10, o: 'ASC', f: 'regTime,uid'
-   }, httpConfig = {
-      transformRequest: angular.identity,
-      headers: { 'Content-Type': undefined }
-   };
+   }
 
    $scope.defaultImg = 'https://www.photoshopbuzz.com/wp-content/uploads/change-color-part-of-image-psd4.jpg';
    $scope.fil = { page: 0, size: 10 }; // filter contents
@@ -128,7 +125,7 @@ app.controller('control', ($scope, $http, $location, security) => {
        * @param {Object} config config post data
        * @returns {Promise<Object>} data inserted
        */
-      post: (path, to, data, config = httpConfig) => $http
+      post: (path, to, data, config) => $http
          .post(`${server}/${path}`, data, config)
          .then(r => {
             $scope[to].unshift(r.data)
@@ -144,7 +141,7 @@ app.controller('control', ($scope, $http, $location, security) => {
        * @param {Object} config config put data
        * @returns {Promise<Object>} data updated
        */
-      put: (path, to, data, index, config = httpConfig) => $http
+      put: (path, to, data, index, config) => $http
          .put(`${server}/${path}`, data, config)
          .then(r => index != undefined
             ? $scope[to][index] = r.data
@@ -162,7 +159,7 @@ app.controller('control', ($scope, $http, $location, security) => {
        * @param {Object} config config data
        * @returns {Promise<Object>} number of rows deleted
        */
-      delete: (path, to, id, key = 'id', config = httpConfig) => $http
+      delete: (path, to, id, key = 'id', config) => $http
          .delete(`${server}/${path}/${id}`, config)
          .then(r => {
             let data = r.data; // number deleted on server

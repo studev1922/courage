@@ -20,8 +20,8 @@ app.factory('security', function ($http, $cookies, $window) {
             ? authenticated = payload : undefined;
     }
 
-    var setToken = function(token) {
-        if(!token) return;
+    var setToken = function (token) {
+        if (!token) return;
         authenticated = parseJwt(token);
         $cookies.put(TOKEN_KEY, token, { 'expires': new Date(authenticated.exp * 1e3) });
         return authenticated;
@@ -45,7 +45,7 @@ app.factory('security', function ($http, $cookies, $window) {
             return payload.exp > Date.now() / 1e3;
         }
         return false;
-    };
+    }
 
     // Define a public function to log in by params
     var loginByParams = async function (user) {
@@ -85,7 +85,7 @@ app.factory('security', function ($http, $cookies, $window) {
     // Return an object with the public functions as properties
     return {
         loadToken, setToken, getAuth, hasRole, isLoggedIn,
-        getToken: $cookies.get(TOKEN_KEY),// load in client
+        getToken: $cookies.get(TOKEN_KEY), // load in client 
         loginByParams, logout, refreshToken // call api
     };
 });

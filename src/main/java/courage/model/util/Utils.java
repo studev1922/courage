@@ -46,6 +46,12 @@ public interface Utils {
         return builder.toString();
     }
 
+    static String buildJoin(String join, Object... objs) {
+        StringBuilder builder = new StringBuilder();
+        for (Object obj : objs) builder.append(obj).append(join);
+        return builder.substring(0, builder.length() - join.length());
+    }
+
     static String jsonMessage(String key, String message) {
         return new StringBuilder("{\"").append(key).append("\":\"").append(message).append("\"}").toString();
     }

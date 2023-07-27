@@ -22,25 +22,29 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtService jwt;
+    @Autowired private JwtService jwt;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
-        throws ServletException, IOException 
-    {
+            throws ServletException, IOException {
         String token = req.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer "))
-            try {
-                token = token.substring(token.indexOf(" "));
-                UserDetails userDetails = jwt.verify(token);
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            } catch (JOSEException | ParseException | IllegalArgumentException e) {
-                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
-            }
-        filterChain.doFilter(req, res);
+
+        res.setHeader ("Access-Control-Allow-Origin", "*");
+        res.setHeader ("Access-Control-Allow-Methods", "*");
+        res.setHeader ("Access-Control-Allow-Headers", "*");
+        res.setHeader ("Access-Control-Max-Age", "3600");
+        
+        if (token != null && token.startsWith("Bearer ")) try {
+            token = token.substring(token.indexOf(" "));
+            UserDetails userDetails = jwt.verify(token);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (JOSEException | ParseException | IllegalArgumentException e) {
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+        }
+        
+        if(!req.getMethod().equals("OPTIONS")) filterChain.doFilter(req, res);
     }
 }

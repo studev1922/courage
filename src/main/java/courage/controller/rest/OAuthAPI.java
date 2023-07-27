@@ -70,6 +70,7 @@ public class OAuthAPI extends RestUAccount {
             ));
             return ResponseEntity.ok().body(Utils.jsonMessage(map));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(
                 Utils.jsonMessage("message", e.getMessage())
             );
@@ -98,6 +99,7 @@ public class OAuthAPI extends RestUAccount {
         } catch (DateTimeException e) {
             return ResponseEntity.badRequest().body(Utils.jsonMessage("message", e.getMessage()));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(Utils.jsonMessage("message", e.getMessage()));
         }
     }

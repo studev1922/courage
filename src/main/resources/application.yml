@@ -15,8 +15,8 @@ spring:
                 format_sql: true
         show-sql: false
     mail:
-        username: # your email
-        password: # your email is password
+        username: ngoduyhoaname2002@gmail.com # your email
+        password: ltfsouzeajngwgrj # your email is password
         host: smtp.gmail.com
         port: 587
         properties:

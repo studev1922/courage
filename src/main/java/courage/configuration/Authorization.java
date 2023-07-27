@@ -12,6 +12,7 @@ public interface Authorization {
 
     // @formatter:off
     String[] AUTHENTICATED = {
+        "/server/principal"
     };
 
     String[] PERMIT_ALL = {
@@ -32,33 +33,32 @@ public interface Authorization {
 
     // include staff, user, partner
     String[] PERMIT_ADMIN = {
-        "/amdin",
         "/api/accounts/**"
     };
 
     default void authorities(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
             auth.requestMatchers(PERMIT_ALL).permitAll();
-            auth.requestMatchers(AUTHENTICATED).authenticated();
 
-            // USER: any
-            auth.requestMatchers(PERMIT_USER).hasAnyRole(
-                R.USER.name(), R.STAFF.name(),
-                R.PARTNER.name(), R.ADMIN.name()
-            );
-            // STAFF: staff || admin
-            auth.requestMatchers(PERMIT_STAFF).hasAnyRole(
-                R.STAFF.name(), R.ADMIN.name()
-            );
-            // PARTNER: partner || admin
-            auth.requestMatchers(PERMIT_PARTNER).hasAnyRole(
-                R.PARTNER.name(), R.ADMIN.name()
-            );
-            // ADMIN: admin
-            auth.requestMatchers(PERMIT_ADMIN).hasAnyRole(
-                R.ADMIN.name()
-            );
+            // // USER: any
+            // auth.requestMatchers(PERMIT_USER).hasAnyRole(
+            //     R.USER.name(), R.STAFF.name(),
+            //     R.PARTNER.name(), R.ADMIN.name()
+            // );
+            // // STAFF: staff || admin
+            // auth.requestMatchers(PERMIT_STAFF).hasAnyRole(
+            //     R.STAFF.name(), R.ADMIN.name()
+            // );
+            // // PARTNER: partner || admin
+            // auth.requestMatchers(PERMIT_PARTNER).hasAnyRole(
+            //     R.PARTNER.name(), R.ADMIN.name()
+            // );
+            // // ADMIN: admin
+            // auth.requestMatchers(PERMIT_ADMIN).hasRole(
+            //     R.ADMIN.name()
+            // );
 
+            // auth.requestMatchers(AUTHENTICATED).authenticated();
             auth.anyRequest().permitAll();
         });
     }

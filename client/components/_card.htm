@@ -1,6 +1,6 @@
 <div class="card max-size" style="background: #00000045; color: white;">
-   <div class="card-header">
-      {{e.username + '('+e.uid+')'}}
+   <div class="card-header text-center" ng-if="security.hasRole('ADMIN')" access-color access="e.access">
+      {{e.username}}&nbsp;({{e.uid}})
    </div>
    <div class="card-body">
       <h5 class="card-title">{{e.fullname}}</h5>

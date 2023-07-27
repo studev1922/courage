@@ -13,6 +13,7 @@ var resolve = function (...roles) {
     };
 }
 
+
 app.config($routeProvider => {
     $routeProvider
         .when('/', { templateUrl: "pages/main.htm" })
@@ -35,3 +36,21 @@ app.filter('has', () => util.has);
 app.filter('sort', () => util.sort);
 // arr:Array
 app.filter('total', () => util.total)
+
+app.directive('accessColor', function () {
+    return {
+        restrict: 'A',
+        scope: { access: '=' },
+        link: function (scope, element, attrs) {
+            let color = '#fff';
+            switch (scope.access) {
+                case 0: color = '#b40000aa'; break;
+                case 1: color = '#b49000aa'; break;
+                case 2: color = '#b4b400aa'; break;
+                case 3: color = '#12b400aa'; break;
+                default: color = '#009fb4aa'; break;
+            }
+            element.css('background-color', color);
+        }
+    }
+})

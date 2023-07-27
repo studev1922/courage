@@ -1,9 +1,16 @@
 // usercontrol
-app.controller('usercontrol', function ($scope, $routeParams, security) {
+app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
     let path = "accounts", // path api
         dataName = 'mdata', // data
         entity = 'user', // form data
         key = 'uid'; // key of entity
+    var configuration = {
+        transformRequest: angular.indentity,
+        headers: {
+            'Content-Type': undefined,
+            'Authorization': security.getToken,
+        }
+    };
 
     const u = {
         uid: -1,
@@ -15,14 +22,6 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
         access: 0,
         roles: [0],
         platforms: [0]
-    };
-
-    var httpConfig = {
-        transformRequest: angular.identity,
-        headers: { 
-            'Content-Type': undefined,
-            'Authorization': security.getToken,
-        }
     };
 
     (() => {
@@ -71,26 +70,26 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
         return { id, index, exist };
     }
 
-    const _promise = {
+    const _rest = {
         success: (res, execute = 'execute') => {
             $scope.pushMessage({
                 htype: 'fw-bolder bg-success text-white',
-                heading: `${execute} success.`,
+                heading: `${res.config?.method || execute} success.`,
                 body: `${execute} ${res?.username || 'data'} successfully!`
             }, 3.5e3)
-            _promise.resetForm();
+            _rest.resetForm();
         },
         exception: (e, execute = 'execute') => {
             $scope.pushMessage({
                 htype: 'bg-danger text-white',
-                heading: `${execute} data failed`,
+                heading: `${e.config?.method || execute} data failed`,
                 body: e.message
             })
             console.error(e);
         },
         resetForm: () => {
-            let input = formControl.querySelector('input[type="file"]');
-            for (let type of ['text', 'file']) input.setAttribute('type', type);
+            let input = document.querySelector('#formControl input[type="file"]');
+            for (let type of ['text', 'file']) input?.setAttribute('type', type);
             $scope[entity] = angular.copy(u); // reset binding
         }
     }
@@ -112,8 +111,8 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
                 else if (index > -1) { // rare case
                     mesWarning.body = `uid: ${$scope[entity][key]} already exist!`
                     $scope.pushMessage(mesWarning, 5e3); // rare case
-                } else $scope.crud.post(path, dataName, getFormData(), httpConfig)
-                    .then(_promise.success).catch(_promise.exception)
+                } else $scope.crud.post(path, dataName, getFormData(), configuration)
+                    .then(_rest.success).catch(_rest.exception)
             } else $scope.pushMessage('please input your password', 5000);
 
         },
@@ -133,21 +132,21 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
             else if (index < 0) { // rare case
                 mesWarning.body = `uid: ${$scope[entity][key]} doesn't exist!`
                 $scope.pushMessage(mesWarning, 5e3); // rare case
-            } else $scope.crud.put(path, dataName, getFormData(), index, httpConfig)
-                .then(_promise.success).catch(_promise.exception)
+            } else $scope.crud.put(path, dataName, getFormData(), index, configuration)
+                .then(_rest.success, $scope.access = false).catch(_rest.exception)
         },
         delete: () => $scope.crud
-            .delete(path, dataName, $scope[entity][key], key, httpConfig)
-            .then(_promise.success).catch(_promise.exception),
+            .delete(path, dataName, $scope[entity][key], key, configuration)
+            .then(_rest.success).catch(_rest.exception),
         read: (e) => {
             $scope[entity] = e;
             $scope.selectTab(0);
             $scope.access = true;
         },
         clear: () => {
-            if (confirm(`clear form data ${$scope[entity].username || 'user'}`)) {
+            if (confirm(`Do you want to clear form data ${$scope[entity].username || 'user'}?`)) {
                 $scope.access = false;
-                _promise.success(undefined, 'clear');
+                _rest.success(undefined, 'clear');
             }
         }
     }
@@ -155,16 +154,16 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
     $scope.$watch('srctab', function (src) { // load all component
         $scope.$watch('$stateCngeSuccess', setTimeout(() => {
             bsfw.loadPopovers();
-            if (src.endsWith('_one.htm')) bsfw.showImageInput(formControl, showInputImages);
+            if (src.endsWith('_one.htm')) bsfw.showImageInput(
+                document.getElementById('formControl'), showInputImages
+            );
         }, 500))
     }) // await 500 miliseconds to load popovers
 
     $scope.$watch('$stateChangeSuccess', async () => {
         if (security.isLoggedIn()) {
-            let head = httpConfig.headers;
-            if(!head.Authorization) head.Authorization = security.getToken;
-            if (!$scope.ur) await $scope.loadRelationships(); // await for load all data
-            await $scope.crud.get(path, dataName, undefined, httpConfig).catch(console.error)//.then(console.log)
+            await $scope.crud.get(path, dataName, undefined, configuration)
+                .then(_rest.success).catch(_rest.exception)
         } else $scope.pushMessage({
             heading: 'need to login',
             body: 'This function needs to be logged in and admin',

@@ -9,20 +9,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc // @formatter:off
 public class MvcConfiguration implements WebMvcConfigurer {
 
-    private final static String[] ORIGINS = {
-        "http://localhost:8080", // server
-        "http://127.0.0.1:5500", // client
+    protected final static String[] ORIGINS = {
+        "http://localhost:8080",
+        "http://127.0.0.1:5500",
     };
-    private static final String[] METHODS = {
-        "GET", "POST", "PUT", "DELETE", "PATCH"
+    protected static final String[] METHODS = {
+        "GET", "POST", "PUT", "DELETE",
+        "PATCH", "OPTIONS"
     };
-    private static final String[] HEADERS = {
-        "Content-Type", "Authorization"
+    protected static final String[] HEADERS = {
+        "Content-Type", "Accept", "Cookie",
+        "Authorization", "x-requested-with"
     };
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
+        registry.addMapping("/**")
             .allowedOrigins(MvcConfiguration.ORIGINS)
             .allowedMethods(MvcConfiguration.METHODS)
             .allowedHeaders(MvcConfiguration.HEADERS)
