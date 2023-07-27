@@ -17,7 +17,7 @@ import jakarta.persistence.Id;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import courage.model.authHandle.Authorization;
+import courage.configuration.Authorization;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -11,15 +11,13 @@ import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import courage.model.authHandle.Authorization;
-import courage.model.authHandle.Authorization.A;
+import courage.configuration.Authorization;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 
@@ -28,7 +26,6 @@ import courage.model.repositories.UAccountRepository;
  * @see Authorization.A enumeration of accesses
  * @see Authorization.P enumeration of platforms
  */
-@CrossOrigin("*")
 @RestController
 @RequestMapping({ "/api/accounts" })
 public class RestUAccount extends AbstractRESTful<UAccount, Long> {
@@ -52,7 +49,7 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
 
       account = new UAccount(); // by default, only public content is read
       account.setUid(null); account.setRegTime(null);
-      account.setAccess(A.PUBLIC);
+      account.setAccess(Authorization.A.PUBLIC);
       return Example.of(account);
    }
 

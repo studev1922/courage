@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.nimbusds.jose.shaded.gson.Gson;
 import com.nimbusds.jose.shaded.gson.reflect.TypeToken;
 
-import courage.model.authHandle.Authorization.R;
+import courage.configuration.Authorization.R;
 import courage.model.entities.UAccount;
 
 class u {

@@ -1,4 +1,4 @@
-package courage.model.authHandle;
+package courage.configuration;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -26,21 +26,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwt;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
-        String token = request.getHeader("Authorization");
-
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
+        throws ServletException, IOException 
+    {
+        String token = req.getHeader("Authorization");
         if (token != null && token.startsWith("Bearer "))
             try {
                 token = token.substring(token.indexOf(" "));
                 UserDetails userDetails = jwt.verify(token);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JOSEException | ParseException | IllegalArgumentException e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(req, res);
     }
 }

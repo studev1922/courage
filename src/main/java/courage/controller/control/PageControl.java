@@ -10,28 +10,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import courage.model.util.Utils;
+
 @Controller
 @RequestMapping({ "", "/" })
 public class PageControl {
 
-   @GetMapping("/server")
+   @GetMapping({ "", "/", "/client" })
    public String index(@RequestParam(required = false) String view, Model m) {
       m.addAttribute("view", view != null ? view : "home.htm");
-      return "index.html";
+      return "index.html"; // redirect:http://127.0.0.1:5500/index.html#!/#carousel
    }
 
    @ResponseBody
-   @GetMapping("/principal")
+   @GetMapping("/principal") // @formatter:off
    public ResponseEntity<?> getPrincipal(Principal principal) {
       return principal==null
          ? ResponseEntity.status(401)
-            .body("{\"message\":\"the principal is null, you're not signed in!\"}")
+            .body(Utils.jsonMessage("message", "The principal is null, you're not signed in!"))
          : ResponseEntity.ok(principal);
-   }
-
-   @GetMapping({ "", "/", "/client" })
-   public String staticIndex() {
-      // static for client != template on this server
-      return "redirect:/index.html"; // redirect to client side
    }
 }

@@ -1,4 +1,4 @@
-package courage.model.authHandle;
+package courage.configuration;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
@@ -12,7 +12,6 @@ public interface Authorization {
 
     // @formatter:off
     String[] AUTHENTICATED = {
-        "/api/accounts/**"
     };
 
     String[] PERMIT_ALL = {
@@ -33,11 +32,15 @@ public interface Authorization {
 
     // include staff, user, partner
     String[] PERMIT_ADMIN = {
-        "/amdin"
+        "/amdin",
+        "/api/accounts/**"
     };
 
-    default HttpSecurity authorities(HttpSecurity http) throws Exception {
+    default void authorities(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
+            auth.requestMatchers(PERMIT_ALL).permitAll();
+            auth.requestMatchers(AUTHENTICATED).authenticated();
+
             // USER: any
             auth.requestMatchers(PERMIT_USER).hasAnyRole(
                 R.USER.name(), R.STAFF.name(),
@@ -56,19 +59,18 @@ public interface Authorization {
                 R.ADMIN.name()
             );
 
-            auth.requestMatchers(PERMIT_ALL).permitAll();
-            auth.requestMatchers(AUTHENTICATED).authenticated();
             auth.anyRequest().permitAll();
         });
-
-        return http;
     }
 
     default void authenticate(HttpSecurity http) throws Exception {
+        http.exceptionHandling()
+            .accessDeniedPage("/server?view=security/_error.htm");
+
         http.formLogin()
             .loginPage("/server?view=security/_signin.htm")
             .loginProcessingUrl("/security/login") // default [/login]
-            .defaultSuccessUrl("/server", false)
+            .defaultSuccessUrl("/server", false)            
             .failureForwardUrl("/server?view=security/_error.htm");
 
         http.oauth2Login()
@@ -80,7 +82,6 @@ public interface Authorization {
 
         http.logout()
             .logoutUrl("/security/logout") // default [/logout]
-            .logoutSuccessUrl("/index.html");
+            .logoutSuccessUrl("/server");
     }
-    
 }

@@ -1,4 +1,4 @@
-package courage;
+package courage.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import courage.model.authHandle.Authorization;
-import courage.model.authHandle.JwtAuthenticationFilter;
-
 @Configuration
 @EnableWebSecurity
 public class AppConfiguration implements Authorization {
-    
+
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,16 +26,15 @@ public class AppConfiguration implements Authorization {
     }
 
     @Bean // @formatter:off
-    SecurityFilterChain filterChain (
-        HttpSecurity http,
+    SecurityFilterChain filterChain(
+        HttpSecurity http, 
         JwtAuthenticationFilter filter
     ) throws Exception {
-        // TODO: DefaultHandlerExceptionResolver
-        http.csrf().disable().cors().disable();
+        http.csrf().disable();
         http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         this.authorities(http);
         this.authenticate(http);
+        
         return http.build();
     } // @formatter:on
-
 }
