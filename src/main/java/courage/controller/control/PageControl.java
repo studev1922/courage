@@ -16,10 +16,15 @@ import courage.model.util.Utils;
 @RequestMapping({ "", "/" })
 public class PageControl {
 
+   @GetMapping({ "/client" })
+   public String index() {
+      return "redirect:index.html"; // redirect:http://127.0.0.1:5500/index.html#!/#carousel
+   }
+
    @GetMapping({ "", "/", "/server" })
    public String index(@RequestParam(required = false) String view, Model m) {
       m.addAttribute("view", view != null ? view : "home.htm");
-      return "index.html"; // redirect:http://127.0.0.1:5500/index.html#!/#carousel
+      return "index";
    }
 
    @ResponseBody

@@ -14,6 +14,7 @@ public interface Authorization {
     };
 
     String[] PERMIT_ALL = {
+        "/static/**", "/client", "index.html",
         "/api/accounts/page"
     };
     
@@ -22,7 +23,7 @@ public interface Authorization {
     };
     
     String[] PERMIT_STAFF = {
-        "/staff"
+        "/staff",
     };
 
     String[] PERMIT_PARTNER = {

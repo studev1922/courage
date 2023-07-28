@@ -1,5 +1,7 @@
 package courage.controller.rest;
 
+import java.util.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
@@ -52,13 +54,18 @@ public abstract class AbstractFileAPI {
     * @return OptionFile || byte[] as path file
     */
    @GetMapping({"","/**"}) // get file or folder
-   public ResponseEntity<?> getFiles(@RequestParam(required = false) Boolean is) {
+   public ResponseEntity<?> getFiles(
+      @RequestParam(required = false) Boolean is,
+      @RequestParam(required = false) Boolean base64
+   ) {
       String path = this.getPath(); // get path after directory
       int dotPath = path.lastIndexOf("."); // type of file
 
       if(dotPath > -1) { // is file has dot type (.[type])
          String fileName = path.substring(path.lastIndexOf("/")+1);
-         return this.toFile(fileName, file.getFile(directory, path));
+         return base64!=null && base64
+            ? this.toBase64(fileName, file.getFile(directory, path))
+            : this.toFile(fileName, file.getFile(directory, path));
       }
 
       // default get path api OptionFile
@@ -96,7 +103,7 @@ public abstract class AbstractFileAPI {
          return ResponseEntity.internalServerError().build();
       }
 
-      return ResponseEntity.ok(null);
+      return ResponseEntity.ok().build();
    }
 
    protected String getPath() { // all path variables affter directory
@@ -122,5 +129,10 @@ public abstract class AbstractFileAPI {
                   .toString()
             )
             .body(resource);
+   }
+
+   protected ResponseEntity<String> toBase64(String fileName, byte[] data) {
+      String base64 = Base64.getEncoder().encodeToString(data);
+      return ResponseEntity.ok().body(base64);
    }
 }
