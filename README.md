@@ -5,7 +5,28 @@ This project provides the basic functionality that can be customized by subclass
 1. File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
 2. File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
 
-## TEST CONTROLLER
+## DEPLOYMENT
+- Requirements
+   - SQL Server 2014 or later `sqlcmd -?`
+   - JDK 17 or later `java -version`
+   - Maven 3.x.x `mvn -v`
+   - **_If you use Git_ `git -v`**
+- Guide
+   1. `git clone https://github.com/studev1922/courage.git`or download [courage-main.zip](https://github.com/studev1922/courage/archive/refs/heads/main.zip) and extract file
+   2. Point to the project `cd [...path to the project]/courage`
+   3. Execute database
+      - Create database `sqlcmd -f 65001 -i assets/mssql_base_super.sql`
+      - Insert database `sqlcmd -f 65001 -i assets/mssql_data_super.sql`
+   4. Start server with maven `mvn clean spring-boot:run -X`
+   5. Start **courage/client** with Live Server or _copy_ **all file in courage/client** and _paste_ to **courage/src/main/resources/static** or **courage/src/main/webapp**
+   6. Open **client** and **server**
+      - Open link **With Live Server** [http://127.0.0.1:5500/client/index.html](http://127.0.0.1:5500/client/index.html)
+      - Open link **With static or webapp** [http://localhost:8080/index.html](http://localhost:8080/index.html)
+      - localhost
+        - `http://127.0.0.1:5500` or `http://localhost:5500`
+        - `http://localhost:8080` or `http://127.0.0.1:8080`
+        - **path** _/server_ or _/client_ or _/index.html_
+## ABBREVIATE
 <ul>
    <li>
       <h3>execute <a href="assets">two files</a> in mssql(SQL Server)</h3>
@@ -31,8 +52,9 @@ This project provides the basic functionality that can be customized by subclass
    <li>
       <h3>open app on</h3>
       <ol>
-         <li><code>http://localhost:8080/index</code></li>
-         <li><code>http://localhost:8080/server</code></li>
+         <li>mvn: <code>http://localhost:8080/index</code></li>
+         <li>mvn: <code>http://localhost:8080/server</code></li>
+         <li>run as Live Server or any... <code>http://127.0.0.1:5500/client/index.html</code></li>
       </ol>
    </li>
 </ul>
