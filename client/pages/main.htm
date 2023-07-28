@@ -1,6 +1,6 @@
 <ng-include src="'components/_header.htm'" class="position-relative"></ng-include>
 <div class="container-xxl p-0">
    <ng-include src="'components/_carousel.htm'"></ng-include>
-   <ng-include src="'components/_content.htm'" class="d-block mt-1"></ng-include>
+   <ng-include src="'components/_content.htm'" class="d-block mt-1" ng-if="data.length"></ng-include>
    <ng-include src="'components/_about.htm'" class="d-block mt-1"></ng-include>
 </div>
