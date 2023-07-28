@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import courage.configuration.Authorization;
+import courage.model.dto.UserLogin;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
 
@@ -82,10 +83,11 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    }
 
    @RequestMapping(value = "/update-pass", method = { RequestMethod.PUT, RequestMethod.PATCH })
-   public ResponseEntity<?> updatePassword(String password) {
+   public ResponseEntity<?> updatePassword(UserLogin user) {
       try {
          Principal principal = req.getUserPrincipal();
-         ((UAccountRepository) super.rep).updatePassword(principal.getName(), encode.encode(password));
+         String password = encode.encode(user.getPassword());
+         ((UAccountRepository) super.rep).updatePassword(principal.getName(), password);
          return ResponseEntity.ok().build();
       } catch (Exception e) {
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

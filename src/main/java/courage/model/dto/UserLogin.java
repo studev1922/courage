@@ -2,6 +2,7 @@ package courage.model.dto;
 
 import org.springframework.stereotype.Component;
 
+import courage.model.entities.UAccount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Component
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLogin {
+public final class UserLogin {
 
     private String unique;
     private String username;
@@ -22,5 +23,9 @@ public class UserLogin {
 
     public void setUsername(String username) {
         this.unique = this.username = username;
+    }
+
+    public static UserLogin from(UAccount account) {
+        return new UserLogin(account.getEmail(), account.getUsername(), account.getPassword());
     }
 }

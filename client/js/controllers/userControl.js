@@ -74,7 +74,7 @@ app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
         success: (res, execute = 'execute') => {
             $scope.pushMessage({
                 htype: 'fw-bolder bg-success text-white',
-                heading: `${res.config?.method || execute} success.`,
+                heading: `${res?.message || execute} success.`,
                 body: `${execute} ${res?.username || 'data'} successfully!`
             }, 3.5e3)
             _rest.resetForm();

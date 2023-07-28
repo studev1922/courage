@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         res.setHeader ("Access-Control-Allow-Origin", "*");
         res.setHeader ("Access-Control-Allow-Methods", "*");
         res.setHeader ("Access-Control-Allow-Headers", "*");
-        res.setHeader ("Access-Control-Max-Age", "3600");
+        res.setHeader ("Access-Control-Max-Age", "5000");
         
         if (token != null && token.startsWith("Bearer ")) try {
             token = token.substring(token.indexOf(" "));

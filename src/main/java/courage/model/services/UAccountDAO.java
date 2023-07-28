@@ -15,4 +15,6 @@ public interface UAccountDAO extends SuperDAO<UAccount, Long> {
     public Set<String> findPlatformsByUid(Long uid);
 
     public UAccount register(UAccount account);
+
+    public void updatePassword(Long uid, String password);
 }

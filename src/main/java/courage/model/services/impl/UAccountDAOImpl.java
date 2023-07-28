@@ -65,6 +65,11 @@ public class UAccountDAOImpl implements UAccountDAO {
         return this.pass(account) ? this.save(account) : null;
     }
 
+    @Override
+    public void updatePassword(Long uid, String password) {
+        rep.updatePassword(password, encode.encode(password));
+    }
+
     private boolean pass(UAccount account) {
         boolean ispn = account.getRoles().contains(R.PARTNER.ordinal());
         account.setAccess(A.AWAITING);

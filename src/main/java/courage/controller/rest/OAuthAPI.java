@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +25,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +44,7 @@ import courage.model.util.Utils;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Message.RecipientType;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -51,6 +56,7 @@ public class OAuthAPI extends RestUAccount {
     // @formatter:off
     @Autowired private AuthenticationManager authenticationManager;
     @Autowired private PropertyService<String> ps;
+    @Autowired private HttpServletRequest req;
     @Autowired private HttpServletResponse res;
     @Autowired private MailService mail;
     @Autowired private JwtService jwt;
@@ -128,9 +134,28 @@ public class OAuthAPI extends RestUAccount {
             : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @Override public ResponseEntity<?> save(UAccount entity, MultipartFile... files) {return this.notAllowed();}
+    @Autowired @PreAuthorize("isAuthenticated()")
+    @RequestMapping(value = { "/update-pass" }, method = { RequestMethod.PATCH, RequestMethod.PUT })
+    public ResponseEntity<?> updatePassword(UserLogin user) {
+        return super.updatePassword(user);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override @RequestMapping(value = { "/update-info" }, method = { 
+        RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH 
+    })
+    public ResponseEntity<?> save(UAccount entity, @RequestPart(required = false) MultipartFile... files) {
+        String password  = entity.getPassword(); // super#save encoder password
+        ResponseEntity<?>  response = super.save(entity, files);
+        boolean isOk = response.getStatusCode().equals(HttpStatus.OK);
+
+        if(isOk && List.of("PUT", "PATCH").contains(req.getMethod())) {
+            super.updatePassword(new UserLogin(entity.getEmail(), null, password));
+        }
+        return response;
+    }
+
     @Override public ResponseEntity<?> save(Iterable<UAccount> entities) {return this.notAllowed();}
-    @Override public ResponseEntity<?> updatePassword(String password) {return this.notAllowed();}
     @Override public ResponseEntity<?> delete(Long id) {return this.notAllowed();}
     @Override public ResponseEntity<?> getData(Long[] id) {return this.notAllowed();}
     @Override public ResponseEntity<?> getData(Integer p, Integer s, Direction o, String... f) {return this.notAllowed();}
