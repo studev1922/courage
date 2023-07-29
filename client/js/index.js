@@ -86,10 +86,10 @@ const bsfw = {
       close?.click();
    },
    showImageInput: (formControl, showInputImages) => {
-      if(!formControl) return;
+      if (!formControl) return;
       let input = formControl.querySelector('input[type="file"]');
       let flex = showInputImages.querySelector('.d-flex');
-      if(!input || !flex) return; // break
+      if (!input || !flex) return; // break
 
       input.addEventListener('change', _ => {
          let childs = [], src;
@@ -172,5 +172,63 @@ const util = {
       let total = 0;
       for (x of arr) total += x;
       return total;
+   }
+}
+
+const handleDate = {
+   // GROUP BY
+   at: { year: 1, month: 12, week: 52, day: 365 },
+   
+   getDateInfo: function (regTime) {
+      let date = new Date(regTime);
+      let year = date.getFullYear(); // get year of the date
+      let month = date.getMonth() + 1; // (from 1 to 12)
+      let week = Math.ceil((Date.now() - date) / (1000 * 60 * 60 * 24 * 7)); // (from 1 to 53)
+
+      // Return an object with these values
+      return { year, month, week };
+   },
+
+   // Define a helper function that returns a string in the format of 'yyyy-MM-dd'
+   formatDate: function (date) {
+      // Get the year, month, and day of the date
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+
+      // Pad the month and day with leading zeros if needed
+      month = month.toString().padStart(2, "0");
+      day = day.toString().padStart(2, "0");
+
+      // Return the formatted string
+      return `${year}-${month}-${day}`;
+   },
+
+   groupBy: function (data = [], group = this.at.month) {
+      // Initialize an empty result object
+      let result = {};
+
+      // Loop through the input array
+      for (let i = 0; i < data.length; i++) {
+         let regTime = data[i].regTime;
+         let { year, month, week } = this.getDateInfo(regTime);
+         let key;
+
+         // Check which group parameter is passed to the function
+         switch (group) {
+            case this.at.year: key = year; break; // year
+            case this.at.month: key = `${year}-${month}`; break; // year and month
+            case this.at.week: key = `${year}-${week}`; break; // year and week
+            default:
+               key = this.formatDate(new Date(regTime))
+               break; // year, month, and day
+         }
+
+         // Check if the key already exists in the result object
+         if (result[key]) result[key].push(data[i]);
+         else result[key] = [data[i]];
+      }
+
+      return result;
    }
 }

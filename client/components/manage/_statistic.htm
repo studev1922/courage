@@ -1,0 +1,26 @@
+<h3 class="text-center text-warning">ACCOUNT STATISTICS</h3>
+<div class="d-flex flex-wrap border-top" style="background-image: var(--bgr-linear-dark);">
+    <!-- show chart -->
+    <div class="col-xl-9 col-12 overflow-auto border-bottom">
+        <canvas id="chartStatistic" style="min-height: 100%;"></canvas>
+    </div>
+
+    <!-- side menu bar -->
+    <div class="col-xl-3 col-12 border-bottom">
+        <nav class="navbar flex-column flex-shrink-0 p-3" style="height: 100%;">
+            <ul class="nav nav-fill flex-xl-column flex-md-wrap text-md-end" style="width: 100%;">
+                <li class="nav-item border-bottom">
+                    <a class="nav-link" href="" ng-click="chart.relationship(mdata)">Data relationships</a>
+                </li>
+                <li class="nav-item border-bottom">
+                    <a class="nav-link" href="" ng-click="chart.timeRegister(mdata, 'day')">Account register time</a>
+                </li>
+                <li class="nav-item border-bottom">
+                    <a class="nav-link" href="">
+                        <em>TODO: <code>accesses</code>, <code>platforms</code>, <code>roles</code></em>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

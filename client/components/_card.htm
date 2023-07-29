@@ -1,5 +1,5 @@
 <div class="card max-size" style="background: #00000045; color: white;">
-   <div class="card-header text-center" ng-if="security.hasRole('ADMIN')" access-color access="e.access">
+   <div class="card-header text-center" ng-show="isAdmin" access-color access="e.access">
       {{e.username}}&nbsp;({{e.uid}})
    </div>
    <div class="card-body">
@@ -10,12 +10,12 @@
       </div>
       <p class="card-text bg-opacity-25 bg-dark">With supporting text below as a natural lead-in to additional content.</p>
       <div class="text-end">
-         <a href="#!detail/{{e.uid}}"  class="btn border-bottom" style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
-            <img width="32px" src="assets/imgIcon/loupe.png">&nbsp;detail {{e.uid}}
+         <a href="#!detail/{{e.uid}}"  class="btn border-bottom w-100" style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
+            <img width="32px" src="assets/imgIcon/loupe.png">&nbsp;detail {{e.username}}
          </a>
       </div>
    </div>
-   <div class="card-footer text-center text-body-secondary">
-      {{e.regTime | date: 'EEEE dd-MM-yyyy'}}
+   <div class="card-footer text-center text-body-secondary" ng-show="isAdmin">
+      <em>{{e.regTime | date: 'EEEE dd-MM-yyyy'}}</em>
    </div>
 </div>

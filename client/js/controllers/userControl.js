@@ -1,5 +1,7 @@
 // usercontrol
-app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
+app.controller('usercontrol', function ($scope, $routeParams, $location, security) {
+    let items = tabs.querySelectorAll('.nav-link'); // panel-tabs
+
     let path = "accounts", // path api
         dataName = 'mdata', // data
         entity = 'user', // form data
@@ -13,41 +15,22 @@ app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
     };
 
     const u = {
-        uid: -1,
-        username: undefined,
-        email: undefined,
-        fullname: undefined,
-        regTime: new Date(),
-        images: [],
-        access: 0,
-        roles: [0],
-        platforms: [0]
+        uid: -1, username: undefined, email: undefined,
+        fullname: undefined, regTime: new Date(), images: [],
+        access: 0, roles: [0], platforms: [0],
     };
 
-    (() => {
-        // handle nav-tabs event clicked
-        let items = tabs.querySelectorAll('.nav-link');
-        items.forEach(item => item.addEventListener('click', _ => {
-            items.forEach(e => e.classList?.remove('active')) // remove all active
-            item.classList.add('active'); // show new active
-            removeElements('[role="tooltip"]'); // remove all tag tooltip
-        }));
-
-        $scope[entity] = angular.copy(u);
-        $scope.selectTab = (at = 0) => items[at].click();
-
-        switch ($routeParams['page']) {
-            default:
-            case 'one':
-                $scope.srctab = 'components/manage/_one.htm'
-                items[0].click();
-                break;
-            case 'list':
-                $scope.srctab = 'components/manage/_list.htm'
-                items[1].click();
-                break;
+    $scope.switchTab = function (value) {
+        let at = items.length - 1;
+        switch (value) {
+            case 'detail': $scope.srctab = 'components/manage/_detail.htm'; at = 0; break;
+            case 'list': $scope.srctab = 'components/manage/_list.htm'; at = 1; break;
+            case 'statistic': default: at = 2;
+                $scope.srctab = 'components/manage/_statistic.htm'; break;
         }
-    })();
+        items[at].classList.add('active');
+        removeElements('[role="tooltip"]'); // remove all tag tooltip
+    }
 
     function getFormData() {
         let obj = $scope[entity];
@@ -69,6 +52,61 @@ app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
         });
         return { id, index, exist };
     }
+
+    $scope.chart = {
+        contruct: { destroy: console.dir },
+        relationship: function (mdata) {
+            var ctx = chartStatistic?.getContext("2d");
+            if (!ctx || !mdata) return;
+
+            var objData = { images: [], roles: [], platforms: [] };
+            var options = {
+                responsive: true,
+                plugins: {
+                    title: { display: true, fullSize: true, text: 'Count Relationship Data' }
+                },
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                }
+            };
+
+            // data of datasets
+            mdata.forEach(e => {
+                objData.roles.push(e.roles?.length || 0)
+                objData.images.push(e.images?.length || 0)
+                objData.platforms.push(e.platforms?.length || 1)
+            });
+
+            var data = {
+                labels: mdata.map(e => e['username']),
+                datasets: [
+                    { label: "images", data: objData.images },
+                    { label: "roles", data: objData.roles },
+                    { label: "platforms", data: objData.platforms, borderRadius: 10 }
+                ]
+            }
+            $scope.chart.contruct.destroy(); // destroy old chart
+            $scope.chart.contruct = new Chart(ctx, { type: "bar", data, options });
+        },
+        timeRegister: function (mdata, group = 'month') {
+            var ctx = chartStatistic?.getContext("2d");
+            if (!ctx || !mdata) return;
+
+            mdata = handleDate.groupBy(mdata, handleDate.at[group]);
+            var options = { borderRadius: 10 };
+            var data = {
+                labels: Object.keys(mdata),
+                datasets: [
+                    { label: group, data: Object.values(mdata).map(e => e.length) }
+                ]
+            }
+            $scope.chart.contruct.destroy(); // destroy old chart
+            $scope.chart.contruct = new Chart(ctx, { type: "bar", data, options });
+        },
+        // TODO: access, platform, roles
+    }
+
 
     const _rest = {
         success: (res, execute = 'execute') => {
@@ -140,8 +178,8 @@ app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
             .then(_rest.success).catch(_rest.exception),
         read: (e) => {
             $scope[entity] = e;
-            $scope.selectTab(0);
             $scope.access = true;
+            $scope.switchTab('detail');
         },
         clear: () => {
             if (confirm(`Do you want to clear form data ${$scope[entity].username || 'user'}?`)) {
@@ -151,16 +189,26 @@ app.controller('usercontrol', function ($scope, $http, $routeParams, security) {
         }
     }
 
-    $scope.$watch('srctab', function (src) { // load all component
+    $scope.$watch('srctab', function (src = '') { // load all component
         $scope.$watch('$stateCngeSuccess', setTimeout(() => {
             bsfw.loadPopovers();
-            if (src.endsWith('_one.htm')) bsfw.showImageInput(
-                document.getElementById('formControl'), showInputImages
-            );
-        }, 500))
+            switch (src.substring(src.lastIndexOf('_'))) {
+                case '_detail.htm': bsfw.showImageInput(formControl, showInputImages); break;
+                case '_statistic.htm': $scope.chart.relationship($scope[dataName]); break;
+                default: break;
+            }
+        }, 250))
     }) // await 500 miliseconds to load popovers
 
     $scope.$watch('$stateChangeSuccess', async () => {
+        $scope[entity] = angular.copy(u);
+        $scope.switchTab($routeParams['page']);
+        // handle event clicked nav-links => show active css
+        items.forEach(item => item.addEventListener('click', _ => {
+            items.forEach(e => e.classList?.remove('active'))
+            item.classList.add('active');
+        }));
+
         if (security.isLoggedIn()) {
             await $scope.crud.get(path, dataName, undefined, configuration)
                 .then(_rest.success).catch(_rest.exception)

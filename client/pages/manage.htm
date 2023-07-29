@@ -1,13 +1,16 @@
 <div style="margin-top: 5rem;"></div>
 <div class="container-xxl border-0 border-start border-end text-white">
-   <h2 class="text-xl-start text-md-center">management data</h2>
+   <h2 class="text-xl-start text-md-center text-hover">ACCOUNT MANAGEMENT</h2>
    <!-- Tabs navs -->
-   <ul class="nav nav-tabs justify-content-xl-end justify-content-sm-center" id="tabs">
+   <ul class="nav nav-tabs justify-content-xl-start justify-content-sm-center" id="tabs">
       <li class="nav-item">
-         <a class="nav-link active" href="javascript:void(0)" ng-click="srctab='components/manage/_one.htm'">detail</a>
+         <a class="nav-link" href="" ng-click="switchTab('detail')">detail</a>
       </li>
       <li class="nav-item">
-         <a class="nav-link" href="javascript:void(0)" ng-click="srctab='components/manage/_list.htm'">list data</a>
+         <a class="nav-link" href="" ng-click="switchTab('list')">list data</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="" ng-click="switchTab('statistic')">statistic</a>
       </li>
    </ul>
    <!-- show content ./components/manage/{filename} -->
