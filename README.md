@@ -56,7 +56,7 @@ This project provides the basic functionality that can be customized by subclass
       - Create database `sqlcmd -f 65001 -i assets/mssql_base_super.sql`
       - Insert database `sqlcmd -f 65001 -i assets/mssql_data_super.sql`
    4. Start server with maven `mvn clean spring-boot:run -X`
-   5. Start **courage/client** with Live Server or _copy_ **all files in courage/client** and _paste_ to **courage/src/main/resources/static**:`robocopy client src/main/resources/static /e` or **courage/src/main/webapp**:`robocopy client src/main/webapp /e`
+   5. Start **courage/client/index.html** with Live Server or _copy_ **all files in courage/client** and _paste_ to **courage/src/main/resources/static** : `robocopy client src/main/resources/static /e` or **courage/src/main/webapp** : `robocopy client src/main/webapp /e`
    6. Open **client** and **server**
       - Open link **With Live Server** [http://127.0.0.1:5500/client/index.html](http://127.0.0.1:5500/client/index.html)
       - Open link **With static or webapp** [http://localhost:8080/index.html](http://localhost:8080/index.html)
