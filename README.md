@@ -5,6 +5,44 @@ This project provides the basic functionality that can be customized by subclass
 1. File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
 2. File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
 
+## ACCOUNTS
+<table>
+    <thead>
+        <tr>
+            <th>USERNAME</th>
+            <th>PASSWORD</th>
+            <th>ROLES</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>admin</td>
+            <td>123</td>
+            <td>ADMIN, STAFF, USER</td>
+        </tr>
+        <tr>
+            <td>staff</td>
+            <td>123</td>
+            <td>STAFF</td>
+        </tr>
+        <tr>
+            <td>user1</td>
+            <td>123</td>
+            <td>USER</td>
+        </tr>
+        <tr>
+            <td>user2</td>
+            <td>123</td>
+            <td>_</td>
+        </tr>
+        <tr>
+            <td>partner</td>
+            <td>123</td>
+            <td>PARTNER</td>
+        </tr>
+    </tbody>
+</table>
+
 ## DEPLOYMENT
 - Requirements
    - SQL Server 2014 or later `sqlcmd -?`
