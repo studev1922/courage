@@ -7,18 +7,62 @@
 
     <!-- side menu bar -->
     <div class="col-xl-3 col-12 border-bottom">
+        <p class="p-3 border-bottom">
+            <img src="assets/icon/code.svg" alt="courage" width="32px" style="color: #ffffff;" />
+            <span class="fw-bolder">FILTER DATA</span>
+        </p>
         <nav class="navbar flex-column flex-shrink-0 p-3" style="height: 100%;">
-            <ul class="nav nav-fill flex-xl-column flex-md-wrap text-md-end" style="width: 100%;">
-                <li class="nav-item border-bottom">
+            <ul class="nav gap-1 nav-fill flex-xl-column flex-md-wrap text-md-end" style="width: 100%;">
+                <!-- Count relational data relationships -->
+                <li class="nav-item border-start">
                     <a class="nav-link" href="" ng-click="chart.relationship(mdata)">Data relationships</a>
                 </li>
-                <li class="nav-item border-bottom">
-                    <a class="nav-link" href="" ng-click="chart.timeRegister(mdata, 'day')">Account register time</a>
-                </li>
-                <li class="nav-item border-bottom">
-                    <a class="nav-link" href="">
-                        <em>TODO: <code>accesses</code>, <code>platforms</code>, <code>roles</code></em>
+
+                <!-- Count data over time -->
+                <li class="nav-item border-start dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Account register time
                     </a>
+                    <ul class="dropdown-menu w-100 text-xl-end text-md-center border"
+                        style="background: var(--bgr-linear-dark);">
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.timeRegister(mdata, 'year')">
+                                By year
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.timeRegister(mdata, 'quarter')">
+                                By quarter
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.timeRegister(mdata, 'month')">
+                                By month
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.timeRegister(mdata, 'week')">
+                                By week
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.timeRegister(mdata, 'day')">
+                                By day
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <hr class="dropdown-divider">
+                <!-- Count relational data relationships -->
+                <li class="nav-item border-start">
+                    <a class="nav-link" href="" ng-click="chart.sizeOf(ur.accesses, 'uaName')">Access</a>
+                </li>
+                <li class="nav-item border-start">
+                    <a class="nav-link" href="" ng-click="chart.sizeOf(ur.roles, 'role')">Roles</a>
+                </li>
+                <li class="nav-item border-start">
+                    <a class="nav-link" href="" ng-click="chart.sizeOf(ur.platforms, 'upName')">Platforms</a>
                 </li>
             </ul>
         </nav>

@@ -134,6 +134,28 @@ let local = {
 const util = {
 
    /**
+    * 
+    * @param {{size:Number, co: Number, bo: Number}} optional size of random, co:color-opacity, bo:border-opacity
+    * @param {Array} colors 
+    * @param {Array} borders 
+    * @returns 
+    */
+   randomColor: function (optional = { size: 10, co: .8, bo: 1 }, colors, borders) {
+      if (colors, borders) {
+         let { size, co, bo } = optional;
+         if (!size) return;
+         if (!co) co = .8;
+         if (!bo) bo = 1;
+
+         for (let i = 0; i < size; i++) {
+            let color = Math.random() * 360;
+            colors.push(`hsl(${color}, 60%, 80%, ${co})`);
+            borders.push(`hsl(${color}, 80%, 60%, ${bo})`);
+         }
+      }
+   },
+
+   /**
     * @param {Object} obj 
     * @param {Array} files 
     * @returns {FormData}
@@ -177,16 +199,17 @@ const util = {
 
 const handleDate = {
    // GROUP BY
-   at: { year: 1, month: 12, week: 52, day: 365 },
-   
+   at: { year: 1, quarter: 4, month: 12, week: 52, day: 365 },
+
    getDateInfo: function (regTime) {
       let date = new Date(regTime);
       let year = date.getFullYear(); // get year of the date
       let month = date.getMonth() + 1; // (from 1 to 12)
+      let quarter = Math.ceil(month/this.at.quarter); // (from 1 to 4)
       let week = Math.ceil((Date.now() - date) / (1000 * 60 * 60 * 24 * 7)); // (from 1 to 53)
 
       // Return an object with these values
-      return { year, month, week };
+      return { year, quarter, month, week };
    },
 
    // Define a helper function that returns a string in the format of 'yyyy-MM-dd'
@@ -204,19 +227,20 @@ const handleDate = {
       return `${year}-${month}-${day}`;
    },
 
-   groupBy: function (data = [], group = this.at.month) {
+   groupBy: function (data = [], group = this.at.month, col = 'regTime') {
       // Initialize an empty result object
       let result = {};
 
       // Loop through the input array
       for (let i = 0; i < data.length; i++) {
-         let regTime = data[i].regTime;
-         let { year, month, week } = this.getDateInfo(regTime);
+         let regTime = data[i][col];
+         let { year, quarter, month, week } = this.getDateInfo(regTime);
          let key;
 
          // Check which group parameter is passed to the function
          switch (group) {
             case this.at.year: key = year; break; // year
+            case this.at.quarter: key = `${year}-${quarter}`; break; // year and quarter
             case this.at.month: key = `${year}-${month}`; break; // year and month
             case this.at.week: key = `${year}-${week}`; break; // year and week
             default:

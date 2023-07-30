@@ -28,6 +28,8 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
             case 'statistic': default: at = 2;
                 $scope.srctab = 'components/manage/_statistic.htm'; break;
         }
+        //nav-links => show active css
+        items.forEach(item => item.classList.remove('active'));
         items[at].classList.add('active');
         removeElements('[role="tooltip"]'); // remove all tag tooltip
     }
@@ -75,7 +77,7 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
             mdata.forEach(e => {
                 objData.roles.push(e.roles?.length || 0)
                 objData.images.push(e.images?.length || 0)
-                objData.platforms.push(e.platforms?.length || 1)
+                objData.platforms.push(e.platforms?.length || 0)
             });
 
             var data = {
@@ -93,18 +95,52 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
             var ctx = chartStatistic?.getContext("2d");
             if (!ctx || !mdata) return;
 
+            // group by date
             mdata = handleDate.groupBy(mdata, handleDate.at[group]);
-            var options = { borderRadius: 10 };
+
+            // declare opotions and data to create chart
+            var options = {
+                borderRadius: 10,
+                plugins: {
+                    title: { display: true, fullSize: true, text: `Account register in ${group}` }
+                }
+            }, backgroundColor = [], borderColor = [];
+            var values = Object.values(mdata).map(e => e.length)
             var data = {
                 labels: Object.keys(mdata),
                 datasets: [
-                    { label: group, data: Object.values(mdata).map(e => e.length) }
+                    { label: group, data: values, backgroundColor, borderColor, borderWidth: 3 }
                 ]
             }
+
+            // random background and border
+            util.randomColor({ size: values.length, co: .39, bo: .79 }, backgroundColor, borderColor);
+
             $scope.chart.contruct.destroy(); // destroy old chart
             $scope.chart.contruct = new Chart(ctx, { type: "bar", data, options });
         },
-        // TODO: access, platform, roles
+        sizeOf(data = [], keyLabel, keyArr = 'accounts') {
+            var ctx = chartStatistic?.getContext("2d");
+
+            // declare opotions and data to create chart
+            var options = { borderRadius: 10 }, backgroundColor = [], borderColor = [];
+            var values = data.map(e => e[keyArr]?.length);
+            var data = {
+                labels: data.map(e => e[keyLabel]),
+                datasets: [
+                    {
+                        label: 'size', data: values,
+                        backgroundColor, borderColor, borderWidth: 3
+                    }
+                ]
+            }
+
+            // random background and border
+            util.randomColor({ size: values.length, co: .39, bo: .79 }, backgroundColor, borderColor);
+
+            $scope.chart.contruct.destroy(); // destroy old chart
+            $scope.chart.contruct = new Chart(ctx, { type: "bar", data, options });
+        },
     }
 
 
@@ -203,11 +239,6 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
     $scope.$watch('$stateChangeSuccess', async () => {
         $scope[entity] = angular.copy(u);
         $scope.switchTab($routeParams['page']);
-        // handle event clicked nav-links => show active css
-        items.forEach(item => item.addEventListener('click', _ => {
-            items.forEach(e => e.classList?.remove('active'))
-            item.classList.add('active');
-        }));
 
         if (security.isLoggedIn()) {
             await $scope.crud.get(path, dataName, undefined, configuration)
