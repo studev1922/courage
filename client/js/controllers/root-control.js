@@ -29,7 +29,16 @@ app.controller('control', ($scope, $http, $location, security) => {
       login: async function (user, target) {
          if ($scope.authenticated) return;
          let auth = security.getAuth();
-         if (!auth) auth = $scope.authenticated = await security.loginByParams(user);
+         if (!auth) auth = $scope.authenticated = await security.loginByParams(user)
+            .catch(error => {
+               console.error(error);
+               $scope.pushMessage({
+                  htype: 'bg-danger', btype: 'bg-danger', ftype: 'bg-danger',
+                  heading: 'Login failed',
+                  body: error.message || error.data?.message || 'failed!'
+               }, 5e3);
+            });
+            
          $scope.pushMessage(auth ? `${auth['username']} logged in.` : 'failed to loggin!', 3.5e3);
          Object.assign(user, { username: undefined, password: undefined }); // clear form
          if (target) bsfw.hideModel(target);
@@ -58,7 +67,7 @@ app.controller('control', ($scope, $http, $location, security) => {
             if (isLogin) {
                let token = res.headers('Authorization');
                $scope.authenticated = security.setToken(token); // login
-               $scope.pushMessage(`Welcome ${res.data.username} logged in.`, 5e3);               
+               $scope.pushMessage(`Welcome ${res.data.username} logged in.`, 5e3);
             }
          }).catch(err => {
             $scope.pushMessage(err.message || err.data?.message, 5e3);

@@ -30,7 +30,8 @@ public class AppConfiguration implements Authorization {
     @Bean // @formatter:off
     SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter filter) throws Exception {        
         http.csrf().disable();
-        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class); // for login jwt token
+
         this.authorities(http);
         this.authenticate(http);
         

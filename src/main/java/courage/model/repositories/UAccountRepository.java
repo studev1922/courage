@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import courage.configuration.Authorization;
 import courage.model.entities.UAccount;
 
 @Repository
@@ -24,9 +25,13 @@ public interface UAccountRepository extends JpaRepository<UAccount, Long> {
    @Query(value = "SELECT * FROM UAccount WHERE :unique IN (username, email)", nativeQuery = true)
    UAccount findByUnique(String unique);
 
-   @Query(value = 
-      "SELECT case when count(uid)>0 then 'true' else 'false' end FROM UAccount WHERE username=:username OR email=:email"
-   ) Boolean exist(String username, String email);
+   @Query("SELECT case when count(uid)>0 then 'true' else 'false' end"
+         + " FROM UAccount WHERE username=:username OR email=:email")
+   Boolean exist(String username, String email);
+
+   @Query(value = "SELECT ua.ua_name FROM UACCOUNT a INNER JOIN UACCESS ua"
+         + " ON ua.uaid = a.ua_id WHERE :unique IN (username, email)", nativeQuery = true)
+   Authorization.A getAccess(String unique);
 
    /**
     * @formatter:off

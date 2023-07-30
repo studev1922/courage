@@ -61,7 +61,7 @@ app.factory('security', function ($http, $cookies, $window) {
                 token = res.headers('Authorization') || res.data.token;
                 setToken(token);
                 return authenticated;
-            }).catch(console.error);
+            });
     };
 
     // Define a public function to log out

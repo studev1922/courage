@@ -33,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nimbusds.jose.JOSEException;
 
+import courage.configuration.Authorization;
 import courage.model.dto.UserLogin;
 import courage.model.entities.UAccount;
 import courage.model.repositories.UAccountRepository;
@@ -112,8 +113,16 @@ public class OAuthAPI extends RestUAccount {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLogin account) throws IOException, ServletException {
+        String unique = account.getUnique();
+        if(((UAccountRepository) super.rep).getAccess(unique) == Authorization.A.LOCK) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Utils.jsonMessage("message", 
+                    Utils.build("Account ", unique, " is being locked!")
+                ));
+        }
+        
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            account.getUsername(), account.getPassword()
+            unique, account.getPassword()
         );
         try {
             Authentication authentication = authenticationManager.authenticate(authToken);
