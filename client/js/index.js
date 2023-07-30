@@ -179,12 +179,20 @@ const util = {
    has: (arr, values, key) => arr?.filter(x => values?.includes(x[key])),
 
    /**
-    * @param {Array} _ array data to sort
+    * @param {Array} array array data to sort
     * @param {String} col is condition to sort
     * @param {Boolean} isDesc descending or ascending sort
     * @returns {Array} _ array sorted
     */
-   sort: (_, col, isDesc) => eval(`_?.sort((${isDesc ? 'o1,o2' : 'o2,o1'}) => o1.${col}.localeCompare(o2.${col}))`),
+   sort: (array, col, isDesc = false) => {
+      if (!array || !array.length) return;
+      console.log(array);
+      let compare = typeof (array[0][col]) === 'string'
+         ? `o1.${col}.localeCompare(o2.${col})`
+         : `o1.${col} > o2.${col} ? -1 : 1`;
+      eval(`array?.sort((${isDesc ? 'o1,o2' : 'o2,o1'}) => ${compare})`)
+      return array;
+   },
 
    /**
     * @param {Array} arr sum of array
@@ -194,6 +202,17 @@ const util = {
       let total = 0;
       for (x of arr) total += x;
       return total;
+   },
+
+   /**
+    * @param {Array} arr array data 
+    * @param {String} col binding value 
+    * @param {{min:Number, max:Number}} range 
+    * @returns 
+    */
+   between: (arr, col, range = { min: Number.MIN_VALUE, max: Number.MAX_VALUE }) => {
+      let { min, max } = range; // between range
+      return arr.filter(e => min <= e[col] && e[col] <= max);
    }
 }
 
@@ -205,7 +224,7 @@ const handleDate = {
       let date = new Date(regTime);
       let year = date.getFullYear(); // get year of the date
       let month = date.getMonth() + 1; // (from 1 to 12)
-      let quarter = Math.ceil(month/this.at.quarter); // (from 1 to 4)
+      let quarter = Math.ceil(month / this.at.quarter); // (from 1 to 4)
       let week = Math.ceil((Date.now() - date) / (1000 * 60 * 60 * 24 * 7)); // (from 1 to 53)
 
       // Return an object with these values
