@@ -53,16 +53,31 @@
                         </li>
                     </ul>
                 </li>
-                <hr class="dropdown-divider">
+
                 <!-- Count relational data relationships -->
-                <li class="nav-item border-start">
-                    <a class="nav-link" href="" ng-click="chart.sizeOf(ur.accesses, 'uaName')">Access</a>
-                </li>
-                <li class="nav-item border-start">
-                    <a class="nav-link" href="" ng-click="chart.sizeOf(ur.roles, 'role')">Roles</a>
-                </li>
-                <li class="nav-item border-start">
-                    <a class="nav-link" href="" ng-click="chart.sizeOf(ur.platforms, 'upName')">Platforms</a>
+                <li class="nav-item border-start dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        Count relational
+                    </a>
+                    <ul class="dropdown-menu w-100 text-xl-end text-md-center border"
+                        style="background: var(--bgr-linear-dark);">
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.sizeOf(ur.accesses, 'uaName')">
+                                Access
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.sizeOf(ur.roles, 'role')">
+                                Roles
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-light" href="" ng-click="chart.sizeOf(ur.platforms, 'upName')">
+                                Platforms
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

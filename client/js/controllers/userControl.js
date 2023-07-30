@@ -125,11 +125,12 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
             // declare opotions and data to create chart
             var options = { borderRadius: 10 }, backgroundColor = [], borderColor = [];
             var values = data.map(e => e[keyArr]?.length);
+
             var data = {
                 labels: data.map(e => e[keyLabel]),
                 datasets: [
                     {
-                        label: 'size', data: values,
+                        label: 'quantity', data: values,
                         backgroundColor, borderColor, borderWidth: 3
                     }
                 ]
@@ -225,20 +226,21 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
         }
     }
 
-    $scope.$watch('srctab', function (src = '') { // load all component
-        $scope.$watch('$stateCngeSuccess', setTimeout(() => {
-            bsfw.loadPopovers();
-            switch (src.substring(src.lastIndexOf('_'))) {
-                case '_detail.htm': bsfw.showImageInput(formControl, showInputImages); break;
-                case '_statistic.htm': $scope.chart.relationship($scope[dataName]); break;
-                default: break;
-            }
-        }, 250))
-    }) // await 500 miliseconds to load popovers
-
     $scope.$watch('$stateChangeSuccess', async () => {
         $scope[entity] = angular.copy(u);
         $scope.switchTab($routeParams['page']);
+
+        $scope.$watch('srctab', function (src = '') { // load all component
+            $scope.$watch('$stateChangeSuccess', setTimeout(() => {
+                bsfw.loadPopovers();
+                console.log(src);
+                switch (src.substring(src.lastIndexOf('_'))) {
+                    case '_detail.htm': bsfw.showImageInput(formControl, showInputImages); break;
+                    case '_statistic.htm': $scope.chart.relationship($scope[dataName]); break;
+                    default: break;
+                }
+            }, 250))
+        }) // await 250 miliseconds to load popovers
 
         if (security.isLoggedIn()) {
             await $scope.crud.get(path, dataName, undefined, configuration)
