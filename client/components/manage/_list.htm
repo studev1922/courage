@@ -1,25 +1,50 @@
-<h3 class="text-center text-warning">VIEW LIST CONTROL</h3>
 <div class="overflow-auto">
-   <div hidden>
-      <input type="hidden" ng-model="o.temr">
-      <input type="hidden" ng-model="o.temp">
-   </div>
-   <table class="table text-white bg-dark bg-opacity-25" ng-if="mdata.length">
-      <thead>
-         <td>No</td>
-         <th>username</th>
-         <th>email</th>
-         <th>fullname</th>
-         <th>access</th>
+   <h3>list data</h3>
+   <table class="table text-white bg-dark-gradient" ng-if="mdata.length">
+      <thead class="text-center">
+         <!-- default -->
+         <td style="cursor: pointer;" ng-click="fil.sort='uid';fil.isDesc=false">
+            No
+         </td>
+         <!-- username -->
+         <th ng-click="fil.sort='username';fil.isDesc=!fil.isDesc" style="cursor: pointer;">
+            <span>username</span>
+            <img ng-show="fil.sort!='username'" src="assets/icon/sort.svg" width="14px">
+            <img width="14px" style="color: white;" ng-show="fil.sort=='username'"
+               ng-src="assets/icon/{{fil.isDesc ? 'sort-down.svg' : 'sort-up.svg'}}">
+         </th>
+         <!-- email -->
+         <th ng-click="fil.sort='email';fil.isDesc=!fil.isDesc" style="cursor: pointer;">
+            <span>email</span>
+            <img ng-show="fil.sort!='email'" src="assets/icon/sort.svg" width="14px">
+            <img width="14px" style="color: white;" ng-show="fil.sort=='email'"
+               ng-src="assets/icon/{{fil.isDesc ? 'sort-down.svg' : 'sort-up.svg'}}">
+         </th>
+         <!-- fullname -->
+         <th ng-click="fil.sort='fullname';fil.isDesc=!fil.isDesc" style="cursor: pointer;">
+            <span>fullname</span>
+            <img ng-show="fil.sort!='fullname'" src="assets/icon/sort.svg" width="14px">
+            <img width="14px" style="color: white;" ng-show="fil.sort=='fullname'"
+               ng-src="assets/icon/{{fil.isDesc ? 'sort-down.svg' : 'sort-up.svg'}}">
+         </th>
+         <!-- access -->
+         <th ng-click="fil.sort='access';fil.isDesc=!fil.isDesc" style="cursor: pointer;">
+            <span>access</span>
+            <img ng-show="fil.sort!='access'" src="assets/icon/sort.svg" width="14px">
+            <img width="14px" style="color: white;" ng-show="fil.sort=='access'"
+               ng-src="assets/icon/{{fil.isDesc ? 'sort-down.svg' : 'sort-up.svg'}}">
+         </th>
          <th>roles</th>
          <th>platform</th>
          <th>images</th>
       </thead>
       <tbody style="vertical-align: middle;">
          <!-- each fields -->
-         <tr ng-repeat="(i,e) in mdata track by e.uid" ng-dblclick="control.read(e)">
+         <tr ng-repeat="(i,e) in (filData || mdata) | sort:fil.sort:fil.isDesc track by e.uid" ng-dblclick="control.read(e)">
+
             <td class="text-nowrap">
-               <button class="text-white btn" style="background: var(--bgr-linear2);" role="button" ng-click="control.read(e)">
+               <button class="text-white btn" style="background: var(--bgr-linear2);" role="button"
+                  ng-click="control.read(e)">
                   <img width="32px" src="assets/imgIcon/loupe.png">
                </button>
                <input type="hidden" ng-value="e.uid">

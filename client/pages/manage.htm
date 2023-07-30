@@ -13,6 +13,45 @@
          <a class="nav-link" href="" ng-click="switchTab('statistic')">statistic</a>
       </li>
    </ul>
+
+   <!-- filter data -->
+   <div class="d-flex align-items-end flex-wrap">
+      <h3>Filter data</h3>
+      <div class="ms-auto position-relative" ng-if="filData">
+         <div class="dropdown">
+            <button class="btn badge rounded-pill bg-warning dropdown-toggle" type="button" data-bs-toggle="dropdown"
+               aria-expanded="false">
+               size: {{filData.length}}
+            </button>
+            <ul class="dropdown-menu bg-dark-gradient overflow-auto" style="background-color: transparent; max-height: 100vh;">
+               <li ng-repeat="e in filData" ng-click="control.read(e)">
+                  <a class="dropdown-item text-white" href="" ng-bind="e.username"></a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+   <!-- filter models -->
+   <nav class="nav nav-fill gap-1 flex-md-nowrap flex-xl-wrap align-items-end w-100 mb-3">
+      <div class="mt-1">
+         <label class="custom-label">Start time</label>
+         <input type="datetime-local" class="custom-input" ng-model="fil.min">
+      </div>
+      <div class="mt-1">
+         <label class="custom-label">End time</label>
+         <input type="datetime-local" class="custom-input" ng-model="fil.max">
+      </div>
+      <div class="mt-1">
+         <label class="custom-label">Search</label>
+         <input type="text" class="custom-input" placeholder="search like keywords" ng-model="fil.search" ng-enter="control.action('#submitSearch')">
+      </div>
+      <div class="ms-auto mt-1">
+         <button type="button" class="btn btn-outline-info rounded-pill" id="submitSearch"
+            ng-click="filData = (mdata | filter:fil.search | between:'regTime':fil)">
+            filter
+         </button>
+      </div>
+   </nav>
    <!-- show content ./components/manage/{filename} -->
    <ng-include src="srctab"></ng-include>
 </div>
