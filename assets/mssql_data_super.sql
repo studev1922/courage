@@ -46,10 +46,10 @@ INSERT INTO [dbo].[UACCOUNT]
    ([uid], [username], [email], [password], [fullname], [regTime], [ua_id])
 VALUES -- password: '123'
    (1001, 'admin', 'sdhoa1922@gmail.com', '$2a$10$YY/78l37ESgtzL5zTq1IIeDMrP54WSYmb6TlRRcFptsTf.9N4Xjie', N'Admin System Test', '2023-02-18 08:58:33', 4),
-   (1002, 'staff', 'staff.studev1922@gmail.com', '$2a$10$E.eEJU6vKR1co.L/zHFygeLzNX3QbHdOCDHlufHKLBHlBlfdTDcoa', N'Staff System Test', '2023-05-04 04:45:17', 4),
+   (1002, 'staff', 'staff.studev1922@gmail.com', '$2a$10$E.eEJU6vKR1co.L/zHFygeLzNX3QbHdOCDHlufHKLBHlBlfdTDcoa', N'Staff System Test', '2023-05-04 04:45:17', 3),
    (1003, 'user1', 'user1.studev1922@gmail.com', '$2a$10$5dSewTAkJkg2RXSyTsr/mOYudBqFTun3UrP1/UvGaeXvKC4UsFPdO', N'User System Test', '2023-03-25 09:09:27', 2),
-   (1004, 'user2', 'user2.studev1922@gmail.com', '$2a$10$f41fljoyi4MGCBO5vt.1HuI37KnWnCfuuxKlv10HjmboQ6oHbdyke', N'User System Test', '2023-04-05 21:32:00', 0),
-   (1005, 'partner', 'partner.studev1922@gmail.com', '$2a$10$OyZ3vjznfcvgjmGhI/nSxeOmcIRZaNQkXuMpQK56r9dX5sSAzaE7q', N'Partner System Test', '2023-01-22 15:08:08', 3);
+   (1004, 'user2', 'user2.studev1922@gmail.com', '$2a$10$f41fljoyi4MGCBO5vt.1HuI37KnWnCfuuxKlv10HjmboQ6oHbdyke', N'User System Test', '2023-04-05 21:32:00', 1),
+   (1005, 'partner', 'partner.studev1922@gmail.com', '$2a$10$OyZ3vjznfcvgjmGhI/nSxeOmcIRZaNQkXuMpQK56r9dX5sSAzaE7q', N'Partner System Test', '2023-01-22 15:08:08', 0);
 GO
 
 SET IDENTITY_INSERT [dbo].[UACCOUNT] OFF
