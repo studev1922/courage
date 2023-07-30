@@ -1,5 +1,5 @@
 // usercontrol
-app.controller('usercontrol', function ($scope, $routeParams, $location, security) {
+app.controller('usercontrol', function ($scope, $routeParams, security) {
     let items = tabs.querySelectorAll('.nav-link'); // panel-tabs
 
     let path = "accounts", // path api
@@ -166,10 +166,11 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
             let input = document.querySelector('#formControl input[type="file"]');
             for (let type of ['text', 'file']) input?.setAttribute('type', type);
             $scope[entity] = angular.copy(u); // reset binding
-        }
+        },
     }
 
     $scope.control = {
+        action: (target) => document.querySelector(target).click(),
         insert: () => {
             if ($scope[entity].password) {
                 let { index, exist } = checkUnique();
@@ -233,7 +234,6 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
         $scope.$watch('srctab', function (src = '') { // load all component
             $scope.$watch('$stateChangeSuccess', setTimeout(() => {
                 bsfw.loadPopovers();
-                console.log(src);
                 switch (src.substring(src.lastIndexOf('_'))) {
                     case '_detail.htm': bsfw.showImageInput(formControl, showInputImages); break;
                     case '_statistic.htm': $scope.chart.relationship($scope[dataName]); break;
@@ -244,7 +244,19 @@ app.controller('usercontrol', function ($scope, $routeParams, $location, securit
 
         if (security.isLoggedIn()) {
             await $scope.crud.get(path, dataName, undefined, configuration)
-                .then(_rest.success).catch(_rest.exception)
+                .then(r => {
+                    if (!r) return { message: 'get api ' };
+                    let fil = { min: Date.now(), max: Date.now(), sort: 'uid', isDesc: false };
+                    r.forEach(e => {
+                        if (fil.min > e.regTime) fil.min = e.regTime
+                        else if (fil.max < e.regTime) fil.max = e.regTime
+                    })
+                    fil.min = new Date(fil.min); fil.max = new Date(fil.max)
+                    $scope.fil = fil;
+                    return r;
+                })
+                .then(_rest.success)
+                .catch(_rest.exception)
         } else $scope.pushMessage({
             heading: 'need to login',
             body: 'This function needs to be logged in and admin',
