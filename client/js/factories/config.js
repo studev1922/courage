@@ -36,6 +36,8 @@ app.filter('has', () => util.has);
 app.filter('sort', () => util.sort);
 // arr:Array
 app.filter('total', () => util.total)
+// arr:Array, column:String, range: {min:Number, max:Number}
+app.filter('between', () => util.between)
 
 app.directive('accessColor', function () {
     return {
@@ -54,3 +56,16 @@ app.directive('accessColor', function () {
         }
     }
 })
+
+app.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if (event.which === 13) {
+                scope.$apply(function () {
+                    scope.$eval(attrs.ngEnter, { 'event': event });
+                });
+                event.preventDefault();
+            }
+        });
+    };
+});
