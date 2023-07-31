@@ -186,7 +186,6 @@ const util = {
     */
    sort: (array, col, isDesc = false) => {
       if (!array || !array.length) return;
-      console.log(array);
       let compare = typeof (array[0][col]) === 'string'
          ? `o1.${col}.localeCompare(o2.${col})`
          : `o1.${col} > o2.${col} ? -1 : 1`;

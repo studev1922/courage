@@ -85,9 +85,9 @@ public class RestUAccount extends AbstractRESTful<UAccount, Long> {
    @RequestMapping(value = "/update-pass", method = { RequestMethod.PUT, RequestMethod.PATCH })
    public ResponseEntity<?> updatePassword(UserLogin user) {
       try {
-         Principal principal = req.getUserPrincipal();
+         String username = user.getUsername();
          String password = encode.encode(user.getPassword());
-         ((UAccountRepository) super.rep).updatePassword(principal.getName(), password);
+         ((UAccountRepository) super.rep).updatePassword(username, password);
          return ResponseEntity.ok().build();
       } catch (Exception e) {
          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

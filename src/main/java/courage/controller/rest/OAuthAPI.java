@@ -143,10 +143,22 @@ public class OAuthAPI extends RestUAccount {
             : ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @Autowired @PreAuthorize("isAuthenticated()")
-    @RequestMapping(value = { "/update-pass" }, method = { RequestMethod.PATCH, RequestMethod.PUT })
-    public ResponseEntity<?> updatePassword(UserLogin user) {
-        return super.updatePassword(user);
+    @RequestMapping(value = { "/forgot-pass", "/update-pass" }, 
+        method = { RequestMethod.PATCH, RequestMethod.PUT }
+    )
+    public ResponseEntity<?> forgotPass(UserLogin user, @RequestParam String code) {
+        try {
+            String value = this.ps.get(code);
+            return value!=null ? super.updatePassword(user)
+                : ResponseEntity.badRequest().body(
+                    Utils.jsonMessage("message", "Cannot get the code is empty!")
+                );
+        } catch (DateTimeException e) {
+            return ResponseEntity.badRequest().body(Utils.jsonMessage("message", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Utils.jsonMessage("message", e.getMessage()));
+        }
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -154,6 +166,11 @@ public class OAuthAPI extends RestUAccount {
         RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH 
     })
     public ResponseEntity<?> save(UAccount entity, @RequestPart(required = false) MultipartFile... files) {
+
+        System.out.println(
+            req.getUserPrincipal()!=null ? req.getUserPrincipal().getName() : "principal is null"
+        );
+
         String password  = entity.getPassword(); // super#save encoder password
         ResponseEntity<?>  response = super.save(entity, files);
         boolean isOk = response.getStatusCode().equals(HttpStatus.OK);

@@ -54,26 +54,6 @@ app.controller('control', ($scope, $http, $location, security) => {
          }
          if (target) bsfw.hideModel(target);
       },
-      register: async function (user, target, isLogin) {
-         let form = document.querySelector(target);
-         let data = new FormData(form); // FORM DATA
-         $http.post(`${server}/oauth/register`, data,
-            { headers: { 'Content-Type': undefined } }
-         ).then(async res => {
-            form.reset(); // clear form
-            Object.assign(user, { time: 0 });
-            bsfw.hideModel(target);
-            $scope.pushMessage(`${res.data.username} register successfull`, 5e3);
-            if (isLogin) {
-               let token = res.headers('Authorization');
-               $scope.authenticated = security.setToken(token); // login
-               $scope.pushMessage(`Welcome ${res.data.username} logged in.`, 5e3);
-            }
-         }).catch(err => {
-            $scope.pushMessage(err.message || err.data?.message, 5e3);
-            console.error(err)
-         });
-      },
       verification: (user) => {
          if (!user) $scope.pushMessage('please input form data!', 3.5e3);
          else if (user.email) $http.get(`${server}/oauth/get-code?email=${user.email}`)

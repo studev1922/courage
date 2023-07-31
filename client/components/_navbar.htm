@@ -65,13 +65,11 @@
             </div>
             <div class="btn border-start border-end fill-size" ng-if="!authenticated"
                style="background: var(--bgr-linear-dark);color: var(--bs-info);border-radius: 1.5rem;padding: .25rem 1rem;">
-               <span role="button" data-bs-toggle="modal" data-bs-target="#formLogin">
+               <a href="" class="text-decoration-none" role="button" data-bs-toggle="modal" data-bs-target="#formLogin">
                   login
-               </span>
+               </a>
                <span style="color: #ffffff;">/</span>
-               <span role="button" data-bs-toggle="modal" data-bs-target="#formRegister">
-                  register
-               </span>
+               <a href="#!security/register" class="text-decoration-none">register</a>
             </div>
          </form>
       </div>
