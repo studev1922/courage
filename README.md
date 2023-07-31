@@ -12,6 +12,7 @@ This project provides the basic functionality that can be customized by subclass
             <th>USERNAME</th>
             <th>PASSWORD</th>
             <th>ROLES</th>
+            <th>IS ACTIVE</th>
         </tr>
     </thead>
     <tbody>
@@ -19,26 +20,31 @@ This project provides the basic functionality that can be customized by subclass
             <td>admin</td>
             <td>123</td>
             <td>ADMIN, STAFF, USER</td>
+            <td>✔</td>
         </tr>
         <tr>
             <td>staff</td>
             <td>123</td>
             <td>STAFF</td>
+            <td>✔</td>
         </tr>
         <tr>
             <td>user1</td>
             <td>123</td>
             <td>USER</td>
+            <td>✔</td>
         </tr>
         <tr>
             <td>user2</td>
             <td>123</td>
             <td>_</td>
+            <td>❌</td>
         </tr>
         <tr>
             <td>partner</td>
             <td>123</td>
             <td>PARTNER</td>
+            <td>✔</td>
         </tr>
     </tbody>
 </table>
