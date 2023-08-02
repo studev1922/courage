@@ -37,7 +37,7 @@ This project provides the basic functionality that can be customized by subclass
         <tr>
             <td>user2</td>
             <td>123</td>
-            <td>_</td>
+            <td>default:[USER]</td>
             <td>❌</td>
         </tr>
         <tr>
