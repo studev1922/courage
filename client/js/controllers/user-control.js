@@ -245,7 +245,7 @@ app.controller('usercontrol', function ($scope, $routeParams, security) {
         if (security.isLoggedIn()) {
             await $scope.crud.get(path, dataName, undefined, configuration)
                 .then(r => {
-                    if (!r) return { message: 'get api ' };
+                    if (typeof (r) != Array) return { message: 'access login!!! Get api', data: [] };
                     let fil = { min: Date.now(), max: Date.now(), sort: 'uid', isDesc: false };
                     r.forEach(e => {
                         if (fil.min > e.regTime) fil.min = e.regTime

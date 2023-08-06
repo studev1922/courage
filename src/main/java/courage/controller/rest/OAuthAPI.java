@@ -67,7 +67,8 @@ public class OAuthAPI extends RestUAccount {
         try { 
             String code = Utils.generalCode("ES", 9);
             this.ps.put(code, email, System.currentTimeMillis()+AGE*1000);
-            this.sendEmail(code, email);
+            //TODO: open this.sendEmail(code, email);
+            System.out.println("GET: "+code);
     
             Map<String, Object> map = new HashMap<>();
             map.put("time", AGE);
@@ -146,19 +147,42 @@ public class OAuthAPI extends RestUAccount {
     @RequestMapping(value = { "/forgot-pass", "/update-pass" }, 
         method = { RequestMethod.PATCH, RequestMethod.PUT }
     )
-    public ResponseEntity<?> forgotPass(UserLogin user, @RequestParam String code) {
+    public ResponseEntity<?> forgotPass(UserLogin user, 
+        @RequestParam String code, @RequestParam(required = false) Boolean withLogin
+    ) {
+        String unique, token;
+        UAccount account;
+        Map<String, Object> resBody = new HashMap<>();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
         try {
-            String value = this.ps.get(code);
-            return value!=null ? super.updatePassword(user)
-                : ResponseEntity.badRequest().body(
-                    Utils.jsonMessage("message", "Cannot get the code is empty!")
-                );
+            if((unique=this.ps.get(code)) != null) { // check code
+                account = ((UAccountRepository) super.rep).findByUnique(unique);
+                if(account==null) { // check account's unique not exists
+                    resBody.put("message", Utils.build(unique, " has not registered yet!"));
+                    this.ps.move(code); // remove verification code
+                } else if(( // check super update password
+                    status = (HttpStatus) super.updatePassword(user).getStatusCode()
+                ) == HttpStatus.OK ) {
+                    this.ps.move(code); // remove verification code
+                    resBody.put("message", Utils.build(unique, " changed password successfully."));
+
+                    // If client request is login then server response the new token
+                    if(withLogin!=null && withLogin) {
+                        token = Utils.build("Bearer ", jwt.sign(Utils.from(account)));
+                        res.setHeader("Authorization", token);
+                        resBody.put("token", token);
+                    }
+                }
+            } else resBody.put("message", "Cannot get the code is empty!");
         } catch (DateTimeException e) {
-            return ResponseEntity.badRequest().body(Utils.jsonMessage("message", e.getMessage()));
+            resBody.put("message", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(Utils.jsonMessage("message", e.getMessage()));
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            resBody.put("message", e.getMessage());
         }
+        return ResponseEntity.status(status).body(resBody);
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -198,8 +222,8 @@ public class OAuthAPI extends RestUAccount {
         account.setUid(-1L); // -1 to save new, uid's identity in database
         ResponseEntity<?> save = super.save(account, files);
         if(save.getStatusCode() == HttpStatus.OK) {
-            String token = jwt.sign(Utils.from(account));
-            res.setHeader("Authorization", "Bearer " + token);
+            String token = Utils.build("Bearer ", jwt.sign(Utils.from(account)));
+            res.setHeader("Authorization", token);
             this.ps.move(code); // remove code
         }
         return save;

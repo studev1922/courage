@@ -1,0 +1,69 @@
+<form class="card bg-transparent m-auto col-12 col-md-10 col-xl-8" id="formForget" name="myForm"
+    ng-submit="changePassword(user, '#formForget', isLogin)" ng-show="!authenticated">
+    <!-- header -->
+    <div class="card-header d-flex justify-content-between align-items-end">
+        <h2 class="modal-title text-warning">Forget password</h2>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" ng-model="isLogin">
+            <label class="form-check-label" for="flexSwitchCheckChecked">with login</label>
+        </div>
+    </div>
+    <!-- body -->
+    <div class="card-body">
+        <!-- email -->
+        <div class="mt-1">
+            <div class="d-flex justify-content-between align-items-end">
+                <label class="custom-label">email</label>
+                <div class="text-end" style="font-size: .95rem;">
+                    <span class="text-danger" ng-show="myForm.email.$error.pattern">Invalid email!</span>
+                    <span class="text-warning" ng-show="myForm.email.$error.required">Email is required!</span>
+                </div>
+            </div>
+            <input type="email" class="custom-input" style="background: var(--bgr-linear1);" ng-model="user.email"
+                placeholder="input your email" name="unique" ng-pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/"
+                required>
+        </div>
+        <!-- password -->
+        <div class="mt-1">
+            <div class="d-flex justify-content-between align-items-end">
+                <label class="custom-label">password</label>
+                <div class="text-end" style="font-size: .95rem;">
+                    <span class="text-warning" ng-show="myForm.password.$error.required">
+                        Password is required!
+                    </span>
+                </div>
+            </div>
+            <div id="inputPassword" class="d-flex" style="background: var(--bgr-linear3);">
+                <input type="password" class="custom-input" placeholder="input your password" ng-model="user.password"
+                    name="password">
+                <img width="24px" src="assets/imgIcon/hide.png" onclick="togglePassword(inputPassword, this)">
+            </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <div class="card-footer d-flex gap-1 flex-nowrap justify-content-md-end justify-content-sm-center align-items-end">
+        <input type="hidden" ng-model="user.time">
+        <span ng-bind="user.time"></span>
+
+        <input type="text" name="code" ng-model="user.code" class="custom-input text-center me-auto"
+            style="width: 10rem;" ng-disabled="!user.time" placeholder="verification">
+        <button type="button" class="btn border fw-bolder fill-size"
+            ng-click="security.clearForm('#formForget', user, isLogin)"
+            style="background: var(--bgr-linear-dark); color: var(--bs-secondary);">
+            <img width="32px" src="assets/imgIcon/arrow.png">&nbsp;clear
+        </button>
+        <button type="button" class="btn border fill-size" ng-if="!user.time"
+            style="background: var(--bgr-linear-dark); color: var(--bs-warning);"
+            ng-click="security.verification(user)">
+            <img width="32px" src="assets/imgIcon/insert.png">&nbsp;get code
+        </button>
+        <button type="submit" class="btn border fill-size" ng-if="user.time"
+            style="background: var(--bgr-linear-dark); color: var(--bs-warning);">
+            <img width="32px" src="assets/imgIcon/insert.png">&nbsp;change-password
+        </button>
+    </div>
+</form>
+
+<div ng-show="authenticated">
+    <h3><a href="#">BACK HOME</a></h3>
+</div>
