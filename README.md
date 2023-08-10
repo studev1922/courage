@@ -13,15 +13,15 @@ This project provides the basic functionality that can be customized by subclass
   + bootstrap-v5.1.3.min.css
 
 ## FUNCTIONAL
-- CRUD data through RESTful
-- Read, write multiple file as json api
-- Other: email, jwt, customize-display, etc...
-  + Send email, management random code same as cookies (key:value, age).
-  + Authentication and decentralization between client and server through json web token (jwt).
-  + Statistic account with Chart JS (regTime, quantity, relationships...).
-  + Customize display on web-app (navbar > setting)
-  + ACCESS data: AWAIT, LOCK (soft-delete), PRIVATE, PROTECTED, PUBLIC
-  + Connect to the rdbms (SQL Server) and CRUD through jdbc.
+- CRUD data through _RESTful_
+- Read, write **multiple file** as _json api_
+- Other: _email_, _jwt_, _customize-display_, _etc_...
+  + Send _email_, management _random code_ same as _cookies_ (**key**:**value**, age).
+  + _Authentication_ and _decentralization_ between **client** and **server** through json web token (**jwt**).
+  + Statistic account with **Chart JS** (_regTime_, _quantity_, _relationships_...).
+  + Customize _display_ on web-app (navbar > setting)
+  + ACCESS data: **AWAIT**, **LOCK** (_soft-delete_), **PRIVATE**, **PROTECTED**, **PUBLIC**
+  + Connect to the **rdbms** (_SQL Server_) and **CRUD** through **jdbc**.
 
 ## ACCOUNTS
 <table>
