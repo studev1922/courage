@@ -1,17 +1,6 @@
 # EXPANSIVE SYSTEM
 This project provides the basic functionality that can be customized by subclassing and using pre-built classes
 
-## TECHNOLOGIES USED
-- RDBMS (Sql Server 2014+)
-- Java (v17+), Spring-boot(v3.0.x)
-  + Libraries [SEE](./pom.xml#L20): jpa, web, jdbc, lombok, tomcat, thymeleaf, security, oauth2-client, oauth2-resource-server, email, devtool.
-- Javascript (ES6)
-  + Frameworks: AngularJS(v1.8), Bootstrap(v5.1)
-  + Libraries: AngularJS(router, cookies), ChartJS(v4.3.2)
-- FRONTEND: HTML5 - CSS3
-  + font-awesome-v6.4.0.all.min.css
-  + bootstrap-v5.1.3.min.css
-
 ## FUNCTIONAL
 - CRUD data through _RESTful_
 - Read, write **multiple file** as _json api_
@@ -22,6 +11,17 @@ This project provides the basic functionality that can be customized by subclass
   + Customize _display_ on web-app (navbar > setting)
   + ACCESS data: **AWAIT**, **LOCK** (_soft-delete_), **PRIVATE**, **PROTECTED**, **PUBLIC**
   + Connect to the **rdbms** (_SQL Server_) and **CRUD** through **jdbc**.
+
+## TECHNOLOGIES USED
+- RDBMS (Sql Server 2014+)
+- Java (v17+), Spring-boot(v3.0.x)
+  + Libraries [SEE](./pom.xml#L20): jpa, web, jdbc, lombok, tomcat, thymeleaf, security, oauth2-client, oauth2-resource-server, email, devtool.
+- Javascript (ES6)
+  + Frameworks: AngularJS(v1.8), Bootstrap(v5.1)
+  + Libraries: AngularJS(router, cookies), ChartJS(v4.3.2)
+- FRONTEND: HTML5 - CSS3
+  + font-awesome-v6.4.0.all.min.css
+  + bootstrap-v5.1.3.min.css
 
 ## ACCOUNTS
 <table>
