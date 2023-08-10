@@ -1,9 +1,27 @@
 # EXPANSIVE SYSTEM
 This project provides the basic functionality that can be customized by subclassing and using pre-built classes
 
-## SCRIPTS DATABASE FILE
-1. File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
-2. File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
+## TECHNOLOGIES USED
+- RDBMS (Sql Server 2014+)
+- Java (v17+), Spring-boot(v3.0.x)
+  + Libraries [SEE](./pom.xml#L20): jpa, web, jdbc, lombok, tomcat, thymeleaf, security, oauth2-client, oauth2-resource-server, email, devtool.
+- Javascript (ES6)
+  + Frameworks: AngularJS(v1.8), Bootstrap(v5.1)
+  + Libraries: AngularJS(router, cookies), ChartJS(v4.3.2)
+- FRONTEND: HTML5 - CSS3
+  + font-awesome-v6.4.0.all.min.css
+  + bootstrap-v5.1.3.min.css
+
+## FUNCTIONAL
+- CRUD data through RESTful
+- Read, write multiple file as json api
+- Other: email, jwt, customize-display, etc...
+  + Send email, management random code same as cookies (key:value, age).
+  + Authentication and decentralization between client and server through json web token (jwt).
+  + Statistic account with Chart JS (regTime, quantity, relationships...).
+  + Customize display on web-app (navbar > setting)
+  + ACCESS data: AWAIT, LOCK (soft-delete), PRIVATE, PROTECTED, PUBLIC
+  + Connect to the rdbms (SQL Server) and CRUD through jdbc.
 
 ## ACCOUNTS
 <table>
@@ -48,6 +66,10 @@ This project provides the basic functionality that can be customized by subclass
         </tr>
     </tbody>
 </table>
+
+## SCRIPTS DATABASE FILE
+1. File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
+2. File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
 
 ## DEPLOYMENT
 - Requirements
