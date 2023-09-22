@@ -16,6 +16,9 @@ This project provides the basic functionality that can be customized by subclass
 - RDBMS (Sql Server 2014+)
 - Java (v17+), Spring-boot(v3.0.x)
   + Libraries [SEE](./pom.xml#L20): jpa, web, jdbc, lombok, tomcat, thymeleaf, security, oauth2-client, oauth2-resource-server, email, devtool.
+  + Source server configuration: [application.yml](,/src/main/resources/application.yml)
+    + mssql: [username](./src/main/resources/application.yml#L5) : [password](./src/main/resources/application.yml#L6) `default "sa" : "your mssql server's password"`
+    + email: [username](./src/main/resources/application.yml#L19) : [password](./src/main/resources/application.yml#L20)
 - Javascript (ES6)
   + Frameworks: AngularJS(v1.8), Bootstrap(v5.1)
   + Libraries: AngularJS(router, cookies), ChartJS(v4.3.2)
