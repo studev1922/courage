@@ -1,6 +1,9 @@
 # EXPANSIVE SYSTEM
 This project provides the basic functionality that can be customized by subclassing and using pre-built classes
 
+## PLAYLIST OF THIS PROJECT
+[![expansive system](https://img.youtube.com/vi/vx_LY4PD-qs/maxresdefault.jpg)](https://youtu.be/vx_LY4PD-qs?si=yBHz1T81bD_CcCmQ)
+
 ## FUNCTIONAL
 - CRUD data through _RESTful_
 - Read, write **multiple file** as _json api_
