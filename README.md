@@ -84,7 +84,7 @@ This project provides the basic functionality that can be customized by subclass
    - Maven 3.x.x `mvn -v`
    - **_If you use Git_ `git -v`**
 - Guide
-   1. `git clone https://github.com/studev1922/courage.git`or download [courage-main.zip](https://github.com/studev1922/courage/archive/refs/heads/main.zip) and extract file
+   1. `git clone https://github.com/studev1922/courage.git` or download [courage-main.zip](https://github.com/studev1922/courage/archive/refs/heads/main.zip) and extract file
    2. Point to the project `cd [...path to the project]/courage`
    3. Execute database
       - Create database `sqlcmd -f 65001 -i assets/mssql_base_super.sql`
