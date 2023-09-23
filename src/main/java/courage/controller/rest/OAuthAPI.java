@@ -67,8 +67,8 @@ public class OAuthAPI extends RestUAccount {
         try { 
             String code = Utils.generalCode("ES", 9);
             this.ps.put(code, email, System.currentTimeMillis()+AGE*1000);
-            //TODO: open this.sendEmail(code, email);
-            System.out.println("GET: "+code);
+            this.sendEmail(code, email); // Do sent email
+            // System.out.println("GET: "+code);
     
             Map<String, Object> map = new HashMap<>();
             map.put("time", AGE);
