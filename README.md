@@ -1,8 +1,8 @@
 # EXPANSIVE SYSTEM
 This project provides the basic functionality that can be customized by subclassing and using pre-built classes
 
-## PLAYLIST OF THIS PROJECT
-[![expansive system](https://img.youtube.com/vi/vx_LY4PD-qs/maxresdefault.jpg)](https://youtu.be/vx_LY4PD-qs?si=yBHz1T81bD_CcCmQ)
+## DEMO COURAGE PROJECT
+[![Demo expansive system](https://img.youtube.com/vi/5XrfvhMFZEI/maxresdefault.jpg)](https://youtu.be/5XrfvhMFZEI?si=yBHz1T81bD_CcCmQ)
 
 ## FUNCTIONAL
 - CRUD data through _RESTful_
@@ -73,6 +73,9 @@ This project provides the basic functionality that can be customized by subclass
     </tbody>
 </table>
 
+## SETUP COURAGE PROJECT
+[![Setup expansive system](https://img.youtube.com/vi/HH42y4Fzmi8/maxresdefault.jpg)](https://youtu.be/HH42y4Fzmi8?si=yBHz1T81bD_CcCmQ)
+
 ## SCRIPTS DATABASE FILE
 1. File scripts create database: [open mssql_base_super.sql](assets/mssql_base_super.sql)<br>
 2. File scripts insert database: [open mssql_data_super.sql](assets/mssql_data_super.sql)
@@ -98,6 +101,7 @@ This project provides the basic functionality that can be customized by subclass
         - `http://127.0.0.1:5500` or `http://localhost:5500`
         - `http://localhost:8080` or `http://127.0.0.1:8080`
         - **path** _/server_ or _/client_ or _/index.html_
+
 ## ABBREVIATE
 <ul>
    <li>
