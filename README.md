@@ -26,8 +26,8 @@ This project provides the basic functionality that can be customized by subclass
   + Frameworks: AngularJS(v1.8), Bootstrap(v5.1)
   + Libraries: AngularJS(router, cookies), ChartJS(v4.3.2)
 - FRONTEND: HTML5 - CSS3
-  + font-awesome-v6.4.0.all.min.css
-  + bootstrap-v5.1.3.min.css
+  + font-awesome-v6.4.0
+  + bootstrap-v5.1.3
 
 ## ACCOUNTS
 <table>
